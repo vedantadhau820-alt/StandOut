@@ -882,12 +882,19 @@ document.getElementById("notifyBell").onclick = () => {
     const drawer = document.getElementById("notificationDrawer");
 
     if (drawer.style.display === "none") {
-        renderNotifications();
-        drawer.style.display = "block";
-    } else {
-        drawer.style.display = "none";
-    }
-};
+    renderNotifications();
+    drawer.style.display = "block";
+
+    // 🔥 Clear the badge when opening drawer
+    const badge = document.getElementById("notifyBadge");
+    badge.style.display = "none";
+    
+    // Mark as seen
+    appNotifications.forEach(n => n.seen = true);
+    saveNotifications();
+} else {
+    drawer.style.display = "none";
+}
 
 // Render notif list
 function renderNotifications() {
@@ -1375,37 +1382,34 @@ window.addEventListener("load", updateNotificationBadge);
         
         function checkMissedDeadlines() {
     const missions = document.querySelectorAll("#mission-list li");
-    const now = new Date().getTime();
+    const now = Date.now();
 
     missions.forEach(li => {
         const deadline = li.dataset.deadline;
         if (!deadline) return;
 
         const deadlineTime = new Date(deadline).getTime();
+        const timeLeft = deadlineTime - now;
 
         const overdueSpan = li.querySelector(".overdueMark");
-        if (!overdueSpan) return; // safety
+        if (!overdueSpan) return;
 
-        
-// 🔔 Mission: Deadline Approaching (2 hours)
-const timeLeft = deadlineTime - now;
+        // 🔔 Deadline Approaching (2 hours)
+        if (timeLeft > 0 && timeLeft <= 2 * 60 * 60 * 1000 && !li.dataset.warned) {
+            li.dataset.warned = "true";
+            pushNotification(
+                "Mission Deadline",
+                `"${li.querySelector('.mission-text').textContent}" is due soon (within 2 hours!)`
+            );
+        }
 
-if (timeLeft > 0 && timeLeft <= 2 * 60 * 60 * 1000 && !li.dataset.warned) {
-    li.dataset.warned = "true";
-    pushNotification(
-        "Mission Deadline",
-        `"${li.querySelector('.mission-text').textContent}" is due soon (within 2 hours!)`
-    );
-}
-
-        // Overdue?
-        if (now > deadlineTime) {
+        // ❗ OVERDUE
+        if (timeLeft <= 0) {
             overdueSpan.innerHTML = `<span class="overdue-badge">Overdue</span>`;
-
+            
             if (!li.dataset.deducted) {
                 completedMissions = Math.max(0, completedMissions - 1);
                 li.dataset.deducted = "true";
-                li.setAttribute("data-deducted", "true");
 
                 document.getElementById("missionCounter").textContent = completedMissions;
                 saveData();
@@ -1414,13 +1418,7 @@ if (timeLeft > 0 && timeLeft <= 2 * 60 * 60 * 1000 && !li.dataset.warned) {
             overdueSpan.innerHTML = "";
         }
     });
-            // ⏳ Deadline Approaching (2 hours)
-if (timeLeft > 0 && timeLeft <= 2 * 60 * 60 * 1000 && !li.dataset.warned) {
-    li.dataset.warned = "true";
-    pushNotification("Mission Warning", `"${li.querySelector('.mission-text').textContent}" is due in 2 hours`);
 }
-            closeModal();
-        }
 
         function deleteMission() {
             const li = window.missionBeingEdited;
@@ -1567,18 +1565,18 @@ if (timeLeft > 0 && timeLeft <= 2 * 60 * 60 * 1000 && !li.dataset.warned) {
                 }
 
                 div.innerHTML = `
-      <div class="goal-header">
+    <div class="goal-header">
         <span class="goal-title">${goal}</span>
-        <span class="goal-priority ${priority}">-<strong> ${priority}</strong></span>
-      </div>
+        <span class="goal-priority ${priority}"><strong>${priority}</strong></span>
+    </div>
 
-      <div class="goal-subrow">
+    <div class="goal-subrow">
         <span class="goal-deadline">${formattedDeadline}</span>
-        <button class="remove-btn" onclick="removeGoal(this)" style="margin: 0px 30px 0px 0px">Remove</button>
-      </div>
+        <button class="remove-btn" onclick="removeGoal(this)">Remove</button>
+    </div>
 
-
-    `;
+    <div class="goal-timer" style="margin-top:6px; font-size:14px; opacity:.9;"></div>
+`;
 
                 document.getElementById("goal-list").appendChild(div);
                 saveData();
@@ -1902,6 +1900,7 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
+
 
 
 
