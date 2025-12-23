@@ -659,8 +659,29 @@ section {
 <nav class="top-navbar">
     <div class="nav-left">Stand Out</div>
     <div class="nav-right">
-        <img src="icon.jpeg" alt="Profile" class="nav-img">
+
+    <!-- 🔔 Notification Bell -->
+    <div id="notifyBell" style="position: relative; margin-right: 1.4rem; cursor: pointer;">
+        <i class="fas fa-bell" style="font-size: 22px; color: #3B82F6;"></i>
+
+        <!-- Badge -->
+        <span id="notifyBadge" 
+              style="
+                position: absolute;
+                top: -6px;
+                right: -8px;
+                background: red;
+                color: white;
+                font-size: 11px;
+                padding: 2px 5px;
+                border-radius: 50%;
+                display: none;
+              ">
+        </span>
     </div>
+
+    <img src="icon.jpeg" alt="Profile" class="nav-img">
+</div>
 </nav>
 
     <!-- ===========================
@@ -788,6 +809,26 @@ section {
     <h3 id="notifyTitle"></h3>
     <p id="notifyMsg"></p>
 </div>
+    <!-- ===========================
+     Notification Drawer
+=========================== -->
+<div id="notificationDrawer" 
+     style="
+       position: fixed;
+       top: 60px;
+       right: 0;
+       width: 300px;
+       height: calc(100vh - 60px);
+       background: #1f2937;
+       border-left: 2px solid #111;
+       padding: 1rem;
+       overflow-y: auto;
+       display: none;
+       z-index: 9999;
+     ">
+    <h3 style="margin-top:0; color:#3B82F6;">Notifications</h3>
+    <div id="notificationList"></div>
+</div>
 
     <!-- ===========================
        JavaScript (Message 3)
@@ -800,6 +841,86 @@ if ("serviceWorker" in navigator) {
 </script>
 
     <script>
+// =========================
+//   NOTIFICATION SYSTEM
+// =========================
+
+let appNotifications = JSON.parse(localStorage.getItem("appNotifications")) || [];
+
+// Save notif list
+function saveNotifications() {
+    localStorage.setItem("appNotifications", JSON.stringify(appNotifications));
+}
+
+// Add new notification
+function pushNotification(title, msg) {
+    appNotifications.unshift({
+        title,
+        msg,
+        time: new Date().toLocaleString()
+    });
+
+    updateNotificationBadge();
+    saveNotifications();
+}
+
+// Update badge count
+function updateNotificationBadge() {
+    const badge = document.getElementById("notifyBadge");
+    if (!badge) return;
+
+    if (appNotifications.length === 0) {
+        badge.style.display = "none";
+    } else {
+        badge.style.display = "inline-block";
+        badge.textContent = appNotifications.length;
+    }
+}
+
+// Open/Close drawer
+document.getElementById("notifyBell").onclick = () => {
+    const drawer = document.getElementById("notificationDrawer");
+
+    if (drawer.style.display === "none") {
+        renderNotifications();
+        drawer.style.display = "block";
+    } else {
+        drawer.style.display = "none";
+    }
+};
+
+// Render notif list
+function renderNotifications() {
+    const container = document.getElementById("notificationList");
+    container.innerHTML = "";
+
+    if (appNotifications.length === 0) {
+        container.innerHTML = `<p style="opacity:0.6;">No notifications</p>`;
+        return;
+    }
+
+    appNotifications.forEach(n => {
+        const div = document.createElement("div");
+        div.style = `
+            padding: 10px;
+            margin-bottom: 10px;
+            background:#111827;
+            border-radius:8px;
+        `;
+
+        div.innerHTML = `
+            <strong style="color:#3B82F6;">${n.title}</strong><br>
+            <span style="font-size:13px;">${n.msg}</span><br>
+            <span style="font-size:11px; opacity:0.6;">${n.time}</span>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+// Initialize badge on load
+window.addEventListener("load", updateNotificationBadge);
+        
         function showSmartNotification(title, message) {
     const popup = document.getElementById("smartNotify");
     document.getElementById("notifyTitle").innerText = title;
@@ -1282,12 +1403,9 @@ if ("serviceWorker" in navigator) {
         }
     });
             // ⏳ Deadline Approaching (2 hours)
-const twoHours = 2 * 60 * 60 * 1000;
-const timeLeft = deadlineTime - now;
-
-if (timeLeft > 0 && timeLeft <= twoHours && !li.dataset.warned) {
+if (timeLeft > 0 && timeLeft <= 2 * 60 * 60 * 1000 && !li.dataset.warned) {
     li.dataset.warned = "true";
-    showSmartNotification("Deadline Approaching!", `"${li.querySelector('.mission-text').textContent}" is due in 2 hours`);
+    pushNotification("Mission Warning", `"${li.querySelector('.mission-text').textContent}" is due in 2 hours`);
 }
             closeModal();
         }
@@ -1480,10 +1598,9 @@ if (timeLeft > 0 && timeLeft <= twoHours && !li.dataset.warned) {
                     overdueMark.innerHTML = `<span class="overdue-badge">Overdue</span>`;
                     return;
                 }
-                const twoHr = 2 * 60 * 60 * 1000;
-if (diff > 0 && diff <= twoHr && !goal.dataset.warned) {
+                if (diff > 0 && diff <= 2*60*60*1000 && !goal.dataset.warned) {
     goal.dataset.warned = "true";
-    showSmartNotification("Goal Deadline Soon", `"${goal.querySelector('.goal-title').textContent}" is due in 2 hours`);
+    pushNotification("Goal Deadline", `"${goal.querySelector('.goal-title').textContent}" is due in 2 hours`);
 }
 
                 // REMOVE overdue if user updated it
@@ -1610,11 +1727,9 @@ if (diff > 0 && diff <= twoHr && !goal.dataset.warned) {
                     const bar = document.getElementById(`timerbar-${index}`);
                     if (bar) bar.style.width = percent + "%";
 // Notify when 1 hour left
-const oneHour = 60 * 60 * 1000;
-if (diff > 0 && diff <= oneHour && !c.warned) {
+if (diff > 0 && diff <= 60*60*1000 && !c.warned) {
     c.warned = true;
-    saveCountdowns();
-    showSmartNotification("Countdown Ending Soon", `"${c.title}" ends in 1 hour`);
+    pushNotification("Countdown Ending Soon", `"${c.title}" ends in 1 hour`);
 }
                     
 
@@ -1765,6 +1880,7 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
+
 
 
 
