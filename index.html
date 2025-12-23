@@ -827,6 +827,17 @@ section {
        z-index: 9999;
      ">
     <h3 style="margin-top:0; color:#3B82F6;">Notifications</h3>
+   <button onclick="clearAllNotifications()" 
+        style="
+            width:100%; 
+            padding:8px; 
+            background:#e63946; 
+            color:white; 
+            border:none; 
+            border-radius:6px; 
+            margin-bottom:10px;">
+ Clear All Notifications
+   </button>
     <div id="notificationList"></div>
 </div>
 
@@ -863,17 +874,27 @@ function pushNotification(title, msg) {
     updateNotificationBadge();
     saveNotifications();
 }
+        function clearAllNotifications() {
+    appNotifications = [];
+    saveNotifications();
+    renderNotifications();
+    updateNotificationBadge();
+        }
 
 // Update badge count
 function updateNotificationBadge() {
     const badge = document.getElementById("notifyBadge");
     if (!badge) return;
 
-    if (appNotifications.length === 0) {
+    const lastCount = parseInt(localStorage.getItem("lastNotifCount")) || 0;
+
+    const unread = appNotifications.length - lastCount;
+
+    if (unread <= 0) {
         badge.style.display = "none";
     } else {
         badge.style.display = "inline-block";
-        badge.textContent = appNotifications.length;
+        badge.textContent = unread;
     }
 }
 
@@ -887,10 +908,15 @@ document.getElementById("notifyBell").onclick = () => {
 
         // 🔥 Clear the badge
         const badge = document.getElementById("notifyBadge");
-        badge.style.display = "none";
+        // Clear badge
+badge.style.display = "none";
+badge.textContent = "";
 
-        appNotifications.forEach(n => n.seen = true);
-        saveNotifications();
+// Mark all as read (but keep them in list)
+// Reset unread count
+localStorage.setItem("lastNotifCount", appNotifications.length);
+updateNotificationBadge();
+saveNotifications();
     } else {
         drawer.style.display = "none";
     }
@@ -1903,6 +1929,7 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
+
 
 
 
