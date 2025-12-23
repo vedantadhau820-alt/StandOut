@@ -882,21 +882,24 @@ document.getElementById("notifyBell").onclick = () => {
     const drawer = document.getElementById("notificationDrawer");
 
     if (drawer.style.display === "none") {
-    renderNotifications();
-    drawer.style.display = "block";
+        renderNotifications();
+        drawer.style.display = "block";
 
-    // 🔥 Clear the badge when opening drawer
-    const badge = document.getElementById("notifyBadge");
-    badge.style.display = "none";
-    
-    // Mark as seen
-    appNotifications.forEach(n => n.seen = true);
-    saveNotifications();
-} else {
-    drawer.style.display = "none";
-}
+        // 🔥 Clear the badge
+        const badge = document.getElementById("notifyBadge");
+        badge.style.display = "none";
 
-// Render notif list
+        appNotifications.forEach(n => n.seen = true);
+        saveNotifications();
+    } else {
+        drawer.style.display = "none";
+    }
+}; // ← CLOSE THIS PROPERLY
+
+
+// ----------------------------
+// NOW define renderNotifications
+// ----------------------------
 function renderNotifications() {
     const container = document.getElementById("notificationList");
     container.innerHTML = "";
@@ -1900,6 +1903,7 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
+
 
 
 
