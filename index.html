@@ -875,11 +875,20 @@ function pushNotification(title, msg) {
     saveNotifications();
 }
         function clearAllNotifications() {
-    appNotifications = [];
-    saveNotifications();
-    renderNotifications();
-    updateNotificationBadge();
-        }
+    appNotifications = [];                 // Clear array
+    localStorage.removeItem("appNotifications"); // Remove from localStorage
+    localStorage.removeItem("lastNotifCount");   // Reset unread count tracker
+
+    // Update UI
+    document.getElementById("notificationList").innerHTML = 
+        `<p style="opacity:0.6;">No notifications</p>`;
+
+    const badge = document.getElementById("notifyBadge");
+    badge.style.display = "none";
+    badge.textContent = "";
+
+    console.log("All notifications cleared.");
+}
 
 // Update badge count
 function updateNotificationBadge() {
@@ -1929,6 +1938,7 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
+
 
 
 
