@@ -1194,51 +1194,35 @@ if ("serviceWorker" in navigator) {
         setInterval(checkMissedDeadlines, 60000); // check every 1 minute
 
         function updateMission() {
-            const li = window.missionBeingEdited;
-            if (!li) return;
+    const li = window.missionBeingEdited;
+    if (!li) return;
 
-            const newText = document.getElementById("editMissionInput").value;
-            const newDeadline = document.getElementById("editMissionDeadline").value;
+    const newText = document.getElementById("editMissionInput").value;
+    const newDeadline = document.getElementById("editMissionDeadline").value;
 
-            // Update text
-            li.querySelector(".mission-text").textContent = newText;
+    // Update text
+    li.querySelector(".mission-text").textContent = newText;
 
-            // Update deadline
-            if (newDeadline) {
-                const d = new Date(newDeadline);
-                const dateString = d.toLocaleDateString([], { day: "numeric", month: "short" });
-                const timeString = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    // Update deadline
+    if (newDeadline) {
+        const d = new Date(newDeadline);
+        const dateString = d.toLocaleDateString([], { day: "numeric", month: "short" });
+        const timeString = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-                    li.querySelector(".deadlineDisplay").textContent = `${dateString}, ${timeString}`;
-                }
-    const now = new Date().getTime();
+        li.querySelector(".deadlineDisplay").textContent = `${dateString}, ${timeString}`;
+        li.dataset.deadline = newDeadline;
+    } else {
+        li.querySelector(".deadlineDisplay").textContent = "";
+        delete li.dataset.deadline;
+    }
 
-    missions.forEach(li => {
-        const deadline = li.dataset.deadline;
-        if (!deadline) return;
+    // Reset overdue state for updated mission
+    li.querySelector(".overdueMark").innerHTML = "";
+    delete li.dataset.deducted;
 
-        const deadlineTime = new Date(deadline).getTime();
-
-        const overdueSpan = li.querySelector(".overdueMark");
-        if (!overdueSpan) return; // safety
-
-        // Overdue?
-        if (now > deadlineTime) {
-            overdueSpan.innerHTML = `<span class="overdue-badge">Overdue</span>`;
-
-            if (!li.dataset.deducted) {
-                completedMissions = Math.max(0, completedMissions - 1);
-                li.dataset.deducted = "true";
-                li.setAttribute("data-deducted", "true");
-
-                document.getElementById("missionCounter").textContent = completedMissions;
-                saveData();
-            }
-        } else {
-            overdueSpan.innerHTML = "";
-        }
-    });
-            }
+    saveData();
+    closeModal();
+}
         
         function checkMissedDeadlines() {
     const missions = document.querySelectorAll("#mission-list li");
@@ -1748,6 +1732,7 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
+
 
 
 
