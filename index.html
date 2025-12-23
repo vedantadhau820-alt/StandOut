@@ -1655,6 +1655,44 @@
             }
         });
 
+         function notifyUpcomingDeadlines() {
+    const missions = JSON.parse(localStorage.getItem("missions") || "[]");
+    const now = new Date();
+
+    missions.forEach(mission => {
+        if (mission.dueDate && mission.status !== "completed") {
+            const due = new Date(mission.dueDate);
+            const diffMinutes = (due - now) / 60000;
+
+            if (diffMinutes > 29 && diffMinutes < 31) {
+                navigator.serviceWorker.ready.then(reg => {
+                    reg.showNotification("Upcoming Deadline", {
+                        body: `Your mission "${mission.title}" is due in 30 minutes!`,
+                        icon: "js.png"
+                    });
+                });
+            }
+        }
+    });
+}
+setInterval(notifyUpcomingDeadlines, 60000);
+
+function sendDailyReminder() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+
+    if (hours === 20 && minutes === 55) {
+        navigator.serviceWorker.ready.then(reg => {
+            reg.showNotification("Daily Reminder", {
+                body: "Don't forget your missions today!",
+                icon: "js.png"
+            });
+        });
+    }
+}
+setInterval(sendDailyReminder, 60000);
+
 
     </script>
 
@@ -1662,3 +1700,4 @@
 
 
 </html>
+
