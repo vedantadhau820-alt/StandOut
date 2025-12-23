@@ -1207,8 +1207,10 @@ if ("serviceWorker" in navigator) {
             if (newDeadline) {
                 const d = new Date(newDeadline);
                 const dateString = d.toLocaleDateString([], { day: "numeric", month: "short" });
-                const timeString = d.toLocaleTimeString([], { hour: "2-dfunction checkMissedDeadlines() {
-    const missions = document.querySelectorAll("#mission-list li");
+                const timeString = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    li.querySelector(".deadlineDisplay").textContent = `${dateString}, ${timeString}`;
+                }
     const now = new Date().getTime();
 
     missions.forEach(li => {
@@ -1236,7 +1238,9 @@ if ("serviceWorker" in navigator) {
             overdueSpan.innerHTML = "";
         }
     });
-            }function checkMissedDeadlines() {
+            }
+        
+        function checkMissedDeadlines() {
     const missions = document.querySelectorAll("#mission-list li");
     const now = new Date().getTime();
 
@@ -1744,5 +1748,6 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
+
 
 
