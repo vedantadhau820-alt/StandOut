@@ -1386,6 +1386,18 @@ window.addEventListener("load", updateNotificationBadge);
         const overdueSpan = li.querySelector(".overdueMark");
         if (!overdueSpan) return; // safety
 
+        
+// 🔔 Mission: Deadline Approaching (2 hours)
+const timeLeft = deadlineTime - now;
+
+if (timeLeft > 0 && timeLeft <= 2 * 60 * 60 * 1000 && !li.dataset.warned) {
+    li.dataset.warned = "true";
+    pushNotification(
+        "Mission Deadline",
+        `"${li.querySelector('.mission-text').textContent}" is due soon (within 2 hours!)`
+    );
+}
+
         // Overdue?
         if (now > deadlineTime) {
             overdueSpan.innerHTML = `<span class="overdue-badge">Overdue</span>`;
@@ -1590,6 +1602,16 @@ if (timeLeft > 0 && timeLeft <= 2 * 60 * 60 * 1000 && !li.dataset.warned) {
 
                 const target = new Date(deadline).getTime();
                 const diff = target - now;
+                
+// 🔔 Goal: Deadline Approaching (2 hours)
+if (diff > 0 && diff <= 2 * 60 * 60 * 1000 && !goal.dataset.warned) {
+    goal.dataset.warned = "true";
+    pushNotification(
+        "Goal Deadline",
+        `"${goal.querySelector('.goal-title').textContent}" is due soon (within 2 hours!)`
+    );
+}
+
 
                 // OVERDUE
                 if (diff <= 0) {
@@ -1880,6 +1902,7 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
+
 
 
 
