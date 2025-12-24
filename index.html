@@ -1666,14 +1666,15 @@ window.addEventListener("load", updateNotificationBadge);
 
         const diff = new Date(deadline).getTime() - Date.now();
 
+        // Format time left
         if (diff > 0) {
             const hours = Math.floor(diff / (1000 * 60 * 60));
             const minutes = Math.floor((diff / (1000 * 60)) % 60);
 
             timer.textContent = `${hours}h ${minutes}m left`;
+            overdueBadge.textContent = "";
 
-            if (overdueBadge) overdueBadge.textContent = "";
-
+            // 🔔 Upcoming deadline (2 hours)
             if (diff <= 2 * 60 * 60 * 1000 && !goal.dataset.warned) {
                 goal.dataset.warned = "true";
 
@@ -1684,10 +1685,9 @@ window.addEventListener("load", updateNotificationBadge);
             }
 
         } else {
+            // OVERDUE
             timer.textContent = "";
-
-            if (overdueBadge)
-                overdueBadge.innerHTML = `<span class="overdue-badge">Overdue</span>`;
+            overdueBadge.innerHTML = `<span class="overdue-badge">Overdue</span>`;
 
             if (!goal.dataset.overdueNotified) {
                 goal.dataset.overdueNotified = "true";
@@ -1699,7 +1699,6 @@ window.addEventListener("load", updateNotificationBadge);
             }
         }
     });
-}
 
 // Run timer every second
         setInterval(updateGoalTimers, 1000);
@@ -1743,51 +1742,7 @@ window.addEventListener("load", updateNotificationBadge);
         }
 
 
-        function updateGoalTimers() {
-    const goals = document.querySelectorAll("#goal-list .goal");
-
-    goals.forEach(goal => {
-        const deadline = goal.dataset.deadline;
-        if (!deadline) return;
-
-        const timer = goal.querySelector(".goal-timer");
-        const overdueBadge = goal.querySelector(".goal-overdue");
-
-        const diff = new Date(deadline).getTime() - Date.now();
-
-        // Format time left
-        if (diff > 0) {
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff / (1000 * 60)) % 60);
-
-            timer.textContent = `${hours}h ${minutes}m left`;
-            overdueBadge.textContent = "";
-
-            // 🔔 Upcoming deadline (2 hours)
-            if (diff <= 2 * 60 * 60 * 1000 && !goal.dataset.warned) {
-                goal.dataset.warned = "true";
-
-                pushNotification(
-                    "Goal Reminder",
-                    `Your goal "${goal.querySelector('.goal-title').textContent}" is due soon (within 2 hours).`
-                );
-            }
-
-        } else {
-            // OVERDUE
-            timer.textContent = "";
-            overdueBadge.innerHTML = `<span class="overdue-badge">Overdue</span>`;
-
-            if (!goal.dataset.overdueNotified) {
-                goal.dataset.overdueNotified = "true";
-
-                pushNotification(
-                    "⚠ Goal Overdue",
-                    `"${goal.querySelector('.goal-title').textContent}" deadline has passed!`
-                );
-            }
-        }
-    });
+        
 
         function removeCountdown(index) {
             countdowns.splice(index, 1);
@@ -2002,6 +1957,7 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
+
 
 
 
