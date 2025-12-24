@@ -1,0 +1,2349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#3B82F6">
+<link rel="icon" type="image/png" href="icon.jpeg">
+
+
+    <title>Stand Out</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- Stylesheet will be injected in Message 2 -->
+    <style>
+        /* =========================================================
+   CORE LAYOUT & BODY
+========================================================= */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem;
+            background: #001f3f;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: #3B82F6;
+        }
+/* ===========================
+   TOP NAVBAR (Fully fixed + responsive)
+=========================== */
+.top-navbar {
+    width: 100%;
+    height: 60px;
+    background: #111827;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 16px;
+
+    /* border-bottom: 2px solid #1f2937; */
+
+    /* Prevent wrapping */
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.nav-left {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #3B82F6;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0; /* prevents shrinking/wrapping */
+}
+
+.nav-right .nav-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 2rem;
+}
+
+/* Prevent content going under navbar */
+section {
+    margin-top: 70px !important;
+}
+
+
+        /* =========================================================
+   BOTTOM NAVIGATION
+========================================================= */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 55px;
+            background: #1f2937;
+            display: flex;
+            justify-content: space-evenly;
+            flex-direction: row;
+            align-items: center;
+            border-top: 2px solid #111;
+            z-index: 50;
+        }
+
+        .bottom-nav button {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 14px;
+            height: 100%;
+            cursor: pointer;
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .bottom-nav button:hover {
+            color: #3b82f6;
+            transform: scale(1.05);
+        }
+
+        .bottom-nav button.active {
+            color: #3b82f6;
+            font-weight: bold;
+        }
+
+
+        /* =========================================================
+   PAGE SECTIONS
+========================================================= */
+        section {
+            display: none;
+            padding: 1rem 1rem 0px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            height: calc(100vh - 55px - 50px);
+            overflow-y: auto;
+        }
+
+        section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+
+        /* =========================================================
+   FLOATING + ADD BUTTONS
+========================================================= */
+        .plus-btn {
+            position: fixed;
+            bottom: 4.5rem;
+            right: 1rem;
+            z-index: 100;
+            padding: 0.6rem 1.2rem;
+            background: #3B82F6;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .plus-btn:hover {
+            background: #2563EB;
+            transform: scale(1.05);
+        }
+
+        .plus-btn2 {
+            position: sticky;
+            bottom: 0px;
+            margin-top: 1rem;
+            padding: 0.6rem 1.2rem;
+            background: #3B82F6;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+
+        /* =========================================================
+   LIST ITEMS (MISSIONS, SKILLS, GOALS)
+========================================================= */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            background: #1f2937;
+            margin: 0.5rem 0;
+            padding: 1rem;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        ul li.remove {
+            transform: translateX(100%);
+            opacity: 0;
+            display: none;
+        }
+
+        .skill,
+        .goal {
+            background: #1f2937;
+            margin: 0.5rem 0;
+            padding: 0.7rem;
+            border-radius: 6px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            cursor: pointer;
+            display: none;
+        }
+
+        .skill.show,
+        .goal.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        /* =========================================================
+   PROGRESS BARS
+========================================================= */
+        .progress {
+            background: #333;
+            border-radius: 4px;
+            overflow: hidden;
+            height: 10px;
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #3B82F6;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+
+        /* =========================================================
+   BUTTONS (COMPLETE, REMOVE, DANGER)
+========================================================= */
+        .complete-btn {
+            background: transparent;
+            border: none;
+            color: #3B82F6;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .complete-btn:hover {
+            transform: scale(1.2);
+            color: #2563EB;
+        }
+
+        .remove-btn,
+        .remove-btn2 {
+            background: transparent;
+            border: none;
+            color: #e63946;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin-right: 1rem;
+        }
+
+        .remove-btn:hover,
+        .remove-btn2:hover {
+            transform: scale(1.2);
+            color: #f87171;
+        }
+
+
+
+        .danger-btn {
+            background: #e63946;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .danger-btn:hover {
+            background: #d62828;
+        }
+
+
+        /* =========================================================
+   COUNTDOWN TIMER
+========================================================= */
+        .timer {
+            font-size: 1.5rem;
+            margin: 1rem 0;
+        }
+
+
+        /* =========================================================
+   MODALS (ADD/EDIT, ALERT, CONFIRM)
+========================================================= */
+        .modal,
+        .alert-modal,
+        .confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active,
+        .alert-modal.active,
+        .confirm-modal.active {
+            display: flex;
+        }
+
+        .modal-content,
+        .alert-content,
+        .confirm-content {
+            background: #111827;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content h3,
+        .alert-content h3,
+        .confirm-content h3 {
+            margin-top: 0;
+            color: #3B82F6;
+        }
+
+        .modal-content input,
+        .modal-content select {
+            width: 100%;
+            padding: 0.7rem;
+            margin: 0.5rem 0 1rem;
+            border-radius: 6px;
+            border: none;
+            background: #1f2937;
+            color: white;
+            outline: none;
+        }
+
+        .modal-content button,
+        .alert-content button,
+        .confirm-content button {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 6px;
+            background: #3B82F6;
+            color: white;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+
+
+        /* =========================================================
+   POPUPS (MISSION COMPLETE)
+========================================================= */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .popup-content {
+            background: #121212;
+            color: #e0e0e0;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            width: 85%;
+            max-width: 320px;
+            box-shadow: 0 0 25px #3B82F6;
+            transform: scale(0.7);
+            opacity: 0;
+            animation: popIn 0.4s ease forwards;
+        }
+
+        .popup-content h2 {
+            margin-bottom: 10px;
+            color: #3B82F6;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .popup-content p {
+            margin: 8px 0;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .popup-content button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #3B82F6;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #121212;
+            transition: background 0.3s;
+        }
+
+        .overdue-badge {
+            background: #e63946;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        /* =========================================================
+   ACHIEVEMENT POPUP
+========================================================= */
+        .achievement-popup {
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111827;
+            color: #3B82F6;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .achievement-tile {
+            width: 120px;
+            padding: 10px;
+            background: #1f2937;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        .achievement-tile:hover {
+            transform: scale(1.05);
+            background: #111827;
+        }
+
+        .achievement-icon {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: #3B82F6;
+        }
+
+        .locked .achievement-icon {
+            color: #6b7280;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 3px;
+            color: #fff;
+        }
+
+        .locked .achievement-title,
+        .locked .achievement-desc {
+            color: #6b7280;
+        }
+
+        .achievement-desc {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .achievements-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-start;
+            padding: 1rem;
+        }
+
+
+        /* =========================================================
+   ANIMATIONS
+========================================================= */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+        }
+
+
+        /* =========================================================
+   MEDIA QUERIES
+========================================================= */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+            }
+
+            nav button {
+                width: 100%;
+            }
+
+            section {
+                padding: 1rem;
+            }
+
+            .calendar {
+                gap: 0.3rem;
+            }
+
+            .day {
+                padding: 0.5rem;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .bottom-nav {
+                bottom: 0vh;
+            }
+
+            .plus-btn {
+                bottom: 6.8rem;
+            }
+        }
+
+        h5 a {
+            text-decoration: none;
+            color: #3B82F6;
+        }
+
+        .goal-subrow {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .goal-deadline {
+            font-size: 12px;
+            opacity: 0.7;
+            white-space: nowrap;
+        }
+
+        .timer-row {
+            margin-top: 6px;
+        }
+
+        .timer-bar-container {
+            width: 100%;
+            height: 6px;
+            background: #1f2937;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .timer-bar {
+            height: 100%;
+            width: 0%;
+            background: #3b82f6;
+            transition: width 0.3s linear;
+        }
+
+        .timer-text {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .flip-box {
+    background:#111;
+    padding:20px 35px;
+    border-radius:10px;
+    font-size:70px;
+    font-weight:bold;
+    color:#3B82F6;
+    box-shadow:0 0 25px rgba(59,130,246,0.3);
+    transform-origin:top;
+    transition:transform .6s ease;
+}
+
+.flip-box.flip {
+    transform:rotateX(-90deg);
+}
+.modal, .alert-modal, .confirm-modal {
+    z-index: 100000 !important;
+}
+.flip-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-family: monospace;
+}
+
+.colon {
+    font-size: 70px;
+    color: #3B82F6;
+}
+
+.flip-unit {
+    position: relative;
+    width: 90px;
+    height: 120px;
+    perspective: 300px;
+}
+
+.flip-card {
+    position: absolute;
+    width:100%;
+    height:50%;
+    overflow:hidden;
+    line-height:60px;
+    font-size:60px;
+    color:#3B82F6;
+    background:#111;
+    border-radius:10px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    box-shadow:0 0 15px rgba(59,130,246,0.3);
+}
+
+.top {
+    z-index: 2;
+}
+
+.bottom {
+    top: 60px;
+}
+
+.flip-animate .top {
+    animation: flipTop 0.5s linear forwards;
+}
+
+.flip-animate .bottom {
+    animation: flipBottom 0.5s linear forwards;
+}
+
+@keyframes flipTop {
+    0% { transform: rotateX(0deg); }
+    100% { transform: rotateX(-90deg); }
+}
+
+@keyframes flipBottom {
+    0% { transform: rotateX(90deg); }
+    100% { transform: rotateX(0deg); }
+}
+
+/* FULLSCREEN TIMER SETTINGS MODAL */
+.timer-modal .modal-content {
+    width: 40% !important;
+    height: 60% !important;
+    max-width: none !important;
+    max-height: 40% !important;
+
+    background: #000 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    padding: 30px !important;
+
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    animation: fadeIn 0.25s ease;
+}
+
+/* Inputs Larger */
+.timer-modal input,
+.timer-modal select {
+    width: 70%;
+    padding: 6px !important;
+    font-size: 12px !important;
+    margin-bottom: 10px !important;
+    background: #111 !important;
+    border: 2px solid #3B82F6;
+    border-radius: 10px;
+}
+
+/* Buttons */
+.timer-modal button {
+    width: 70%;
+    padding: 6px !important;
+    font-size: 10px !important;
+    border-radius: 12px !important;
+    margin-top: 7px;
+}
+
+/* Header */
+.timer-modal h3 {
+    font-size: 25px !important;
+    margin-bottom: 30px !important;
+}
+
+.modal-content label {
+    font-size: 15px;
+}
+
+.static-digit {
+    font-size: 90px;
+    font-weight: bold;
+    font-family: monospace;
+    color: #3B82F6;
+    width: 90px;
+    text-align: center;
+}
+/* FORCE TIMER FULLSCREEN INTO LANDSCAPE ON PHONES */
+@media (max-width: 768px) {
+    #timerScreen {
+        position: fixed;
+        top: 0 !important;
+        left: 0 !important;
+
+        width: 100vh !important;
+        height: 100vw !important;
+
+        background: #000;
+
+        /* CORRECT ROTATION */
+        transform: rotate(90deg) translateX(22%) translateY(39%);
+        transform-origin: center center;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden !important;
+        z-index: 999999;
+    }
+     /* Disable transition animation */
+    #musicModal,
+    #musicModal * ,
+    #timerSettingModal,
+    #timerSettingModal * {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    /* Rotate instantly */
+    #musicModal .modal-content,
+    #timerSettingModal .modal-content {
+        transform: rotate(90deg);
+        transform-origin: center center;
+        width: 100vh !important;
+        height: 100vw !important;
+    }
+}
+
+
+
+#timerScreen .top-right-btns {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: row;   
+    gap: 18px;
+    font-size: 26px;
+    cursor: pointer;
+    z-index: 2000000;
+}
+
+
+    </style>
+</head>
+
+<body>
+<!-- ===========================
+       Top Navbar
+=========================== -->
+<nav class="top-navbar">
+    <div class="nav-left">Stand Out</div>
+    <div class="nav-right">
+        <!-- ⏱ Fullscreen Timer Icon -->
+<div id="timerIcon" style="position: relative; margin-right: 1.4rem; cursor:pointer;">
+    <i class="fas fa-clock" style="font-size:22px; color:#3B82F6;"></i>
+</div>
+
+    <!-- 🔔 Notification Bell -->
+    <div id="notifyBell" style="position: relative; margin-right: 1.4rem; cursor: pointer;">
+        <i class="fas fa-bell" style="font-size: 22px; color: #3B82F6;"></i>
+
+        <!-- Badge -->
+        <span id="notifyBadge" 
+              style="
+                position: absolute;
+                top: -6px;
+                right: -8px;
+                background: red;
+                color: white;
+                font-size: 11px;
+                padding: 2px 5px;
+                border-radius: 50%;
+                display: none;
+              ">
+        </span>
+    </div>
+
+    <img src="icon.jpeg" alt="Profile" class="nav-img">
+</div>
+</nav>
+
+    <!-- ===========================
+       Bottom Navigation
+  ============================ -->
+    <nav class="bottom-nav">
+        <button id="nav-missions" onclick="showPage('missions')">
+            <span class="icon"></span><span class="label">Missions</span>
+        </button>
+        <button id="nav-skillset" onclick="showPage('skillset')">
+            <span class="icon"></span><span class="label">Skillset</span>
+        </button>
+        <button id="nav-time" onclick="showPage('time')">
+            <span class="icon"></span><span class="label">Time</span>
+        </button>
+        <button id="nav-goals" onclick="showPage('goals')">
+            <span class="icon"></span><span class="label">Goals</span>
+        </button>
+        <button id="nav-account" onclick="showPage('account')">
+            <span class="icon"></span><span class="label">Account</span>
+        </button>
+    </nav>
+
+
+    <!-- ===========================
+       Mission Completion Popup
+  ============================ -->
+    <div id="motivationPopup" class="popup">
+        <div class="popup-content">
+            <h2 id="popup-title">Mission Complete</h2>
+            <p id="motivationQuote"></p>
+            <p id="achievement"></p>
+            <button onclick="closePopup()">Continue</button>
+        </div>
+
+        <audio id="popupSound" src="Complete.mp3" preload="auto"></audio>
+    </div>
+
+
+    <!-- ===========================
+       Missions Section
+  ============================ -->
+    <section id="missions" class="active">
+        <h2>Missions</h2>
+        <p>Improvement Points: <span id="missionCounter">0</span></p>
+        <ul id="mission-list"></ul>
+    </section>
+
+    <!-- Floating Add Button -->
+    <button class="plus-btn" id="globalAddBtn" onclick="openModal('mission')">+ Add</button>
+
+
+    <!-- ===========================
+       Skillset Section
+  ============================ -->
+    <section id="skillset">
+        <h2>Skillset</h2>
+        <div id="skill-list"></div>
+    </section>
+
+
+    <!-- ===========================
+       Goals Section
+  ============================ -->
+    <section id="goals">
+        <h2>Goals</h2>
+        <div id="goal-list"></div>
+    </section>
+
+
+    <!-- ===========================
+       Time / Countdown Section
+  ============================ -->
+    <section id="time">
+        <h2>Time</h2>
+        <p>Countdowns: <span id="countdownCounter">0</span></p>
+        <div id="countdown-list"></div>
+    </section>
+
+
+    <!-- ===========================
+       Account Section
+  ============================ -->
+    <section id="account" class="hidden">
+        <h2>Documentation</h2>
+
+        <h5><a href="documentation.html">Stand Out Version 1.9</a></h5>
+        <h5>Date of Documentation: 24 Dec 2025</h5>
+
+        <h3>Achievements</h3>
+        <div id="achievementsViewer" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
+
+        <h3>Reset Data</h3>
+        <button onclick="customConfirm('Are you sure you want to reset all data?', resetData)" class="danger-btn">
+            Reset My Data
+        </button>
+    </section>
+
+
+    <!-- ===========================
+       Modals (Add/Edit + Alert + Confirm)
+  ============================ -->
+    <div class="modal" id="modal">
+        <div class="modal-content" id="modal-content"></div>
+    </div>
+
+    <div class="alert-modal" id="alertModal">
+        <div class="alert-content">
+            <h3 id="alertMsg"></h3>
+            <button onclick="closeAlert()">OK</button>
+        </div>
+    </div>
+
+    <div class="confirm-modal" id="confirmModal">
+        <div class="confirm-content">
+            <h3 id="confirmMsg"></h3>
+            <button onclick="confirmYes()">Yes</button>
+            <button onclick="confirmNo()">No</button>
+        </div>
+    </div>
+<!-- ===========================
+    SMART NOTIFICATION POPUP
+=========================== -->
+<div id="smartNotify" class="achievement-popup" style="display:none; background:#1f2937; color:#fff;">
+    <h3 id="notifyTitle"></h3>
+    <p id="notifyMsg"></p>
+</div>
+    <!-- ===========================
+     Notification Drawer
+=========================== -->
+<div id="notificationDrawer" 
+     style="
+       position: fixed;
+       top: 60px;
+       right: 0;
+       width: 300px;
+       height: calc(100vh - 60px);
+       background: #1f2937;
+       border-left: 2px solid #111;
+       padding: 1rem;
+       overflow-y: auto;
+       display: none;
+       z-index: 9999;
+     ">
+    <h3 style="margin-top:0; color:#3B82F6;">Notifications</h3>
+   <button onclick="clearAllNotifications()" 
+        style="
+            width:100%; 
+            padding:8px; 
+            background:#e63946; 
+            color:white; 
+            border:none; 
+            border-radius:6px; 
+            margin-bottom:10px;">
+ Clear All Notifications
+   </button>
+    <div id="notificationList"></div>
+</div>
+<!-- ===============================
+     FULL SCREEN TIMER MODE
+================================ -->
+<div id="timerScreen" 
+     style="
+       display:none;
+       position:fixed;
+       top:0px; left:0px;
+       width:100vw;
+       height:100vh;
+       background:#000;
+       z-index:99999;
+       color:white;
+       overflow:hidden;
+     ">
+
+    <!-- Top-right vertical buttons -->
+    <div class="top-right-btns">
+        <i id="timerMusicBtn" class="fas fa-music" style="color:#3B82F6;"></i>
+        <i id="timerSettingsBtn" class="fas fa-gear" style="color:#3B82F6;"></i>
+        <i id="timerCloseBtn" class="fas fa-times" style="color:#3B82F6;"></i>
+    </div>
+
+    <!-- Timer -->
+    <div id="flipTimer"
+         style="
+           position:absolute;
+           top:50%; left:50%;
+           transform:translate(-50%, -50%);
+           font-size:70px;
+           font-weight:bold;
+           font-family:monospace;
+           display:flex;
+           gap:20px;
+         ">
+        <div id="h" class="static-digit">00</div>
+        <span class="colon">:</span>
+        <div id="m" class="static-digit">00</div>
+        <span class="colon">:</span>
+        <div id="s" class="static-digit">00</div>
+    </div>
+</div>
+
+<!-- Music Selector Modal -->
+<div id="musicModal" class="modal timer-modal">
+    <div class="modal-content">
+        <h3>Select Music</h3>
+        <select id="musicSelect">
+            <option value="m1.mp3">Piano Focus Beat</option>
+            <option value="m2.mp3">Namami Shamishan</option>
+            <option value="m3.mp3">Intersteller</option>
+            <option value="m4.mp3">Openhimer</option>
+            <option value="m5.mp3">Lofi</option>
+            <option value="m6.mp3">Demon Slayer</option>
+            <option value="m7.mp3">None</option>
+        </select>
+        <label style="margin-top:10px;">Volume</label>
+<input id="musicVolume" type="range" min="0" max="1" step="0.01" value="1" 
+       oninput="music.volume = this.value">
+
+        <button onclick="setSelectedMusic()">Select</button>
+        <button onclick="closeMusicModal()">Close</button>
+    </div>
+</div>
+
+<!-- Timer Setting Modal -->
+<div id="timerSettingModal" class="modal timer-modal">
+    <div class="modal-content">
+        <h3>Set Timer</h3>
+        <label>Hours</label>
+        <input type="number" id="setH" min="0" max="23" value="0">
+        <label>Minutes</label>
+        <input type="number" id="setM" min="0" max="59" value="25">
+        <label>Seconds</label>
+        <input type="number" id="setS" min="0" max="59" value="0">
+
+        <button onclick="applyTimerSettings()">Apply</button>
+        <button onclick="closeTimerSettingModal()">Close</button>
+    </div>
+</div>
+
+
+    <!-- ===========================
+       JavaScript (Message 3)
+  ============================ -->
+  <script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js")
+    .then(() => console.log("Service Worker Registered"));
+}
+</script>
+
+    <script>
+// =========================
+//   NOTIFICATION SYSTEM
+// =========================
+
+let appNotifications = JSON.parse(localStorage.getItem("appNotifications")) || [];
+
+// Save notif list
+function saveNotifications() {
+    localStorage.setItem("appNotifications", JSON.stringify(appNotifications));
+}
+
+// Add new notification
+function pushNotification(title, msg) {
+    appNotifications.unshift({
+        title,
+        msg,
+        time: new Date().toLocaleString()
+    });
+
+    updateNotificationBadge();
+    saveNotifications();
+}
+        function clearAllNotifications() {
+    appNotifications = [];                 // Clear array
+    localStorage.removeItem("appNotifications"); // Remove from localStorage
+    localStorage.removeItem("lastNotifCount");   // Reset unread count tracker
+
+    // Update UI
+    document.getElementById("notificationList").innerHTML = 
+        `<p style="opacity:0.6;">No notifications</p>`;
+
+    const badge = document.getElementById("notifyBadge");
+    badge.style.display = "none";
+    badge.textContent = "";
+
+    console.log("All notifications cleared.");
+}
+
+// Update badge count
+function updateNotificationBadge() {
+    const badge = document.getElementById("notifyBadge");
+    if (!badge) return;
+
+    const lastCount = parseInt(localStorage.getItem("lastNotifCount")) || 0;
+
+    const unread = appNotifications.length - lastCount;
+
+    if (unread <= 0) {
+        badge.style.display = "none";
+    } else {
+        badge.style.display = "inline-block";
+        badge.textContent = unread;
+    }
+}
+
+// Open/Close drawer
+document.getElementById("notifyBell").onclick = () => {
+    const drawer = document.getElementById("notificationDrawer");
+
+    if (drawer.style.display === "none") {
+        renderNotifications();
+        drawer.style.display = "block";
+
+        // 🔥 Clear the badge
+        const badge = document.getElementById("notifyBadge");
+        // Clear badge
+badge.style.display = "none";
+badge.textContent = "";
+
+// Mark all as read (but keep them in list)
+// Reset unread count
+localStorage.setItem("lastNotifCount", appNotifications.length);
+updateNotificationBadge();
+saveNotifications();
+    } else {
+        drawer.style.display = "none";
+    }
+}; // ← CLOSE THIS PROPERLY
+
+
+// ----------------------------
+// NOW define renderNotifications
+// ----------------------------
+function renderNotifications() {
+    const container = document.getElementById("notificationList");
+    container.innerHTML = "";
+
+    if (appNotifications.length === 0) {
+        container.innerHTML = `<p style="opacity:0.6;">No notifications</p>`;
+        return;
+    }
+
+    appNotifications.forEach(n => {
+        const div = document.createElement("div");
+        div.style = `
+            padding: 10px;
+            margin-bottom: 10px;
+            background:#111827;
+            border-radius:8px;
+        `;
+
+        div.innerHTML = `
+            <strong style="color:#3B82F6;">${n.title}</strong><br>
+            <span style="font-size:13px;">${n.msg}</span><br>
+            <span style="font-size:11px; opacity:0.6;">${n.time}</span>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+// Initialize badge on load
+window.addEventListener("load", updateNotificationBadge);
+        
+        function showSmartNotification(title, message) {
+    const popup = document.getElementById("smartNotify");
+    document.getElementById("notifyTitle").innerText = title;
+    document.getElementById("notifyMsg").innerText = message;
+
+    popup.style.display = "block";
+    popup.style.opacity = 0;
+    popup.style.transform = "translateY(-40px)";
+
+    setTimeout(() => {
+        popup.style.transition = "all 0.4s ease";
+        popup.style.opacity = 1;
+        popup.style.transform = "translateY(0)";
+    }, 20);
+
+    // auto hide
+    setTimeout(() => {
+        popup.style.opacity = 0;
+        popup.style.transform = "translateY(-40px)";
+        setTimeout(() => popup.style.display = "none", 400);
+    }, 3000);
+        }
+
+        function dailyGoalReminder() {
+    const goals = document.querySelectorAll("#goal-list .goal");
+    if (!goals) return;
+
+    goals.forEach(goal => {
+        const title = goal.querySelector(".goal-title").textContent;
+        const deadline = goal.dataset.deadline;
+        if (!deadline) return;
+
+        const diff = new Date(deadline).getTime() - Date.now();
+        if (diff <= 0) return; // skip overdue goals
+
+        pushNotification("Goal Reminder", `Don't forget your goal: "${title}"`);
+    });
+        }
+        setInterval(() => {
+    const now = new Date();
+    if (now.getHours() === 9 && now.getMinutes() === 0) {
+        dailyGoalReminder();
+    }
+}, 60000); // check every minute
+        /* =========================================================
+       1. GLOBAL VARIABLES + STORED DATA
+    ========================================================= */
+        let completedMissions = parseInt(localStorage.getItem("completedMissions")) || 0;
+        let missionHistory = JSON.parse(localStorage.getItem("missionHistory")) || {};
+        window.addEventListener("load", () => {
+            checkMissedDeadlines();
+        });
+
+
+        document.getElementById("missionCounter").textContent = completedMissions;
+
+
+        /* =========================================================
+           2. ACHIEVEMENTS SYSTEM
+        ========================================================= */
+
+        // Achievement definitions
+        const achievements = [
+            { id: "mission1", title: "First Step", desc: "Complete your very first mission", unlocked: false },
+            { id: "mission5", title: "On a Roll", desc: "Complete 5 missions", unlocked: false },
+            { id: "mission10", title: "Mission Master", desc: "Complete 10 missions", unlocked: false },
+            { id: "mission15", title: "Halfway Hero", desc: "Complete 15 missions", unlocked: false },
+            { id: "mission20", title: "Goal Getter", desc: "Complete 20 missions", unlocked: false },
+            { id: "mission25", title: "Silver Streak", desc: "Complete 25 missions", unlocked: false },
+            { id: "mission30", title: "Mission Maestro", desc: "Complete 30 missions", unlocked: false },
+            { id: "mission35", title: "Trailblazer", desc: "Complete 35 missions", unlocked: false },
+            { id: "mission40", title: "Achievement Hunter", desc: "Complete 40 missions", unlocked: false },
+            { id: "mission45", title: "Mission Veteran", desc: "Complete 45 missions", unlocked: false },
+            { id: "mission50", title: "Legendary Milestone", desc: "Complete 50 missions", unlocked: false },
+            { id: "mission55", title: "Mastermind", desc: "Complete 55 missions", unlocked: false },
+            { id: "mission60", title: "Champion", desc: "Complete 60 missions", unlocked: false },
+            { id: "mission65", title: "Pathfinder", desc: "Complete 65 missions", unlocked: false },
+            { id: "mission70", title: "Mission Conqueror", desc: "Complete 70 missions", unlocked: false },
+            { id: "mission75", title: "Epic Endeavor", desc: "Complete 75 missions", unlocked: false },
+            { id: "mission80", title: "Trail Master", desc: "Complete 80 missions", unlocked: false },
+            { id: "mission85", title: "Ultimate Achiever", desc: "Complete 85 missions", unlocked: false },
+            { id: "mission90", title: "Hero of Tasks", desc: "Complete 90 missions", unlocked: false },
+            { id: "mission95", title: "Task Titan", desc: "Complete 95 missions", unlocked: false },
+            { id: "mission100", title: "Century Club", desc: "Complete 100 missions", unlocked: false },
+            { id: "mission105", title: "Beyond Limits", desc: "Complete 105 missions", unlocked: false },
+            { id: "mission110", title: "Relentless", desc: "Complete 110 missions", unlocked: false },
+            { id: "mission115", title: "Sky High", desc: "Complete 115 missions", unlocked: false },
+            { id: "mission120", title: "Goal Crusher", desc: "Complete 120 missions", unlocked: false },
+            { id: "mission125", title: "Mission Marathoner", desc: "Complete 125 missions", unlocked: false },
+            { id: "mission130", title: "Infinite Drive", desc: "Complete 130 missions", unlocked: false },
+            { id: "mission135", title: "Peak Performer", desc: "Complete 135 missions", unlocked: false },
+            { id: "mission140", title: "Legend in Making", desc: "Complete 140 missions", unlocked: false },
+            { id: "mission145", title: "Champion of Tasks", desc: "Complete 145 missions", unlocked: false },
+            { id: "mission150", title: "Task Legend", desc: "Complete 150 missions", unlocked: false },
+            { id: "mission155", title: "Milestone Achiever", desc: "Complete 155 missions", unlocked: false },
+            { id: "mission160", title: "Mission Icon", desc: "Complete 160 missions", unlocked: false },
+            { id: "mission165", title: "Epic Journey", desc: "Complete 165 missions", unlocked: false },
+            { id: "mission170", title: "Task Champion", desc: "Complete 170 missions", unlocked: false },
+            { id: "mission175", title: "Master of Milestones", desc: "Complete 175 missions", unlocked: false },
+            { id: "mission180", title: "Legendary Achiever", desc: "Complete 180 missions", unlocked: false },
+            { id: "mission185", title: "Ultimate Victor", desc: "Complete 185 missions", unlocked: false },
+            { id: "mission190", title: "Task Hero", desc: "Complete 190 missions", unlocked: false },
+            { id: "mission195", title: "Mission Elite", desc: "Complete 195 missions", unlocked: false },
+            { id: "mission200", title: "Two Hundred Triumphs", desc: "Complete 200 missions", unlocked: false },
+            { id: "mission205", title: "Beyond Achievement", desc: "Complete 205 missions", unlocked: false },
+            { id: "mission210", title: "Victory Streak", desc: "Complete 210 missions", unlocked: false },
+            { id: "mission215", title: "Unstoppable", desc: "Complete 215 missions", unlocked: false },
+            { id: "mission220", title: "Peak Achiever", desc: "Complete 220 missions", unlocked: false },
+            { id: "mission225", title: "Mission Overlord", desc: "Complete 225 missions", unlocked: false },
+            { id: "mission230", title: "Epic Victor", desc: "Complete 230 missions", unlocked: false },
+            { id: "mission235", title: "Champion of Goals", desc: "Complete 235 missions", unlocked: false },
+            { id: "mission240", title: "Task Mastermind", desc: "Complete 240 missions", unlocked: false },
+            { id: "mission245", title: "Legendary Hero", desc: "Complete 245 missions", unlocked: false },
+            { id: "mission250", title: "Ultimate Legend", desc: "Complete 250 missions", unlocked: false }
+        ];
+
+        // Load achievements from storage
+        let achievementsData = JSON.parse(localStorage.getItem("achievements"));
+        if (!achievementsData) {
+            achievementsData = achievements;
+            localStorage.setItem("achievements", JSON.stringify(achievements));
+        }
+
+        const quotes = [
+            "Discipline is the bridge between goals and achievement.",
+            "Consistency creates progress, progress creates success.",
+            "Small steps every day lead to big results.",
+            "Effort today becomes strength tomorrow.",
+            "Stay focused, stay strong, keep moving forward.",
+            "Success is the sum of small efforts repeated daily.",
+            "Your only limit is your mind.",
+            "Great things never come from comfort zones.",
+            "Dream it. Believe it. Achieve it.",
+            "Push yourself, because no one else is going to do it for you.",
+            "The harder you work for something, the greater you’ll feel when you achieve it.",
+            "Don’t stop when you’re tired. Stop when you’re done.",
+            "Focus on progress, not perfection.",
+            "Your future is created by what you do today, not tomorrow.",
+            "Small progress is still progress.",
+            "Motivation gets you started, habit keeps you going.",
+            "Do something today that your future self will thank you for.",
+            "Success doesn’t come from what you do occasionally, it comes from what you do consistently.",
+            "Believe in yourself and all that you are.",
+            "Take the risk or lose the chance."
+        ];
+
+        /* Render achievements in account page */
+        function renderAchievements() {
+            const container = document.getElementById("achievementsViewer");
+            if (!container) return;
+
+            container.innerHTML = "";
+
+            const unlocked = achievementsData.filter(a => a.unlocked);
+            const locked = achievementsData.filter(a => !a.unlocked).slice(0, 5);
+            const displayList = [...unlocked, ...locked];
+
+            displayList.forEach(ach => {
+                const div = document.createElement("div");
+                div.className = "achievement-tile" + (ach.unlocked ? "" : " locked");
+
+                const icon = ach.unlocked
+                    ? '<i class="fas fa-trophy"></i>'
+                    : '<i class="fas fa-lock"></i>';
+
+                div.innerHTML = `
+      <div class="achievement-icon">${icon}</div>
+      <div class="achievement-title">${ach.title}</div>
+      <div class="achievement-desc">${ach.desc}</div>
+    `;
+
+                container.appendChild(div);
+            });
+        }
+
+        /* Unlock an achievement */
+        function unlockAchievement(id) {
+    const ach = achievementsData.find(a => a.id === id);
+    if (ach && !ach.unlocked) {
+        ach.unlocked = true;
+        localStorage.setItem("achievements", JSON.stringify(achievementsData));
+
+        pushNotification("🏆 New Achievement", `You unlocked: "${ach.title}"`);
+        showAchievementPopup(ach.title, ach.desc);
+        renderAchievements();
+    }
+}
+
+        function showAchievementPopup(title, desc) {
+            window.isAchievementPlaying = true;
+
+            const popup = document.createElement("div");
+            popup.className = "achievement-popup";
+            popup.innerHTML = `<h3>${title}</h3><p>${desc}</p>`;
+            document.body.appendChild(popup);
+
+            const audio = new Audio("Achievements.mp3");
+            audio.volume = 0.5;
+            audio.play().catch(() => { });
+
+            audio.onended = () => { window.isAchievementPlaying = false; };
+
+            popup.style.opacity = 0;
+            popup.style.transform = "translateY(-50px)";
+            setTimeout(() => {
+                popup.style.transition = "all 0.5s ease";
+                popup.style.opacity = 1;
+                popup.style.transform = "translateY(0)";
+            }, 10);
+
+            setTimeout(() => {
+                popup.style.opacity = 0;
+                popup.style.transform = "translateY(-50px)";
+                setTimeout(() => popup.remove(), 500);
+            }, 3000);
+        }
+
+
+        /* =========================================================
+           3. NAVIGATION SYSTEM
+        ========================================================= */
+        function showPage(pageId) {
+            document.querySelectorAll("section").forEach(sec =>
+                sec.classList.remove("active")
+            );
+
+            const page = document.getElementById(pageId);
+            if (page) page.classList.add("active");
+
+            document.querySelectorAll(".bottom-nav > button")
+                .forEach(b => b.classList.remove("active"));
+
+            const btn = document.getElementById("nav-" + pageId);
+            if (btn) btn.classList.add("active");
+
+            updatePlusBtn(pageId);
+
+            if (pageId === "account") renderAchievements();
+        }
+
+        function updatePlusBtn(pageId) {
+            const btn = document.getElementById("globalAddBtn");
+            if (!btn) return;
+
+            if (pageId === "missions") {
+                btn.setAttribute("onclick", "openModal('mission')");
+                btn.style.display = "block";
+            } else if (pageId === "skillset") {
+                btn.setAttribute("onclick", "openModal('skill')");
+                btn.style.display = "block";
+            } else if (pageId === "goals") {
+                btn.setAttribute("onclick", "openModal('goal')");
+                btn.style.display = "block";
+            } else if (pageId === "time") {
+                btn.setAttribute("onclick", "openModal('multi-time')");
+                btn.style.display = "block";
+            } else {
+                btn.style.display = "none";
+            }
+        }
+// ===============================
+// FULLSCREEN TIMER MODE JS
+// ===============================
+
+let timerInterval = null;
+let currentMusic = null;
+let music = new Audio();
+
+// OPEN FULL SCREEN
+document.getElementById("timerIcon").onclick = () => {
+    document.getElementById("timerScreen").style.display = "block";
+    document.querySelector(".top-navbar").style.display = "none";
+    document.querySelector(".bottom-nav").style.display = "none";
+};
+
+// EXIT FULL SCREEN
+document.getElementById("timerCloseBtn").onclick = () => {
+    document.getElementById("timerScreen").style.display = "none";
+    document.querySelector(".top-navbar").style.display = "flex";
+    document.querySelector(".bottom-nav").style.display = "flex";
+    clearInterval(timerInterval);
+};
+
+// MUSIC MODAL
+document.getElementById("timerMusicBtn").onclick = () => {
+    document.getElementById("musicModal").classList.add("active");
+};
+function closeMusicModal() {
+    document.getElementById("musicModal").classList.remove("active");
+}
+function setSelectedMusic() {
+    let file = document.getElementById("musicSelect").value;
+    currentMusic = file;
+    music.src = file;
+    music.loop = true;
+    music.volume = document.getElementById("musicVolume").value;
+    music.play();
+    closeMusicModal();
+}
+
+// SETTINGS MODAL
+document.getElementById("timerSettingsBtn").onclick = () => {
+    document.getElementById("timerSettingModal").classList.add("active");
+};
+
+function closeTimerSettingModal() {
+    document.getElementById("timerSettingModal").classList.remove("active");
+}
+
+// Apply timer settings
+function applyTimerSettings() {
+    let h = parseInt(document.getElementById("setH").value);
+    let m = parseInt(document.getElementById("setM").value);
+    let s = parseInt(document.getElementById("setS").value);
+
+    startStaticTimer(h, m, s);
+    closeTimerSettingModal();
+}
+
+
+function startStaticTimer(h, m, s) {
+    clearInterval(timerInterval);
+
+    let total = h * 3600 + m * 60 + s;
+
+    // Set initial values
+    document.getElementById("h").textContent = h.toString().padStart(2, "0");
+    document.getElementById("m").textContent = m.toString().padStart(2, "0");
+    document.getElementById("s").textContent = s.toString().padStart(2, "0");
+
+    timerInterval = setInterval(() => {
+        if (total <= 0) {
+            clearInterval(timerInterval);
+            if (currentMusic) music.pause();
+            return;
+        }
+
+        total--;
+
+        const hh = Math.floor(total / 3600);
+        const mm = Math.floor((total % 3600) / 60);
+        const ss = total % 60;
+
+        document.getElementById("h").textContent = hh.toString().padStart(2, "0");
+        document.getElementById("m").textContent = mm.toString().padStart(2, "0");
+        document.getElementById("s").textContent = ss.toString().padStart(2, "0");
+
+    }, 1000);
+}
+
+
+
+
+        /* =========================================================
+           4. MODALS (ADD / EDIT / ALERT / CONFIRM)
+        ========================================================= */
+        function openModal(type, skillDiv = null) {
+            const modal = document.getElementById("modal");
+            const content = document.getElementById("modal-content");
+
+            modal.classList.add("active");
+
+            // ---- Add Mission ----
+            if (type === 'mission') {
+                content.innerHTML = `
+      <h3>Add Mission</h3>
+      <input id="missionInput" placeholder="Enter mission">
+      <label>Deadline</label>
+      <input id="missionDeadline" type="datetime-local">
+      <button onclick="addMission()">Add</button>
+      <button onclick="closeModal()">Cancel</button>
+    `;
+            }
+
+            // ---- Edit Mission ----
+            if (type === "edit-mission" && skillDiv) {
+                const oldText = skillDiv.querySelector(".mission-text").textContent;
+                const oldDeadline = skillDiv.dataset.deadline || "";
+
+                content.innerHTML = `
+      <h3>Edit Mission</h3>
+      <input id="editMissionInput" value="${oldText}">
+      <label>Deadline</label>
+      <input id="editMissionDeadline" type="datetime-local" value="${oldDeadline}">
+      <button onclick="updateMission()">Update</button>
+      <button onclick="deleteMission()">Delete</button>
+      <button onclick="closeModal()">Cancel</button>
+    `;
+
+                window.missionBeingEdited = skillDiv;
+            }
+
+            // ---- Add Skill ----
+            if (type === "skill") {
+                content.innerHTML = `
+      <h3>Add Skill</h3>
+      <input id="skillInput" placeholder="Skill name">
+      <input id="progressInput" type="number" placeholder="Progress % (0-100)">
+      <button onclick="addSkill()">Add</button>
+      <button onclick="closeModal()">Cancel</button>
+    `;
+            }
+
+            // ---- Edit Skill ----
+            if (type === "edit-skill" && skillDiv) {
+                const skillName = skillDiv.querySelector("strong").textContent;
+                const currentProgress =
+                    skillDiv.querySelector(".progress-bar").style.width.replace("%", "");
+
+                content.innerHTML = `
+      <h3>Edit ${skillName}</h3>
+      <input id="editProgressInput" type="number" value="${currentProgress}">
+      <button onclick="updateSkillProgress('${skillName}')">Update</button>
+      <button onclick="deleteSkill('${skillName}')">Delete</button>
+      <button onclick="closeModal()">Cancel</button>
+    `;
+            }
+
+            // ---- Add Goal ----
+            if (type === "goal") {
+                content.innerHTML = `
+    <h3>Add Goal</h3>
+    <input id="goalInput" placeholder="Goal">
+
+    <label>Priority</label>
+    <select id="priorityInput">
+      <option>High</option>
+      <option>Medium</option>
+      <option>Low</option>
+    </select>
+
+    <label>Deadline</label>
+    <input id="goalDeadline" type="datetime-local">
+
+    <button onclick="addGoal()">Add</button>
+    <button onclick="closeModal()">Cancel</button>
+  `;
+            }
+
+
+            // ---- Add Countdown (FIXED) ----
+            if (type === "multi-time") {
+                content.innerHTML = `
+      <h3>Add Countdown</h3>
+<input id="countdownTitle" placeholder="Title">
+<input id="countdownDateTime" type="datetime-local">
+
+<button onclick="addCountdown()">Add</button>
+<button onclick="closeModal()">Cancel</button>
+
+    `;
+            }
+        }
+
+        // ---- FIXED: closeModal OUTSIDE openModal ----
+        function closeModal() {
+            document.getElementById("modal").classList.remove("active");
+        }
+
+
+        /* Alerts */
+        function customAlert(msg) {
+            document.getElementById("alertMsg").textContent = msg;
+            document.getElementById("alertModal").classList.add("active");
+        }
+
+        function closeAlert() {
+            document.getElementById("alertModal").classList.remove("active");
+        }
+
+        /* Confirm */
+        let confirmCallback = null;
+
+        function customConfirm(msg, callback) {
+            confirmCallback = callback;
+            document.getElementById("confirmMsg").textContent = msg;
+            document.getElementById("confirmModal").classList.add("active");
+        }
+
+        function confirmYes() {
+            if (confirmCallback) confirmCallback();
+            document.getElementById("confirmModal").classList.remove("active");
+        }
+
+        function confirmNo() {
+            document.getElementById("confirmModal").classList.remove("active");
+        }
+
+
+        /* =========================================================
+           5. MISSIONS MODULE
+        ========================================================= */
+        const missionMilestones = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+
+        function addMission() {
+            const val = document.getElementById('missionInput').value;
+            const deadline = document.getElementById('missionDeadline').value;
+
+            if (val) {
+                const li = document.createElement('li');
+                li.dataset.deadline = deadline;
+
+                li.innerHTML = `
+  <span class="mission-text">${val}</span>
+  <span class="deadlineDisplay"></span>
+  <span class="overdueMark"></span>
+  <button class="complete-btn" onclick="completeMission(this)">✔</button>
+`;
+
+                li.addEventListener("click", (e) => {
+                    if (e.target.classList.contains("complete-btn")) return; // ignore complete click
+                    openModal("edit-mission", li);
+                });
+
+
+                // Show deadline date
+                if (deadline) {
+                    const d = new Date(deadline);
+                    const dateString = d.toLocaleDateString([], { day: 'numeric', month: 'short' });
+                    const timeString = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    li.querySelector(".deadlineDisplay").textContent = `${dateString}, ${timeString}`;
+                }
+
+
+                document.getElementById('mission-list').appendChild(li);
+                saveData();
+            }
+            closeModal();
+        }
+
+        
+
+
+        setInterval(checkMissedDeadlines, 60000); // check every 1 minute
+
+        function updateMission() {
+    const li = window.missionBeingEdited;
+    if (!li) return;
+
+    const newText = document.getElementById("editMissionInput").value;
+    const newDeadline = document.getElementById("editMissionDeadline").value;
+
+    // Update text
+    li.querySelector(".mission-text").textContent = newText;
+
+    // Update deadline
+    if (newDeadline) {
+        const d = new Date(newDeadline);
+        const dateString = d.toLocaleDateString([], { day: "numeric", month: "short" });
+        const timeString = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+        li.querySelector(".deadlineDisplay").textContent = `${dateString}, ${timeString}`;
+        li.dataset.deadline = newDeadline;
+    } else {
+        li.querySelector(".deadlineDisplay").textContent = "";
+        delete li.dataset.deadline;
+    }
+
+    // Reset overdue state on update
+    li.querySelector(".overdueMark").innerHTML = "";
+    delete li.dataset.deducted;
+
+    saveData();
+    closeModal();
+}
+        
+        function checkMissedDeadlines() {
+    const missions = document.querySelectorAll("#mission-list li");
+    const now = Date.now();
+
+    missions.forEach(li => {
+        const deadline = li.dataset.deadline;
+        if (!deadline) return;
+
+        const deadlineTime = new Date(deadline).getTime();
+        const timeLeft = deadlineTime - now;
+
+        const overdueSpan = li.querySelector(".overdueMark");
+        if (!overdueSpan) return;
+
+        // 🔔 Deadline Approaching (2 hours)
+        if (timeLeft > 0 && timeLeft <= 2 * 60 * 60 * 1000 && !li.dataset.warned) {
+            li.dataset.warned = "true";
+            pushNotification(
+                "Mission Deadline",
+                `"${li.querySelector('.mission-text').textContent}" is due soon (within 2 hours!)`
+            );
+        }
+
+        // ❗ OVERDUE
+        if (timeLeft <= 0) {
+            overdueSpan.innerHTML = `<span class="overdue-badge">Overdue</span>`;
+            pushNotification(
+    "⚠ Mission Overdue",
+    `"${li.querySelector('.mission-text').textContent}" is overdue!`
+);
+            if (!li.dataset.deducted) {
+                completedMissions = Math.max(0, completedMissions - 1);
+                li.dataset.deducted = "true";
+
+                document.getElementById("missionCounter").textContent = completedMissions;
+                saveData();
+            }
+        } else {
+            overdueSpan.innerHTML = "";
+        }
+    });
+}
+
+        function deleteMission() {
+            const li = window.missionBeingEdited;
+            if (!li) return;
+
+            li.remove();
+            saveData();
+            closeModal();
+        }
+
+
+        function completeMission(btn) {
+            const li = btn.parentElement;
+
+            const isOverdue = li.querySelector(".overdueMark").innerHTML.trim() !== "";
+
+            // Animation
+            li.classList.add("remove");
+            setTimeout(() => li.remove(), 400);
+
+            // Add point only if NOT overdue
+            if (!isOverdue) {
+                completedMissions++;
+            }
+
+            document.getElementById("missionCounter").textContent = completedMissions;
+
+            checkMissionAchievements();
+            showPopup(isOverdue ? "Mission completed (overdue, no points added)" : "You completed a mission! Keep it up!");
+
+            saveData();
+        }
+
+
+        function checkMissionAchievements() {
+            missionMilestones.forEach(m => {
+                if (completedMissions === m) unlockAchievement("mission" + m);
+            });
+        }
+
+        function showPopup(achievementText) {
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
+            document.getElementById("motivationQuote").innerText = randomQuote;
+            document.getElementById("achievement").innerText = achievementText;
+
+            const popup = document.getElementById("motivationPopup");
+            popup.style.display = "flex";
+
+            if (!window.isAchievementPlaying) {
+                const sound = document.getElementById("popupSound");
+                sound.currentTime = 0;
+                sound.volume = 1.0;
+                sound.play().catch(() => { });
+            }
+        }
+
+        function closePopup() {
+            const popup = document.getElementById("motivationPopup");
+            const content = popup.querySelector(".popup-content");
+
+            content.style.animation = "fadeOut 0.3s ease forwards";
+
+            setTimeout(() => {
+                popup.style.display = "none";
+                content.style.animation = "popIn 0.4s ease forwards";
+            }, 300);
+        }
+
+
+        /* =========================================================
+           6. SKILLS MODULE
+        ========================================================= */
+        function addSkill() {
+            const skill = document.getElementById("skillInput").value;
+            let progress = document.getElementById("progressInput").value;
+
+            if (skill && progress !== "") {
+                progress = Math.min(100, Math.max(0, parseInt(progress)));
+
+                const div = document.createElement("div");
+                div.className = "skill";
+                div.innerHTML = `
+      <strong>${skill}</strong>
+      <div class="progress"><div class="progress-bar" style="width:${progress}%"></div></div>
+    `;
+
+                div.addEventListener("click", () => openModal("edit-skill", div));
+
+                setTimeout(() => div.classList.add("show"), 10);
+                document.getElementById("skill-list").appendChild(div);
+                saveData();
+            }
+
+            closeModal();
+        }
+
+        function updateSkillProgress(skillName) {
+            let newProgress = document.getElementById("editProgressInput").value;
+            newProgress = Math.min(100, Math.max(0, parseInt(newProgress)));
+
+            const skills = document.querySelectorAll("#skill-list .skill");
+            skills.forEach(skill => {
+                if (skill.querySelector("strong").textContent === skillName) {
+                    skill.querySelector(".progress-bar").style.width = newProgress + "%";
+                }
+            });
+
+            saveData();
+            closeModal();
+        }
+
+        function deleteSkill(skillName) {
+            const skills = document.querySelectorAll("#skill-list .skill");
+            skills.forEach(skill => {
+                if (skill.querySelector("strong").textContent === skillName) skill.remove();
+            });
+
+            saveData();
+            closeModal();
+        }
+
+
+        /* =========================================================
+           7. GOALS MODULE
+        ========================================================= */
+      function addGoal() {
+    const goalText = document.getElementById("goalInput").value;
+    const priority = document.getElementById("priorityInput").value;
+    const deadline = document.getElementById("goalDeadline").value;
+
+    if (!goalText) {
+        closeModal();
+        return;
+    }
+
+    // Create goal div
+    const div = document.createElement("div");
+    div.className = "goal show";
+    div.dataset.deadline = deadline;
+
+    // Format deadline
+    let formattedDeadline = "";
+    if (deadline) {
+        const d = new Date(deadline);
+        formattedDeadline = d.toLocaleDateString([], { day: "numeric", month: "short" });
+    }
+
+    // Fill goal card UI
+    div.innerHTML = `
+        <div class="goal-header">
+            <span class="goal-title">${goalText}</span>
+            <span class="goal-priority ${priority}"><strong>${priority}</strong></span>
+        </div>
+
+        <div class="goal-subrow">
+            <span class="goal-deadline">${formattedDeadline}</span>
+            <span class="goal-overdue"></span>
+            <button class="remove-btn" onclick="removeGoal(this)">Remove</button>
+        </div>
+
+        <div class="goal-timer" style="margin-top:6px; font-size:14px; opacity:.9;"></div>
+    `;
+
+    // Add to list
+    document.getElementById("goal-list").appendChild(div);
+
+    saveData();
+    closeModal();
+      
+}
+        function updateGoalTimers() {
+    const goals = document.querySelectorAll("#goal-list .goal");
+
+    goals.forEach(goal => {
+        const deadline = goal.dataset.deadline;
+        if (!deadline) return;
+
+        const timer = goal.querySelector(".goal-timer");
+        const overdueBadge = goal.querySelector(".goal-overdue");
+
+        const diff = new Date(deadline).getTime() - Date.now();
+
+        if (diff > 0) {
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+            timer.textContent = `${hours}h ${minutes}m left`;
+            overdueBadge.innerHTML = "";
+
+            if (diff <= 2 * 60 * 60 * 1000 && !goal.dataset.warned) {
+                goal.dataset.warned = "true";
+                pushNotification(
+                    "Goal Reminder",
+                    `Your goal "${goal.querySelector('.goal-title').textContent}" is due soon (within 2 hours).`
+                );
+            }
+
+        } else {
+            timer.textContent = "";
+            overdueBadge.innerHTML = `<span class="overdue-badge">Overdue</span>`;
+
+            if (!goal.dataset.overdueNotified) {
+                goal.dataset.overdueNotified = "true";
+
+                pushNotification(
+                    "⚠ Goal Overdue",
+                    `"${goal.querySelector('.goal-title').textContent}" deadline has passed!`
+                );
+            }
+        }
+    });
+}
+
+// Run every second
+setInterval(updateGoalTimers, 1000);
+
+
+
+        function removeGoal(btn) {
+            const goalDiv = btn.closest(".goal");
+            if (goalDiv) {
+                goalDiv.remove();
+                saveData();
+            }
+        }
+
+
+
+        /* =========================================================
+           8. COUNTDOWNS MODULE
+        ========================================================= */
+        let countdowns = JSON.parse(localStorage.getItem("countdowns")) || [];
+
+        function saveCountdowns() {
+            localStorage.setItem("countdowns", JSON.stringify(countdowns));
+        }
+
+        function addCountdown() {
+            const title = document.getElementById("countdownTitle").value;
+            const dateTime = document.getElementById("countdownDateTime").value;
+
+            if (title && dateTime) {
+                countdowns.push({
+                    title,
+                    date: new Date(dateTime).toISOString(),
+                    startTime: new Date().toISOString()
+                });
+
+
+                saveCountdowns();
+                renderCountdowns();
+            }
+
+            closeModal();
+        }
+
+
+        
+
+        function removeCountdown(index) {
+            countdowns.splice(index, 1);
+            saveCountdowns();
+            renderCountdowns();
+        }
+
+        function renderCountdowns() {
+            const list = document.getElementById("countdown-list");
+            list.innerHTML = "";
+
+            document.getElementById("countdownCounter").textContent = countdowns.length;
+
+            if (countdowns.length === 0) {
+                list.textContent = "No countdowns added";
+                return;
+            }
+
+            countdowns.forEach((c, index) => {
+                const div = document.createElement("div");
+                div.className = "goal show";
+
+                div.innerHTML = `
+      <strong>${c.title}</strong>
+      <div class="timer-row">
+  <div class="timer-bar-container">
+    <div class="timer-bar" id="timerbar-${index}"></div>
+  </div>
+  <div class="timer-text" id="timer-${index}"></div>
+</div>
+      <button class="remove-btn2" onclick="removeCountdown(${index})">Remove</button>
+    `;
+
+                list.appendChild(div);
+            });
+
+            updateTimers();
+        }
+
+
+        function updateTimers() {
+            clearInterval(window.timerInterval);
+
+            window.timerInterval = setInterval(() => {
+                countdowns.forEach((c, index) => {
+                    const now = new Date().getTime();
+                    const target = new Date(c.date).getTime();
+                    const diff = target - now;
+
+                    const totalDuration = target - new Date(countdowns[index].startTime || c.date).getTime();
+                    const remaining = diff;
+
+                    let percent = (remaining / totalDuration) * 100;
+
+                    // clamp values
+                    if (percent < 0) percent = 0;
+                    if (percent > 100) percent = 100;
+
+                    const bar = document.getElementById(`timerbar-${index}`);
+                    if (bar) bar.style.width = percent + "%";
+// Notify when 1 hour left
+if (diff > 0 && diff <= 60*60*1000 && !c.warned) {
+    c.warned = true;
+    pushNotification("Countdown Ending Soon", `"${c.title}" ends in 1 hour`);
+}
+                    
+
+                    const el = document.getElementById(`timer-${index}`);
+                    if (!el) return;
+
+                    if (diff <= 0) {
+                        el.style.color = "red";
+                        el.textContent = "Time's up!";
+                        return;
+                    }
+
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                    el.textContent = `${days}d ${hours}h ${mins}m ${secs}s`;
+                });
+            }, 1000);
+        }
+
+
+
+
+        /* =========================================================
+           9. RESET & DATA MANAGEMENT
+        ========================================================= */
+        function saveData() {
+            localStorage.setItem("completedMissions", completedMissions);
+            localStorage.setItem("missionHistory", JSON.stringify(missionHistory));
+            // Save deducted flag on missions
+document.querySelectorAll("#mission-list li").forEach(li => {
+    if (li.dataset.deducted) {
+        li.setAttribute("data-deducted", "true");
+    }
+});
+            localStorage.setItem("missions", document.getElementById("mission-list").innerHTML);
+            localStorage.setItem("skills", document.getElementById("skill-list").innerHTML);
+            localStorage.setItem("goals", document.getElementById("goal-list").innerHTML);
+        }
+
+        function loadData() {
+            document.getElementById("mission-list").innerHTML =
+                localStorage.getItem("missions") || "";
+            document.getElementById("skill-list").innerHTML =
+                localStorage.getItem("skills") || "";
+            document.getElementById("goal-list").innerHTML =
+                localStorage.getItem("goals") || ""
+            // --- FIX MISSIONS AFTER LOADING ---
+document.querySelectorAll("#mission-list li").forEach(li => {
+
+    // 1. Ensure overdueMark exists
+    if (!li.querySelector(".overdueMark")) {
+        const span = document.createElement("span");
+        span.className = "overdueMark";
+        li.appendChild(span);
+    }
+
+    // 2. Ensure deadlineDisplay exists
+    if (!li.querySelector(".deadlineDisplay")) {
+        const dspan = document.createElement("span");
+        dspan.className = "deadlineDisplay";
+        li.appendChild(dspan);
+    }
+
+    // 3. Restore dataset.deadline
+    const savedDeadline = li.getAttribute("data-deadline");
+    if (savedDeadline) li.dataset.deadline = savedDeadline;
+
+    // 4. Restore deducted flag
+    const savedDeducted = li.getAttribute("data-deducted");
+    if (savedDeducted === "true") {
+        li.dataset.deducted = "true";
+    }
+
+    // 5. Reattach edit modal click
+    li.addEventListener("click", (e) => {
+        if (e.target.classList.contains("complete-btn")) return;
+        openModal("edit-mission", li);
+    });
+});
+
+            document.querySelectorAll("#skill-list .skill").forEach(div => {
+                div.addEventListener("click", () => openModal("edit-skill", div));
+                div.classList.add("show");
+            });
+
+            document.querySelectorAll("#goal-list .goal").forEach(div => {
+                div.classList.add("show");
+                const removeBtn = div.querySelector(".remove-btn");
+                if (removeBtn) {
+                    removeBtn.onclick = () => removeGoal(removeBtn);
+                }
+            });
+        }
+
+        function resetData() {
+            localStorage.clear();
+
+            document.getElementById("skill-list").innerHTML = "";
+            document.getElementById("goal-list").innerHTML = "";
+            document.getElementById("mission-list").innerHTML = "";
+
+            completedMissions = 0;
+            missionHistory = {};
+            document.getElementById("missionCounter").textContent = "0";
+
+            clearInterval(window.timerInterval);
+            countdowns = [];
+            saveCountdowns();
+            renderCountdowns();
+
+            achievementsData = achievements.map(a => ({ ...a, unlocked: false }));
+            localStorage.setItem("achievements", JSON.stringify(achievementsData));
+            renderAchievements();
+
+            customAlert("All data has been reset");
+        }
+
+
+        /* =========================================================
+           10. INITIALIZATION
+        ========================================================= */
+        window.addEventListener("load", () => {
+            renderAchievements();
+            renderCountdowns();
+            loadData();
+
+            const activePage = document.querySelector("section.active")
+                ? document.querySelector("section.active").id
+                : "missions";
+
+            showPage(activePage);
+        });
+
+        document.querySelectorAll("#goal-list .goal").forEach(div => {
+            div.classList.add("show");
+            const removeBtn = div.querySelector(".remove-btn");
+            if (removeBtn) {
+                removeBtn.onclick = () => removeGoal(removeBtn);
+            }
+        });
+
+
+    </script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
