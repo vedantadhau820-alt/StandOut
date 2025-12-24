@@ -1654,7 +1654,54 @@ window.addEventListener("load", updateNotificationBadge);
     closeModal();
       
 }
- 
+        function updateGoalTimers() {
+    const goals = document.querySelectorAll("#goal-list .goal");
+
+    goals.forEach(goal => {
+        const deadline = goal.dataset.deadline;
+        if (!deadline) return;
+
+        const timer = goal.querySelector(".goal-timer");
+        const overdueBadge = goal.querySelector(".goal-overdue");
+
+        const diff = new Date(deadline).getTime() - Date.now();
+
+        if (diff > 0) {
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+            timer.textContent = `${hours}h ${minutes}m left`;
+
+            if (overdueBadge) overdueBadge.textContent = "";
+
+            if (diff <= 2 * 60 * 60 * 1000 && !goal.dataset.warned) {
+                goal.dataset.warned = "true";
+
+                pushNotification(
+                    "Goal Reminder",
+                    `Your goal "${goal.querySelector('.goal-title').textContent}" is due soon (within 2 hours).`
+                );
+            }
+
+        } else {
+            timer.textContent = "";
+
+            if (overdueBadge)
+                overdueBadge.innerHTML = `<span class="overdue-badge">Overdue</span>`;
+
+            if (!goal.dataset.overdueNotified) {
+                goal.dataset.overdueNotified = "true";
+
+                pushNotification(
+                    "⚠ Goal Overdue",
+                    `"${goal.querySelector('.goal-title').textContent}" deadline has passed!`
+                );
+            }
+        }
+    });
+}
+
+// Run timer every second
         setInterval(updateGoalTimers, 1000);
 
 
@@ -1955,6 +2002,7 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
+
 
 
 
