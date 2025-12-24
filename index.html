@@ -1653,6 +1653,49 @@ window.addEventListener("load", updateNotificationBadge);
     saveData();
     closeModal();
       
+}
+ 
+        setInterval(updateGoalTimers, 1000);
+
+
+        function removeGoal(btn) {
+            const goalDiv = btn.closest(".goal");
+            if (goalDiv) {
+                goalDiv.remove();
+                saveData();
+            }
+        }
+
+
+        /* =========================================================
+           8. COUNTDOWNS MODULE
+        ========================================================= */
+        let countdowns = JSON.parse(localStorage.getItem("countdowns")) || [];
+
+        function saveCountdowns() {
+            localStorage.setItem("countdowns", JSON.stringify(countdowns));
+        }
+
+        function addCountdown() {
+            const title = document.getElementById("countdownTitle").value;
+            const dateTime = document.getElementById("countdownDateTime").value;
+
+            if (title && dateTime) {
+                countdowns.push({
+                    title,
+                    date: new Date(dateTime).toISOString(),
+                    startTime: new Date().toISOString()
+                });
+
+
+                saveCountdowns();
+                renderCountdowns();
+            }
+
+            closeModal();
+        }
+
+
         function updateGoalTimers() {
     const goals = document.querySelectorAll("#goal-list .goal");
 
@@ -1698,49 +1741,6 @@ window.addEventListener("load", updateNotificationBadge);
             }
         }
     });
-}
- 
-        setInterval(updateGoalTimers, 1000);
-
-
-        function removeGoal(btn) {
-            const goalDiv = btn.closest(".goal");
-            if (goalDiv) {
-                goalDiv.remove();
-                saveData();
-            }
-        }
-
-
-        /* =========================================================
-           8. COUNTDOWNS MODULE
-        ========================================================= */
-        let countdowns = JSON.parse(localStorage.getItem("countdowns")) || [];
-
-        function saveCountdowns() {
-            localStorage.setItem("countdowns", JSON.stringify(countdowns));
-        }
-
-        function addCountdown() {
-            const title = document.getElementById("countdownTitle").value;
-            const dateTime = document.getElementById("countdownDateTime").value;
-
-            if (title && dateTime) {
-                countdowns.push({
-                    title,
-                    date: new Date(dateTime).toISOString(),
-                    startTime: new Date().toISOString()
-                });
-
-
-                saveCountdowns();
-                renderCountdowns();
-            }
-
-            closeModal();
-        }
-
-
 
         function removeCountdown(index) {
             countdowns.splice(index, 1);
@@ -1955,6 +1955,7 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
+
 
 
 
