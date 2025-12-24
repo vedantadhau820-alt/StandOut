@@ -1610,6 +1610,49 @@ window.addEventListener("load", updateNotificationBadge);
         /* =========================================================
            7. GOALS MODULE
         ========================================================= */
+      function addGoal() {
+    const goalText = document.getElementById("goalInput").value;
+    const priority = document.getElementById("priorityInput").value;
+    const deadline = document.getElementById("goalDeadline").value;
+
+    if (!goalText) {
+        closeModal();
+        return;
+    }
+
+    // Create goal div
+    const div = document.createElement("div");
+    div.className = "goal show";
+    div.dataset.deadline = deadline;
+
+    // Format deadline
+    let formattedDeadline = "";
+    if (deadline) {
+        const d = new Date(deadline);
+        formattedDeadline = d.toLocaleDateString([], { day: "numeric", month: "short" });
+    }
+
+    // Fill goal card UI
+    div.innerHTML = `
+        <div class="goal-header">
+            <span class="goal-title">${goalText}</span>
+            <span class="goal-priority ${priority}"><strong>${priority}</strong></span>
+        </div>
+
+        <div class="goal-subrow">
+            <span class="goal-deadline">${formattedDeadline}</span>
+            <button class="remove-btn" onclick="removeGoal(this)">Remove</button>
+        </div>
+
+        <div class="goal-timer" style="margin-top:6px; font-size:14px; opacity:.9;"></div>
+    `;
+
+    // Add to list
+    document.getElementById("goal-list").appendChild(div);
+
+    saveData();
+    closeModal();
+      
         function updateGoalTimers() {
     const goals = document.querySelectorAll("#goal-list .goal");
 
@@ -1656,67 +1699,7 @@ window.addEventListener("load", updateNotificationBadge);
         }
     });
 }
-
-
-
-        function updateGoalTimers() {
-            const goals = document.querySelectorAll("#goal-list .goal");
-            const now = new Date().getTime();
-
-            goals.forEach(goal => {
-                const deadline = goal.dataset.deadline;
-                const timer = goal.querySelector(".goal-timer");
-                const overdueMark = goal.querySelector(".goal-overdue");
-
-                if (!deadline || !timer) return;
-
-                const target = new Date(deadline).getTime();
-                const diff = target - now;
-                
-// 🔔 Goal: Deadline Approaching (2 hours)
-if (diff > 0 && diff <= 2 * 60 * 60 * 1000 && !goal.dataset.warned) {
-    goal.dataset.warned = "true";
-    pushNotification(
-        "Goal Deadline",
-        `"${goal.querySelector('.goal-title').textContent}" is due soon (within 2 hours!)`
-    );
-}
-
-
-                // OVERDUE
-                if (diff <= 0) {
-                    timer.textContent = "Time's up!";
-                    timer.style.color = "red";
-                    overdueMark.innerHTML = `<span class="overdue-badge">Overdue</span>`;
-                    return;
-                }
-                if (diff > 0 && diff <= 2*60*60*1000 && !goal.dataset.warned) {
-    goal.dataset.warned = "true";
-    pushNotification("Goal Deadline", `"${goal.querySelector('.goal-title').textContent}" is due in 2 hours`);
-}
-
-                // REMOVE overdue if user updated it
-                overdueMark.innerHTML = "";
-
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const secs = Math.floor((diff % (1000 * 60)) / 1000);
-
-                timer.textContent = `${days}d ${hours}h ${mins}m ${secs}s`;
-
-                // Color rules
-                if (diff > 24 * 60 * 60 * 1000) {
-                    timer.style.color = "white";
-                } else if (diff > 60 * 60 * 1000) {
-                    timer.style.color = "yellow";
-                } else if (diff > 10 * 60 * 1000) {
-                    timer.style.color = "orange";
-                } else {
-                    timer.style.color = "red";
-                }
-            });
-        }
+ 
         setInterval(updateGoalTimers, 1000);
 
 
@@ -1972,6 +1955,7 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
+
 
 
 
