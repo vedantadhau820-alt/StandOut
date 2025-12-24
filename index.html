@@ -988,6 +988,28 @@ window.addEventListener("load", updateNotificationBadge);
         setTimeout(() => popup.style.display = "none", 400);
     }, 3000);
         }
+
+        function dailyGoalReminder() {
+    const goals = document.querySelectorAll("#goal-list .goal");
+    if (!goals) return;
+
+    goals.forEach(goal => {
+        const title = goal.querySelector(".goal-title").textContent;
+        const deadline = goal.dataset.deadline;
+        if (!deadline) return;
+
+        const diff = new Date(deadline).getTime() - Date.now();
+        if (diff <= 0) return; // skip overdue goals
+
+        pushNotification("Goal Reminder", `Don't forget your goal: "${title}"`);
+    });
+        }
+        setInterval(() => {
+    const now = new Date();
+    if (now.getHours() === 9 && now.getMinutes() === 0) {
+        dailyGoalReminder();
+    }
+}, 60000); // check every minute
         /* =========================================================
        1. GLOBAL VARIABLES + STORED DATA
     ========================================================= */
@@ -1121,14 +1143,16 @@ window.addEventListener("load", updateNotificationBadge);
 
         /* Unlock an achievement */
         function unlockAchievement(id) {
-            const ach = achievementsData.find(a => a.id === id);
-            if (ach && !ach.unlocked) {
-                ach.unlocked = true;
-                localStorage.setItem("achievements", JSON.stringify(achievementsData));
-                showAchievementPopup(ach.title, ach.desc);
-                renderAchievements();
-            }
-        }
+    const ach = achievementsData.find(a => a.id === id);
+    if (ach && !ach.unlocked) {
+        ach.unlocked = true;
+        localStorage.setItem("achievements", JSON.stringify(achievementsData));
+
+        pushNotification("🏆 New Achievement", `You unlocked: "${ach.title}"`);
+        showAchievementPopup(ach.title, ach.desc);
+        renderAchievements();
+    }
+}
 
         function showAchievementPopup(title, desc) {
             window.isAchievementPlaying = true;
@@ -1444,7 +1468,10 @@ window.addEventListener("load", updateNotificationBadge);
         // ❗ OVERDUE
         if (timeLeft <= 0) {
             overdueSpan.innerHTML = `<span class="overdue-badge">Overdue</span>`;
-            
+            pushNotification(
+    "⚠ Mission Overdue",
+    `"${li.querySelector('.mission-text').textContent}" is overdue!`
+);
             if (!li.dataset.deducted) {
                 completedMissions = Math.max(0, completedMissions - 1);
                 li.dataset.deducted = "true";
@@ -1592,7 +1619,14 @@ window.addEventListener("load", updateNotificationBadge);
                 const div = document.createElement("div");
                 div.className = "goal show";
                 div.dataset.deadline = deadline;
+                if (diff <= 0 && !goal.dataset.notifiedOverdue) {
+    goal.dataset.notifiedOverdue = "true";
 
+    pushNotification(
+        "⚠ Goal Overdue",
+        `"${goal.querySelector('.goal-title').textContent}" is overdue!`
+    );
+                }
                 // Format deadline compactly
                 let formattedDeadline = "";
                 if (deadline) {
@@ -1938,6 +1972,7 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
+
 
 
 
