@@ -729,6 +729,97 @@ section {
     100% { transform: rotateX(0deg); }
 }
 
+/* MODERN NOTIFICATION DRAWER */
+#notificationDrawer {
+    position: fixed;
+    top: 60px;
+    right: 0;
+    width: 310px;
+    height: calc(100vh - 60px);
+    background: #0f172a;
+    border: none;
+    padding: 1rem;
+    overflow-y: auto;
+    display: none;
+    z-index: 9999;
+
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.5);
+    animation: slideIn 0.25s ease forwards;
+    backdrop-filter: blur(6px);
+}
+
+/* Smooth slide animation */
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+#notificationDrawer h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #3b82f6;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: left;
+}
+
+/* Clear Button */
+#notificationDrawer button {
+    width: 100%;
+    padding: 10px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+#notificationDrawer button:hover {
+    background: #dc2626;
+}
+
+/* Individual notification card */
+.notification-card {
+    background: #1e293b;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    color: #e2e8f0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.notification-card:hover {
+    transform: translateY(-3px);
+    background: #0f172a;
+}
+
+/* Title */
+.notification-card strong {
+    color: #3b82f6;
+    font-size: 14px;
+}
+
+/* Message text */
+.notification-card span {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* Timestamp */
+.notification-time {
+    display: block;
+    font-size: 11px;
+    opacity: 0.6;
+    margin-top: 4px;
+}
+
+
 /* FULLSCREEN TIMER SETTINGS MODAL */
 .timer-modal .modal-content {
     width: 40% !important;
@@ -841,6 +932,44 @@ section {
     font-size: 26px;
     cursor: pointer;
     z-index: 2000000;
+}
+/* ULTRA COMPACT MOBILE FIX */
+@media (max-width: 600px) {
+
+    #mission-list li {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 6px 8px;            /* compact padding */
+        gap: 4px;
+    }
+
+    .deadline-row {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;   /* spreads nicely */
+        gap: 6px;                          /* small spacing */
+    }
+
+    .deadlineDisplay {
+        font-size: 12px;
+        opacity: 0.85;
+        flex-shrink: 0;        /* prevent squeezing */
+        white-space: nowrap;
+    }
+
+    .overdueMark {
+        font-size: 11px;
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    .complete-btn {
+        font-size: 18px !important;
+        padding: 2px 6px !important;
+        margin-left: auto;     /* keeps it right-aligned */
+        flex-shrink: 0;
+    }
 }
 
 
@@ -1087,7 +1216,7 @@ section {
     <div class="modal-content">
         <h3>Select Music</h3>
         <select id="musicSelect">
-            <option value="m1.mp3">Piano Focus Beat</option>
+            <option value="m1.mp3">Inception</option>
             <option value="m2.mp3">Namami Shamishan</option>
             <option value="m3.mp3">Intersteller</option>
             <option value="m4.mp3">Openhimer</option>
@@ -1220,23 +1349,18 @@ function renderNotifications() {
     container.innerHTML = "";
 
     if (appNotifications.length === 0) {
-        container.innerHTML = `<p style="opacity:0.6;">No notifications</p>`;
+        container.innerHTML = `<p style="opacity:0.7; text-align:center;">No notifications</p>`;
         return;
     }
 
     appNotifications.forEach(n => {
         const div = document.createElement("div");
-        div.style = `
-            padding: 10px;
-            margin-bottom: 10px;
-            background:#111827;
-            border-radius:8px;
-        `;
+        div.className = "notification-card";
 
         div.innerHTML = `
-            <strong style="color:#3B82F6;">${n.title}</strong><br>
-            <span style="font-size:13px;">${n.msg}</span><br>
-            <span style="font-size:11px; opacity:0.6;">${n.time}</span>
+            <strong>${n.title}</strong><br>
+            <span>${n.msg}</span>
+            <span class="notification-time">${n.time}</span>
         `;
 
         container.appendChild(div);
@@ -1750,9 +1874,11 @@ function startStaticTimer(h, m, s) {
 
                 li.innerHTML = `
   <span class="mission-text">${val}</span>
-  <span class="deadlineDisplay"></span>
-  <span class="overdueMark"></span>
-  <button class="complete-btn" onclick="completeMission(this)">✔</button>
+  <div class="deadline-row">
+        <span class="deadlineDisplay"></span>
+        <span class="overdueMark"></span>
+        <button class="complete-btn" onclick="completeMission(this)">✔</button>
+    </div>
 `;
 
                 li.addEventListener("click", (e) => {
@@ -1867,7 +1993,7 @@ function startStaticTimer(h, m, s) {
 
 
         function completeMission(btn) {
-            const li = btn.parentElement;
+            const li = btn.closest("li");
 
             const isOverdue = li.querySelector(".overdueMark").innerHTML.trim() !== "";
 
@@ -2006,7 +2132,7 @@ function startStaticTimer(h, m, s) {
     // Fill goal card UI
     div.innerHTML = `
         <div class="goal-header">
-            <span class="goal-title">${goalText}</span>
+            <span class="goal-title">${goalText} -</span>
             <span class="goal-priority ${priority}"><strong>${priority}</strong></span>
         </div>
 
@@ -2276,27 +2402,60 @@ document.querySelectorAll("#mission-list li").forEach(li => {
         }
 
         function resetData() {
-            localStorage.clear();
+    // Clear mission data
+    localStorage.removeItem("missions");
+    localStorage.removeItem("completedMissions");
+    localStorage.removeItem("missionHistory");
 
-            document.getElementById("skill-list").innerHTML = "";
-            document.getElementById("goal-list").innerHTML = "";
-            document.getElementById("mission-list").innerHTML = "";
+    // Clear goal data
+    localStorage.removeItem("goals");
 
-            completedMissions = 0;
-            missionHistory = {};
-            document.getElementById("missionCounter").textContent = "0";
+    // Clear skillset data
+    localStorage.removeItem("skills");
 
-            clearInterval(window.timerInterval);
-            countdowns = [];
-            saveCountdowns();
-            renderCountdowns();
+    // Clear countdown timers
+    localStorage.removeItem("countdowns");
 
-            achievementsData = achievements.map(a => ({ ...a, unlocked: false }));
-            localStorage.setItem("achievements", JSON.stringify(achievementsData));
-            renderAchievements();
+    // Clear achievement system
+    localStorage.removeItem("achievements");
 
-            customAlert("All data has been reset");
+    // Clear notifications + unread count
+    localStorage.removeItem("appNotifications");
+    localStorage.removeItem("lastNotifCount");
+
+    // Clear anything else stored
+    Object.keys(localStorage).forEach(key => {
+        if (key.startsWith("mission") ||
+            key.startsWith("goal") ||
+            key.includes("timer") ||
+            key.includes("notif")) {
+            localStorage.removeItem(key);
         }
+    });
+
+    // Reset UI instantly
+    document.getElementById("mission-list").innerHTML = "";
+    document.getElementById("skill-list").innerHTML = "";
+    document.getElementById("goal-list").innerHTML = "";
+    document.getElementById("countdown-list").innerHTML = "";
+    document.getElementById("missionCounter").textContent = "0";
+    document.getElementById("countdownCounter").textContent = "0";
+
+    // Clear notification drawer
+    const drawer = document.getElementById("notificationList");
+    if (drawer) drawer.innerHTML = `<p style="opacity:0.6;">No notifications</p>`;
+
+    // Clear badge
+    const badge = document.getElementById("notifyBadge");
+    if (badge) {
+        badge.style.display = "none";
+        badge.textContent = "";
+    }
+
+    // Confirmation alert
+    customAlert("All data has been reset successfully!");
+}
+
 
 
         /* =========================================================
@@ -2328,22 +2487,3 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
