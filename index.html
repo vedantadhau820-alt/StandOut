@@ -1610,52 +1610,52 @@ window.addEventListener("load", updateNotificationBadge);
         /* =========================================================
            7. GOALS MODULE
         ========================================================= */
-        function addGoal() {
-            const goal = document.getElementById("goalInput").value;
-            const priority = document.getElementById("priorityInput").value;
-            const deadline = document.getElementById("goalDeadline").value;
+        function updateGoalTimers() {
+    const goals = document.querySelectorAll("#goal-list .goal");
 
-            if (goal) {
-                const div = document.createElement("div");
-                div.className = "goal show";
-                div.dataset.deadline = deadline;
-                
-                }
-                // Format deadline compactly
-                let formattedDeadline = "";
-                if (deadline) {
-                    const d = new Date(deadline);
-                    const dateString = d.toLocaleDateString([], { day: 'numeric', month: 'short' });
-                    // const timeString = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    formattedDeadline = `${dateString}`;
-                }
-                if (diff <= 0 && !goal.dataset.notifiedOverdue) {
-    goal.dataset.notifiedOverdue = "true";
+    goals.forEach(goal => {
+        const deadline = goal.dataset.deadline;
+        if (!deadline) return;
 
-    pushNotification(
-        "⚠ Goal Overdue",
-        `"${goal.querySelector('.goal-title').textContent}" is overdue!`
-    );
-                div.innerHTML = `
-    <div class="goal-header">
-        <span class="goal-title">${goal}</span>
-        <span class="goal-priority ${priority}"><strong>${priority}</strong></span>
-    </div>
+        const timer = goal.querySelector(".goal-timer");
+        const overdueBadge = goal.querySelector(".goal-overdue");
 
-    <div class="goal-subrow">
-        <span class="goal-deadline">${formattedDeadline}</span>
-        <button class="remove-btn" onclick="removeGoal(this)">Remove</button>
-    </div>
+        const diff = new Date(deadline).getTime() - Date.now();
 
-    <div class="goal-timer" style="margin-top:6px; font-size:14px; opacity:.9;"></div>
-`;
+        // Format time left
+        if (diff > 0) {
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
 
-                document.getElementById("goal-list").appendChild(div);
-                saveData();
+            timer.textContent = `${hours}h ${minutes}m left`;
+            overdueBadge.textContent = "";
+
+            // 🔔 Upcoming deadline (2 hours)
+            if (diff <= 2 * 60 * 60 * 1000 && !goal.dataset.warned) {
+                goal.dataset.warned = "true";
+
+                pushNotification(
+                    "Goal Reminder",
+                    `Your goal "${goal.querySelector('.goal-title').textContent}" is due soon (within 2 hours).`
+                );
             }
 
-            closeModal();
+        } else {
+            // OVERDUE
+            timer.textContent = "";
+            overdueBadge.innerHTML = `<span class="overdue-badge">Overdue</span>`;
+
+            if (!goal.dataset.overdueNotified) {
+                goal.dataset.overdueNotified = "true";
+
+                pushNotification(
+                    "⚠ Goal Overdue",
+                    `"${goal.querySelector('.goal-title').textContent}" deadline has passed!`
+                );
+            }
         }
+    });
+}
 
 
 
@@ -1972,6 +1972,7 @@ document.querySelectorAll("#mission-list li").forEach(li => {
 </body>
 
 </html>
+
 
 
 
