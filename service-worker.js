@@ -3,7 +3,8 @@ const CACHE_NAME = "standout-cache-v1";
 const urlsToCache = [
   "/",
   "/index.html",
-  "/js.png",
+  "/documentation.html",
+  "/icon.jpeg",
   "/Complete.mp3",
   "/Achievements.mp3",
   "/m1.mp3",
@@ -75,4 +76,5 @@ messaging.onBackgroundMessage(payload => {
     icon: payload.notification.icon || "js.png"
   });
 });
+
 
