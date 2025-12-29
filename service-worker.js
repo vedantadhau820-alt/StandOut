@@ -5,7 +5,15 @@ const urlsToCache = [
   "/index.html",
   "/js.png",
   "/Complete.mp3",
-  "/Achievements.mp3"
+  "/Achievements.mp3",
+  "/m1.mp3",
+  "/m2.mp3",
+  "/m3.mp3",
+  "/m4.mp3",
+  "/m5.mp3",
+  "/m6.mp3",
+  "/service-worker.js",
+  "/manifest.js"
 ];
 
 // Install event - cache important assets
@@ -31,7 +39,17 @@ self.addEventListener("activate", event => {
 // Intercept fetch (offline support)
 self.addEventListener("fetch", event => {
   event.respondWith(
-    caches.match(event.request).then(res => res || fetch(event.request))
+    caches.match(event.request).then(res => {
+      return (
+        res ||
+        fetch(event.request).catch(() => {
+          // Optional fallback
+          if (event.request.mode === "navigate") {
+            return caches.match("/index.html");
+          }
+        })
+      );
+    })
   );
 });
 
@@ -57,3 +75,4 @@ messaging.onBackgroundMessage(payload => {
     icon: payload.notification.icon || "js.png"
   });
 });
+
