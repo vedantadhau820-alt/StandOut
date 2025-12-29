@@ -1,9 +1,10 @@
-// ----- PWA CACHE SETUP -----
-const CACHE_NAME = "standout-cache-v1";
+const CACHE_NAME = "standout-cache-v4";
+
 const urlsToCache = [
   "/",
   "/index.html",
   "/documentation.html",
+  "/manifest.json",
   "/icon.jpeg",
   "/Complete.mp3",
   "/Achievements.mp3",
@@ -12,12 +13,10 @@ const urlsToCache = [
   "/m3.mp3",
   "/m4.mp3",
   "/m5.mp3",
-  "/m6.mp3",
-  "/service-worker.js",
-  "/manifest.js"
+  "/m6.mp3"
 ];
 
-// Install event - cache important assets
+// INSTALL
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
@@ -25,26 +24,23 @@ self.addEventListener("install", event => {
   self.skipWaiting();
 });
 
-// Activate event - cleanup old caches
+// ACTIVATE
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
-        keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
-      );
-    })
+    caches.keys().then(keys =>
+      Promise.all(keys.map(k => k !== CACHE_NAME && caches.delete(k)))
+    )
   );
   self.clients.claim();
 });
 
-// Intercept fetch (offline support)
+// FETCH (OFFLINE SAFE)
 self.addEventListener("fetch", event => {
   event.respondWith(
     caches.match(event.request).then(res => {
       return (
         res ||
         fetch(event.request).catch(() => {
-          // Optional fallback
           if (event.request.mode === "navigate") {
             return caches.match("/index.html");
           }
@@ -54,9 +50,9 @@ self.addEventListener("fetch", event => {
   );
 });
 
-// ----- FIREBASE (FCM) SETUP -----
-importScripts('https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js');
+/* 🔕 Firebase ONLY for notifications */
+importScripts("https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js");
 
 firebase.initializeApp({
   apiKey: "AIzaSyDUh518DMZJojohVb3zhnIcf2_QWe_R-ow",
@@ -69,12 +65,9 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// Background FCM handler
 messaging.onBackgroundMessage(payload => {
   self.registration.showNotification(payload.notification.title, {
     body: payload.notification.body,
-    icon: payload.notification.icon || "js.png"
+    icon: payload.notification.icon || "/icon.jpeg"
   });
 });
-
-
