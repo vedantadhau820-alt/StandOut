@@ -970,6 +970,12 @@
             z-index: 2000000;
         }
 
+        #presetControls {
+            padding-left: 50px;
+            margin-bottom: 10px;
+        }
+
+
         /* ULTRA COMPACT MOBILE FIX */
         @media (max-width: 600px) {
 
@@ -1250,20 +1256,32 @@
     <div id="musicModal" class="modal timer-modal">
         <div class="modal-content">
             <h3>Select Music</h3>
-            <select id="musicSelect">
-                <option value="m1.mp3">Inception</option>
-                <option value="m2.mp3">Namami Shamishan</option>
-                <option value="m3.mp3">Intersteller</option>
-                <option value="m4.mp3">Openhimer</option>
-                <option value="m5.mp3">Lofi</option>
-                <option value="m6.mp3">Demon Slayer</option>
-                <option value="m7.mp3">None</option>
-            </select>
+
+            <!-- Preset wrapper -->
+            <div id="presetControls">
+                <select id="musicSelect">
+                    <option value="m1.mp3">Inception</option>
+                    <option value="m2.mp3">Namami Shamishan</option>
+                    <option value="m3.mp3">Interstellar</option>
+                    <option value="m4.mp3">Oppenheimer</option>
+                    <option value="m5.mp3">Lofi</option>
+                    <option value="m6.mp3">Demon Slayer</option>
+                    <option value="">None</option>
+                </select>
+
+                <button id="presetSelectBtn" onclick="setSelectedMusic()">Select</button>
+            </div>
+
+            <!-- Folder picker -->
+            <button onclick="openFolderPicker()">📁 Select Music Folder</button>
+
+            <input type="file" id="folderPicker" webkitdirectory multiple accept="audio/*" style="display:none" />
+
             <label style="margin-top:10px;">Volume</label>
             <input id="musicVolume" type="range" min="0" max="1" step="0.01" value="1"
                 oninput="music.volume = this.value">
 
-            <button onclick="setSelectedMusic()">Select</button>
+            <!-- <button onclick="setSelectedMusic()">Select</button> -->
             <button onclick="closeMusicModal()">Close</button>
         </div>
     </div>
@@ -1288,6 +1306,7 @@
     <!-- ===========================
        JavaScript (Message 3)
   ============================ -->
+    
     <script>
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", () => {
@@ -1304,6 +1323,148 @@
     </script>
 
     <script>
+        document.getElementById("timerCloseBtn").onclick = () => {
+            document.getElementById("timerScreen").style.display = "none";
+            document.querySelector(".top-navbar").style.display = "flex";
+            document.querySelector(".bottom-nav").style.display = "flex";
+
+            clearInterval(timerInterval);
+            stopAllMusic();
+        };
+
+
+        let playlist = [];
+        let currentTrackIndex = 0;
+        let timerInterval = null;
+        let currentMusic = null;
+        let music = new Audio();
+
+        function stopAllMusic() {
+            if (music) {
+                music.pause();
+                music.currentTime = 0;
+                music.onended = null;
+            }
+        }
+
+
+        function openFolderPicker() {
+            const picker = document.getElementById("folderPicker");
+            if (picker) {
+                picker.click();
+            } else {
+                console.error("❌ folderPicker not found");
+            }
+        }
+
+        document.getElementById("folderPicker").addEventListener("change", function (e) {
+            stopAllMusic();
+
+            const files = Array.from(e.target.files)
+                .filter(file => file.type.startsWith("audio/"));
+
+            if (files.length === 0) {
+                customAlert("No audio files found in this folder.");
+                return;
+            }
+
+            playlist = files;
+            musicMode = "playlist";
+            currentTrackIndex = 0;
+
+            // hidePresetUI(); // 🔥 HIDE preset controls
+
+            customConfirm(
+                `Play ${playlist.length} songs from this folder?`,
+                () => {
+                    playCurrentTrack();
+                    closeMusicModal();
+                }
+            );
+
+            e.target.value = "";
+        });
+
+
+        function resumeMusicOnUserGesture() {
+            const resume = () => {
+                music.play().catch(() => { });
+                document.removeEventListener("click", resume);
+                document.removeEventListener("touchstart", resume);
+            };
+
+            document.addEventListener("click", resume);
+            document.addEventListener("touchstart", resume);
+        }
+
+
+        function playCurrentTrack() {
+            if (musicMode !== "playlist") return;
+            if (!playlist[currentTrackIndex]) return;
+
+            const file = playlist[currentTrackIndex];
+            const url = URL.createObjectURL(file);
+
+            music.src = url;
+            music.loop = false;
+            music.volume = document.getElementById("musicVolume").value;
+
+            music.play()
+                .then(() => { })
+                .catch(() => {
+                    // 🔥 FIX autoplay block
+                    resumeMusicOnUserGesture();
+                });
+
+            music.onended = () => {
+                if (musicMode !== "playlist") return;
+
+                currentTrackIndex++;
+                if (currentTrackIndex >= playlist.length) {
+                    currentTrackIndex = 0;
+                }
+                playCurrentTrack();
+            };
+        }
+
+
+
+        function setSelectedMusic() {
+    stopAllMusic();
+
+    const file = document.getElementById("musicSelect").value;
+    if (!file) return;
+
+    musicMode = "preset";
+    playlist = [];
+    currentTrackIndex = 0;
+
+    showPresetUI(); // ✅ RESTORE HERE
+
+    music.src = file;
+    music.loop = true;
+    music.volume = document.getElementById("musicVolume").value;
+
+    music.play().catch(() => {});
+    closeMusicModal();
+}
+
+
+
+
+        function showPresetUI() {
+            document.getElementById("presetControls").style.display = "block";
+        }
+
+        function hidePresetUI() {
+            document.getElementById("presetControls").style.display = "none";
+        }
+
+
+        let musicMode = "preset"; // "preset" | "playlist"
+
+
+
         // =========================
         //   NOTIFICATION SYSTEM
         // =========================
@@ -1385,16 +1546,16 @@
         }; // ← CLOSE THIS PROPERLY
 
         document.getElementById("notificationDrawer").addEventListener("click", function (e) {
-    e.stopPropagation();
-});
+            e.stopPropagation();
+        });
 
 
         document.addEventListener("click", function () {
-    const drawer = document.getElementById("notificationDrawer");
-    if (drawer && drawer.style.display === "block") {
-        drawer.style.display = "none";
-    }
-});
+            const drawer = document.getElementById("notificationDrawer");
+            if (drawer && drawer.style.display === "block") {
+                drawer.style.display = "none";
+            }
+        });
 
 
 
@@ -1687,9 +1848,7 @@
         // FULLSCREEN TIMER MODE JS
         // ===============================
 
-        let timerInterval = null;
-        let currentMusic = null;
-        let music = new Audio();
+
 
         // OPEN FULL SCREEN
         document.getElementById("timerIcon").onclick = () => {
@@ -1703,25 +1862,35 @@
             document.getElementById("timerScreen").style.display = "none";
             document.querySelector(".top-navbar").style.display = "flex";
             document.querySelector(".bottom-nav").style.display = "flex";
+
             clearInterval(timerInterval);
+
+            music.pause();
+            music.currentTime = 0;
         };
+
 
         // MUSIC MODAL
         document.getElementById("timerMusicBtn").onclick = () => {
-            document.getElementById("musicModal").classList.add("active");
-        };
+    document.getElementById("musicModal").classList.add("active");
+
+    if (musicMode === "preset") {
+        showPresetUI();
+    }
+};
+
         function closeMusicModal() {
             document.getElementById("musicModal").classList.remove("active");
         }
-        function setSelectedMusic() {
-            let file = document.getElementById("musicSelect").value;
-            currentMusic = file;
-            music.src = file;
-            music.loop = true;
-            music.volume = document.getElementById("musicVolume").value;
-            music.play();
-            closeMusicModal();
-        }
+        // function setSelectedMusic() {
+        //     let file = document.getElementById("musicSelect").value;
+        //     currentMusic = file;
+        //     music.src = file;
+        //     music.loop = true;
+        //     music.volume = document.getElementById("musicVolume").value;
+        //     music.play();
+        //     closeMusicModal();
+        // }
 
         // SETTINGS MODAL
         document.getElementById("timerSettingsBtn").onclick = () => {
@@ -2564,6 +2733,7 @@
 
 
     </script>
+
 
 </body>
 
