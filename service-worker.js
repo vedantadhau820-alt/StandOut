@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-cache-v4";
+const CACHE_NAME = "standout-cache-v5";
 
 const urlsToCache = [
   "/",
@@ -46,7 +46,6 @@ const urlsToCache = [
   "/s2.jpg",
 ];
 
-// INSTALL
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
@@ -54,7 +53,6 @@ self.addEventListener("install", event => {
   self.skipWaiting();
 });
 
-// ACTIVATE
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -64,41 +62,8 @@ self.addEventListener("activate", event => {
   self.clients.claim();
 });
 
-// FETCH (OFFLINE SAFE)
 self.addEventListener("fetch", event => {
   event.respondWith(
-    caches.match(event.request).then(res => {
-      return (
-        res ||
-        fetch(event.request).catch(() => {
-          if (event.request.mode === "navigate") {
-            return caches.match("/index.html");
-          }
-        })
-      );
-    })
+    caches.match(event.request).then(res => res || fetch(event.request))
   );
 });
-
-/* 🔕 Firebase ONLY for notifications */
-importScripts("https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js");
-importScripts("https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging-compat.js");
-
-firebase.initializeApp({
-  apiKey: "AIzaSyDUh518DMZJojohVb3zhnIcf2_QWe_R-ow",
-  authDomain: "notiq-d168b.firebaseapp.com",
-  projectId: "notiq-d168b",
-  storageBucket: "notiq-d168b.firebasestorage.app",
-  messagingSenderId: "706368072132",
-  appId: "1:706368072132:web:8d9c61d6c2c55c02a85c91"
-});
-
-const messaging = firebase.messaging();
-
-messaging.onBackgroundMessage(payload => {
-  self.registration.showNotification(payload.notification.title, {
-    body: payload.notification.body,
-    icon: payload.notification.icon || "/icon.jpeg"
-  });
-});
-
