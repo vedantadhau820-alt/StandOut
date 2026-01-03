@@ -1156,7 +1156,9 @@
             background: #22c55e;
         }
 
-        .grade-d .grade-badge,
+        .grade-d .grade-badge{
+            background: #8B5A2B;
+        }
         .grade-e .grade-badge {
             background: #6b7280;
         }
@@ -3107,6 +3109,15 @@
             achievementsData = achievements.map(a => ({ ...a, unlocked: false }));
 
             // ===============================
+// RESET MARKETPLACE
+// ===============================
+ownedCards = {};
+localStorage.removeItem("ownedCards");
+
+// Re-render marketplace UI
+renderMarketplace();
+renderMyCards();
+            // ===============================
             // 2. CLEAR LOCAL STORAGE
             // ===============================
             localStorage.removeItem("missions");
@@ -3194,3 +3205,4 @@
 </body>
 
 </html>
+
