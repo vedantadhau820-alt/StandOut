@@ -38,11 +38,12 @@
             color: #3B82F6;
         }
 
-        html, body {
-  height: 100%;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
+        html,
+        body {
+            height: 100%;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+        }
 
 
         /* ===========================
@@ -147,14 +148,15 @@
    PAGE SECTIONS
 ========================================================= */
         section {
-  display: none;
-  padding: 1rem 1rem 120px; /* 🔥 increased */
-  margin-top: 60px;
-  box-sizing: border-box;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
+            display: none;
+            padding: 1rem 1rem 120px;
+            /* 🔥 increased */
+            margin-top: 60px;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
 
 
         /* section {
@@ -1062,11 +1064,12 @@
         }
 
         .card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 14px;
-  padding-bottom: 80px; /* 🔥 THIS FIXES HIDDEN CARDS */
-}
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 14px;
+            padding-bottom: 80px;
+            /* 🔥 THIS FIXES HIDDEN CARDS */
+        }
 
 
         /* =========================
@@ -1156,9 +1159,10 @@
             background: #22c55e;
         }
 
-        .grade-d .grade-badge{
+        .grade-d .grade-badge {
             background: #8B5A2B;
         }
+
         .grade-e .grade-badge {
             background: #6b7280;
         }
@@ -1528,67 +1532,85 @@
     </script>
 
     <script>
+        const DAILY_IMPROVEMENT_LIMIT = 10;
+
+        let dailyImprovementCount = parseInt(localStorage.getItem("dailyImprovementCount")) || 0;
+        let lastImprovementDate = localStorage.getItem("lastImprovementDate") || new Date().toDateString();
+
+        function resetDailyImprovementIfNeeded() {
+            const today = new Date().toDateString();
+
+            if (lastImprovementDate !== today) {
+                dailyImprovementCount = 0;
+                lastImprovementDate = today;
+
+                localStorage.setItem("dailyImprovementCount", "0");
+                localStorage.setItem("lastImprovementDate", today);
+            }
+        }
+
+
 
         let isMarketplaceOpen = false;
 
 
         const cardCatalog = [
 
-/* ======================
-   E GRADE — KNOWN BUT NICHE (8)
-====================== */
-{ id:"hawkeye", title:"Hawkeye", grade:"E", quote:"I’m just a guy with a bow.", image:"e1.jpg", cost:5 },
-{ id:"ant_man", title:"Ant-Man", grade:"E", quote:"Sometimes, the smallest hero makes the biggest difference.", image:"e2.jpg", cost:6 },
-{ id:"falcon", title:"Falcon", grade:"E", quote:"I do what he does, just slower.", image:"e3.jpg", cost:7 },
-{ id:"luke_cage", title:"Luke Cage", grade:"E", quote:"I’m bulletproof for a reason.", image:"e4.jpg", cost:7 },
-{ id:"green_arrow", title:"Green Arrow", grade:"E", quote:"You have failed this city.", image:"e5.jpg", cost:8 },
-{ id:"nightwing", title:"Nightwing", grade:"E", quote:"I had to become my own hero.", image:"e6.jpg", cost:9 },
-{ id:"shazam", title:"Shazam", grade:"E", quote:"I’m just a kid trying to do good.", image:"e7.jpg", cost:10 },
-{ id:"martian_manhunter", title:"Martian Manhunter", grade:"E", quote:"I live between worlds.", image:"e8.jpg", cost:11 },
+            /* ======================
+               E GRADE — KNOWN BUT NICHE (8)
+            ====================== */
+            { id: "hawkeye", title: "Hawkeye", grade: "E", quote: "I’m just a guy with a bow.", image: "e1.jpg", cost: 5 },
+            { id: "ant_man", title: "Ant-Man", grade: "E", quote: "Sometimes, the smallest hero makes the biggest difference.", image: "e2.jpg", cost: 6 },
+            { id: "falcon", title: "Falcon", grade: "E", quote: "I do what he does, just slower.", image: "e3.jpg", cost: 7 },
+            { id: "luke_cage", title: "Luke Cage", grade: "E", quote: "I’m bulletproof for a reason.", image: "e4.jpg", cost: 7 },
+            { id: "green_arrow", title: "Green Arrow", grade: "E", quote: "You have failed this city.", image: "e5.jpg", cost: 8 },
+            { id: "nightwing", title: "Nightwing", grade: "E", quote: "I had to become my own hero.", image: "e6.jpg", cost: 9 },
+            { id: "shazam", title: "Shazam", grade: "E", quote: "I’m just a kid trying to do good.", image: "e7.jpg", cost: 10 },
+            { id: "martian_manhunter", title: "Martian Manhunter", grade: "E", quote: "I live between worlds.", image: "e8.jpg", cost: 11 },
 
-/* ======================
-   D GRADE — STRONG FAN FAVORITES (7)
-====================== */
-{ id:"daredevil", title:"Daredevil", grade:"D", quote:"I don’t get to quit.", image:"d1.jpg", cost:15 },
-{ id:"winter_soldier", title:"Winter Soldier", grade:"D", quote:"I remember all of them.", image:"d2.jpg", cost:17 },
-{ id:"black_widow", title:"Black Widow", grade:"D", quote:"I’ve got red in my ledger.", image:"d3.jpg", cost:18 },
-{ id:"doctor_fate", title:"Doctor Fate", grade:"D", quote:"Fate is not a straight line.", image:"d4.jpg", cost:19 },
-{ id:"aquaman", title:"Aquaman", grade:"D", quote:"I’m nobody’s king but my own.", image:"d5.jpg", cost:20 },
-{ id:"scarlet_witch", title:"Scarlet Witch", grade:"D", quote:"You took everything from me.", image:"d6.jpg", cost:22 },
-{ id:"vision", title:"Vision", grade:"D", quote:"A thing isn’t beautiful because it lasts.", image:"d7.jpg", cost:25 },
+            /* ======================
+               D GRADE — STRONG FAN FAVORITES (7)
+            ====================== */
+            { id: "daredevil", title: "Daredevil", grade: "D", quote: "I don’t get to quit.", image: "d1.jpg", cost: 15 },
+            { id: "winter_soldier", title: "Winter Soldier", grade: "D", quote: "I remember all of them.", image: "d2.jpg", cost: 17 },
+            { id: "black_widow", title: "Black Widow", grade: "D", quote: "I’ve got red in my ledger.", image: "d3.jpg", cost: 18 },
+            { id: "doctor_fate", title: "Doctor Fate", grade: "D", quote: "Fate is not a straight line.", image: "d4.jpg", cost: 19 },
+            { id: "aquaman", title: "Aquaman", grade: "D", quote: "I’m nobody’s king but my own.", image: "d5.jpg", cost: 20 },
+            { id: "scarlet_witch", title: "Scarlet Witch", grade: "D", quote: "You took everything from me.", image: "d6.jpg", cost: 22 },
+            { id: "vision", title: "Vision", grade: "D", quote: "A thing isn’t beautiful because it lasts.", image: "d7.jpg", cost: 25 },
 
-/* ======================
-   C GRADE — FRANCHISE PILLARS (5)
-====================== */
-{ id:"captain_america", title:"Captain America", grade:"C", quote:"I can do this all day.", image:"c1.jpg", cost:30 },
-{ id:"wonder_woman", title:"Wonder Woman", grade:"C", quote:"It’s about what you believe.", image:"c2.jpg", cost:34 },
-{ id:"doctor_strange", title:"Doctor Strange", grade:"C", quote:"We’re in the endgame now.", image:"c3.jpg", cost:38 },
-{ id:"black_panther", title:"Black Panther", grade:"C", quote:"Wakanda forever.", image:"c4.jpg", cost:42 },
-{ id:"flash", title:"The Flash", grade:"C", quote:"You don’t have to be fast to do the right thing.", image:"c5.jpg", cost:48 },
+            /* ======================
+               C GRADE — FRANCHISE PILLARS (5)
+            ====================== */
+            { id: "captain_america", title: "Captain America", grade: "C", quote: "I can do this all day.", image: "c1.jpg", cost: 30 },
+            { id: "wonder_woman", title: "Wonder Woman", grade: "C", quote: "It’s about what you believe.", image: "c2.jpg", cost: 34 },
+            { id: "doctor_strange", title: "Doctor Strange", grade: "C", quote: "We’re in the endgame now.", image: "c3.jpg", cost: 38 },
+            { id: "black_panther", title: "Black Panther", grade: "C", quote: "Wakanda forever.", image: "c4.jpg", cost: 42 },
+            { id: "flash", title: "The Flash", grade: "C", quote: "You don’t have to be fast to do the right thing.", image: "c5.jpg", cost: 48 },
 
-/* ======================
-   B GRADE — GLOBAL ICONS (5)
-====================== */
-{ id:"iron_man", title:"Iron Man", grade:"B", quote:"I am Iron Man.", image:"b1.jpg", cost:55 },
-{ id:"thor", title:"Thor", grade:"B", quote:"I am still worthy.", image:"b2.jpg", cost:60 },
-{ id:"hulk", title:"Hulk", grade:"B", quote:"That’s my secret… I’m always angry.", image:"b3.jpg", cost:66 },
-{ id:"batman", title:"Batman", grade:"B", quote:"I am vengeance.", image:"b4.jpg", cost:72 },
-{ id:"spiderman", title:"Spider-Man", grade:"B", quote:"With great power comes great responsibility.", image:"b5.jpg", cost:80 },
+            /* ======================
+               B GRADE — GLOBAL ICONS (5)
+            ====================== */
+            { id: "iron_man", title: "Iron Man", grade: "B", quote: "I am Iron Man.", image: "b1.jpg", cost: 55 },
+            { id: "thor", title: "Thor", grade: "B", quote: "I am still worthy.", image: "b2.jpg", cost: 60 },
+            { id: "hulk", title: "Hulk", grade: "B", quote: "That’s my secret… I’m always angry.", image: "b3.jpg", cost: 66 },
+            { id: "batman", title: "Batman", grade: "B", quote: "I am vengeance.", image: "b4.jpg", cost: 72 },
+            { id: "spiderman", title: "Spider-Man", grade: "B", quote: "With great power comes great responsibility.", image: "b5.jpg", cost: 80 },
 
-/* ======================
-   A GRADE — ERA DEFINERS (3)
-====================== */
-{ id:"superman", title:"Superman", grade:"A", quote:"I choose to be human.", image:"a1.jpg", cost:95 },
-{ id:"thanos", title:"Thanos", grade:"A", quote:"I am inevitable.", image:"a2.jpg", cost:110 },
-{ id:"darkseid", title:"Darkseid", grade:"A", quote:"I am many things… but not a liar.", image:"a3.jpg", cost:125 },
+            /* ======================
+               A GRADE — ERA DEFINERS (3)
+            ====================== */
+            { id: "superman", title: "Superman", grade: "A", quote: "I choose to be human.", image: "a1.jpg", cost: 95 },
+            { id: "thanos", title: "Thanos", grade: "A", quote: "I am inevitable.", image: "a2.jpg", cost: 110 },
+            { id: "darkseid", title: "Darkseid", grade: "A", quote: "I am many things… but not a liar.", image: "a3.jpg", cost: 125 },
 
-/* ======================
-   S GRADE — MYTHIC (2)
-====================== */
-{ id:"one_above_all", title:"One Above All", grade:"S", quote:"All things return to one.", image:"s1.jpg", cost:160 },
-{ id:"the_presence", title:"The Presence", grade:"S", quote:"I am what must be.", image:"s2.jpg", cost:200 }
+            /* ======================
+               S GRADE — MYTHIC (2)
+            ====================== */
+            { id: "one_above_all", title: "One Above All", grade: "S", quote: "All things return to one.", image: "s1.jpg", cost: 160 },
+            { id: "the_presence", title: "The Presence", grade: "S", quote: "I am what must be.", image: "s2.jpg", cost: 200 }
 
-];
+        ];
 
 
 
@@ -1762,16 +1784,16 @@
 
 
         document.getElementById("marketplaceIcon").onclick = () => {
-  if (isMarketplaceOpen) {
-    // Close marketplace → go back to missions (or last page)
-    showPage("missions");
-    isMarketplaceOpen = false;
-  } else {
-    // Open marketplace
-    showPage("marketplace-cards");
-    isMarketplaceOpen = true;
-  }
-};
+            if (isMarketplaceOpen) {
+                // Close marketplace → go back to missions (or last page)
+                showPage("missions");
+                isMarketplaceOpen = false;
+            } else {
+                // Open marketplace
+                showPage("marketplace-cards");
+                isMarketplaceOpen = true;
+            }
+        };
 
 
         document.getElementById("timerCloseBtn").onclick = () => {
@@ -2410,14 +2432,27 @@
 
             // ---- Add Mission ----
             if (type === 'mission') {
+                const skills = [...document.querySelectorAll("#skill-list strong")]
+                    .map(s => `<option value="${s.textContent}">${s.textContent}</option>`)
+                    .join("");
+
                 content.innerHTML = `
-      <h3>Add Mission</h3>
-      <input id="missionInput" placeholder="Enter mission">
-      <label>Deadline</label>
-      <input id="missionDeadline" type="datetime-local">
-      <button onclick="addMission()">Add</button>
-      <button onclick="closeModal()">Cancel</button>
-    `;
+  <h3>Add Mission</h3>
+  <input id="missionInput" placeholder="Enter mission">
+
+  <label>Link Skill</label>
+  <select id="linkedSkill">
+    <option value="">None</option>
+    ${skills}
+  </select>
+
+  <label>Deadline</label>
+  <input id="missionDeadline" type="datetime-local">
+
+  <button onclick="addMission()">Add</button>
+  <button onclick="closeModal()">Cancel</button>
+`;
+
             }
 
             // ---- Edit Mission ----
@@ -2443,10 +2478,10 @@
                 content.innerHTML = `
       <h3>Add Skill</h3>
       <input id="skillInput" placeholder="Skill name">
-      <input id="progressInput" type="number" placeholder="Progress % (0-100)">
       <button onclick="addSkill()">Add</button>
       <button onclick="closeModal()">Cancel</button>
-    `;
+      `;
+                //   <input id="progressInput" type="number" placeholder="Progress % (0-100)">
             }
 
             // ---- Edit Skill ----
@@ -2457,8 +2492,6 @@
 
                 content.innerHTML = `
       <h3>Edit ${skillName}</h3>
-      <input id="editProgressInput" type="number" value="${currentProgress}">
-      <button onclick="updateSkillProgress('${skillName}')">Update</button>
       <button onclick="deleteSkill('${skillName}')">Delete</button>
       <button onclick="closeModal()">Cancel</button>
     `;
@@ -2541,43 +2574,58 @@
         const missionMilestones = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
 
         function addMission() {
-            const val = document.getElementById('missionInput').value;
-            const deadline = document.getElementById('missionDeadline').value;
+            const text = document.getElementById("missionInput").value;
+            const deadline = document.getElementById("missionDeadline").value;
+            const linkedSkill = document.getElementById("linkedSkill").value;
 
-            if (val) {
-                const li = document.createElement('li');
-                li.dataset.deadline = deadline;
-
-                li.innerHTML = `
-  <span class="mission-text">${val}</span>
-  <div class="deadline-row">
-        <span class="deadlineDisplay"></span>
-        <span class="overdueMark"></span>
-        <button class="complete-btn" onclick="completeMission(this)">✔</button>
-    </div>
-`;
-
-                li.addEventListener("click", (e) => {
-                    if (e.target.classList.contains("complete-btn")) return; // ignore complete click
-                    openModal("edit-mission", li);
-                });
-
-
-                // Show deadline date
-                if (deadline) {
-                    const d = new Date(deadline);
-                    const dateString = d.toLocaleDateString([], { day: 'numeric', month: 'short' });
-                    const timeString = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-                    li.querySelector(".deadlineDisplay").textContent = `${dateString}, ${timeString}`;
-                }
-
-
-                document.getElementById('mission-list').appendChild(li);
-                saveData();
+            if (isPastDateTime(deadline)) {
+                customAlert("Deadline cannot be in the past.");
+                return;
             }
+
+
+            if (!text) {
+                closeModal();
+                return;
+            }
+
+            const li = document.createElement("li");
+            li.dataset.deadline = deadline || "";
+            li.dataset.skill = linkedSkill || "";
+            li.dataset.completed = "false";
+
+            // Format deadline
+            let deadlineText = "";
+            if (deadline) {
+                const d = new Date(deadline);
+                const date = d.toLocaleDateString([], { day: "numeric", month: "short" });
+                const time = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                deadlineText = `${date}, ${time}`;
+            }
+
+            li.innerHTML = `
+        <span class="mission-text">${text}</span>
+
+        <div class="deadline-row">
+            <span class="deadlineDisplay">${deadlineText}</span>
+            <span class="overdueMark"></span>
+            <button class="complete-btn" onclick="completeMission(this)">✔</button>
+        </div>
+    `;
+
+            // Click to edit (except complete button)
+            li.addEventListener("click", (e) => {
+                if (e.target.classList.contains("complete-btn")) return;
+                openModal("edit-mission", li);
+            });
+
+            document.getElementById("mission-list").appendChild(li);
+            saveData();
             closeModal();
         }
+
+
+
 
 
 
@@ -2590,6 +2638,10 @@
 
             const newText = document.getElementById("editMissionInput").value;
             const newDeadline = document.getElementById("editMissionDeadline").value;
+            if (isPastDateTime(newDeadline)) {
+                customAlert("Deadline cannot be in the past.");
+                return;
+            }
 
             // Update text
             li.querySelector(".mission-text").textContent = newText;
@@ -2676,27 +2728,63 @@
 
 
         function completeMission(btn) {
+            resetDailyImprovementIfNeeded();
+
             const li = btn.closest("li");
+            const linkedSkill = li.dataset.skill;
 
-            const isOverdue = li.querySelector(".overdueMark").innerHTML.trim() !== "";
-
-            // Animation
             li.classList.add("remove");
             li.dataset.completed = "true";
             setTimeout(() => li.remove(), 400);
 
-            // Add point only if NOT overdue
-            if (!isOverdue) {
-                completedMissions++;
+            // ❌ DAILY LIMIT REACHED
+            if (dailyImprovementCount >= DAILY_IMPROVEMENT_LIMIT) {
+                showPopup("You're too tired today. No improvement points gained.");
+                saveData();
+                return;
             }
+
+            // ✅ ALLOW GAIN
+            dailyImprovementCount++;
+            completedMissions++;
+
+            localStorage.setItem("dailyImprovementCount", dailyImprovementCount);
+            localStorage.setItem("completedMissions", completedMissions);
 
             document.getElementById("missionCounter").textContent = completedMissions;
 
-            checkMissionAchievements();
-            showPopup(isOverdue ? "Mission completed (overdue, no points added)" : "You completed a mission! Keep it up!");
+            // 🔥 ADD SKILL XP ONLY IF POINTS GAINED
+            if (linkedSkill) {
+                increaseSkillXP(linkedSkill, 1);
+            }
 
+            checkMissionAchievements();
+            showPopup("Mission completed! Improvement point gained.");
             saveData();
         }
+
+
+        function increaseSkillXP(skillName, amount) {
+            const skills = document.querySelectorAll("#skill-list .skill");
+
+            skills.forEach(skill => {
+                const name = skill.querySelector("strong").textContent.trim();
+
+                if (name === skillName.trim()) {
+                    let xp = parseInt(skill.dataset.xp || "0");
+                    xp = Math.min(100, xp + amount);
+
+                    skill.dataset.xp = xp;
+                    skill.setAttribute("data-xp", xp);
+
+                    skill.querySelector(".xp-count").textContent = xp;
+                    skill.querySelector(".progress-bar").style.width = xp + "%";
+
+                    saveData(); // 🔥 force persist
+                }
+            });
+        }
+
 
 
         function checkMissionAchievements() {
@@ -2740,42 +2828,63 @@
         ========================================================= */
         function addSkill() {
             const skill = document.getElementById("skillInput").value;
-            let progress = document.getElementById("progressInput").value;
+            if (!skill) return closeModal();
 
-            if (skill && progress !== "") {
-                progress = Math.min(100, Math.max(0, parseInt(progress)));
+            const div = document.createElement("div");
+            div.className = "skill show";
+            div.dataset.xp = "0"; // 🔥 XP starts at 0
 
-                const div = document.createElement("div");
-                div.className = "skill";
-                div.innerHTML = `
-      <strong>${skill}</strong>
-      <div class="progress"><div class="progress-bar" style="width:${progress}%"></div></div>
-    `;
+            div.innerHTML = `
+        <strong>${skill}</strong>
+        <div class="progress">
+            <div class="progress-bar" style="width:0%"></div>
+        </div>
+        <small>XP: <span class="xp-count">0</span></small>
+        
+        `;
+            // <button class="remove-btn" onclick="deleteSkillDirect(this)">✖</button>
 
-                div.addEventListener("click", () => openModal("edit-skill", div));
-
-                setTimeout(() => div.classList.add("show"), 10);
-                document.getElementById("skill-list").appendChild(div);
-                saveData();
-            }
-
-            closeModal();
-        }
-
-        function updateSkillProgress(skillName) {
-            let newProgress = document.getElementById("editProgressInput").value;
-            newProgress = Math.min(100, Math.max(0, parseInt(newProgress)));
-
-            const skills = document.querySelectorAll("#skill-list .skill");
-            skills.forEach(skill => {
-                if (skill.querySelector("strong").textContent === skillName) {
-                    skill.querySelector(".progress-bar").style.width = newProgress + "%";
-                }
-            });
-
+            document.getElementById("skill-list").appendChild(div);
             saveData();
             closeModal();
         }
+
+        function deleteSkillDirect(btn) {
+            const skillDiv = btn.closest(".skill");
+            const skillName = skillDiv.querySelector("strong").textContent;
+
+            customConfirm(
+                `Delete skill "${skillName}"?\nLinked missions will stop giving XP.`,
+                () => {
+                    skillDiv.remove();
+
+                    // Remove skill link from missions
+                    document.querySelectorAll("#mission-list li").forEach(li => {
+                        if (li.dataset.skill === skillName) {
+                            li.dataset.skill = "";
+                        }
+                    });
+
+                    saveData();
+                }
+            );
+        }
+
+
+        // function updateSkillProgress(skillName) {
+        //     let newProgress = document.getElementById("editProgressInput").value;
+        //     newProgress = Math.min(100, Math.max(0, parseInt(newProgress)));
+
+        //     const skills = document.querySelectorAll("#skill-list .skill");
+        //     skills.forEach(skill => {
+        //         if (skill.querySelector("strong").textContent === skillName) {
+        //             skill.querySelector(".progress-bar").style.width = newProgress + "%";
+        //         }
+        //     });
+
+        //     saveData();
+        //     closeModal();
+        // }
 
         function deleteSkill(skillName) {
             const skills = document.querySelectorAll("#skill-list .skill");
@@ -2795,6 +2904,12 @@
             const goalText = document.getElementById("goalInput").value;
             const priority = document.getElementById("priorityInput").value;
             const deadline = document.getElementById("goalDeadline").value;
+
+            if (isPastDateTime(deadline)) {
+                customAlert("Deadline cannot be in the past.");
+                return;
+            }
+
 
             if (!goalText) {
                 closeModal();
@@ -2914,6 +3029,12 @@
                     startTime: new Date().toISOString()
                 });
 
+                if (isPastDateTime(dateTime)) {
+                    customAlert("Countdown time cannot be in the past.");
+                    return;
+                }
+
+
 
                 saveCountdowns();
                 renderCountdowns();
@@ -3025,6 +3146,13 @@
                     li.setAttribute("data-deducted", "true");
                 }
             });
+
+
+            // 🔥 STORE XP INTO HTML ATTRIBUTES
+            document.querySelectorAll("#skill-list .skill").forEach(skill => {
+                skill.setAttribute("data-xp", skill.dataset.xp || "0");
+            });
+
             localStorage.setItem("missions", document.getElementById("mission-list").innerHTML);
             localStorage.setItem("skills", document.getElementById("skill-list").innerHTML);
             localStorage.setItem("goals", document.getElementById("goal-list").innerHTML);
@@ -3077,6 +3205,7 @@
                     openModal("edit-mission", li);
                 });
 
+
                 const savedOverdue = li.getAttribute("data-overdue-notified");
                 if (savedOverdue === "true") {
                     li.dataset.overdueNotified = "true";
@@ -3096,6 +3225,15 @@
                     removeBtn.onclick = () => removeGoal(removeBtn);
                 }
             });
+
+            document.querySelectorAll("#skill-list .skill").forEach(skill => {
+                const xp = parseInt(skill.getAttribute("data-xp") || "0");
+
+                skill.dataset.xp = xp;
+                skill.querySelector(".xp-count").textContent = xp;
+                skill.querySelector(".progress-bar").style.width = xp + "%";
+            });
+
         }
 
         function resetData() {
@@ -3105,18 +3243,25 @@
             completedMissions = 0;
             appNotifications = [];
 
+            dailyImprovementCount = 0;
+lastImprovementDate = new Date().toDateString();
+
+localStorage.removeItem("dailyImprovementCount");
+localStorage.removeItem("lastImprovementDate");
+
+
             // Reset achievements in memory
             achievementsData = achievements.map(a => ({ ...a, unlocked: false }));
 
             // ===============================
-// RESET MARKETPLACE
-// ===============================
-ownedCards = {};
-localStorage.removeItem("ownedCards");
+            // RESET MARKETPLACE
+            // ===============================
+            ownedCards = {};
+            localStorage.removeItem("ownedCards");
 
-// Re-render marketplace UI
-renderMarketplace();
-renderMyCards();
+            // Re-render marketplace UI
+            renderMarketplace();
+            renderMyCards();
             // ===============================
             // 2. CLEAR LOCAL STORAGE
             // ===============================
@@ -3173,6 +3318,10 @@ renderMyCards();
         }
 
 
+        function isPastDateTime(dateTimeValue) {
+            if (!dateTimeValue) return false; // allow empty deadlines
+            return new Date(dateTimeValue).getTime() < Date.now();
+        }
 
 
         /* =========================================================
@@ -3182,6 +3331,7 @@ renderMyCards();
             renderAchievements();
             renderCountdowns();
             loadData();
+            resetDailyImprovementIfNeeded()
 
             const activePage = document.querySelector("section.active")
                 ? document.querySelector("section.active").id
@@ -3205,4 +3355,3 @@ renderMyCards();
 </body>
 
 </html>
-
