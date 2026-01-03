@@ -2530,13 +2530,22 @@
 <button onclick="closeModal()">Cancel</button>
 
     `;
+    const now = new Date().toISOString().slice(0, 16);
+document.getElementById("countdownDateTime").min = now;
+
             }
         }
 
         // ---- FIXED: closeModal OUTSIDE openModal ----
         function closeModal() {
-            document.getElementById("modal").classList.remove("active");
-        }
+    document.getElementById("modal").classList.remove("active");
+
+    // 🔥 RESET ALL MODAL INPUTS
+    document.querySelectorAll("#modal input, #modal select").forEach(el => {
+        el.value = "";
+    });
+}
+
 
 
         /* Alerts */
@@ -2692,26 +2701,30 @@
                     );
                 }
 
-                // ❗ Overdue (once)
                 if (timeLeft <= 0) {
-                    overdueSpan.innerHTML = `<span class="overdue-badge">Overdue</span>`;
+    overdueSpan.innerHTML = `<span class="overdue-badge">Overdue</span>`;
 
-                    if (!li.dataset.overdueNotified) {
-                        li.dataset.overdueNotified = "true";
-                        pushNotification(
-                            "⚠ Mission Overdue",
-                            `"${li.querySelector('.mission-text').textContent}" is overdue!`
-                        );
-                    }
+    // 🔔 Notify once
+    if (!li.dataset.overdueNotified) {
+        li.dataset.overdueNotified = "true";
+        pushNotification(
+            "⚠ Mission Overdue",
+            `"${li.querySelector('.mission-text').textContent}" is overdue!`
+        );
+    }
 
-                    if (timeLeft <= 0 && !li.dataset.deducted) {
-                        completedMissions = Math.max(0, completedMissions - 1);
-                        li.dataset.deducted = "true";
-                        document.getElementById("missionCounter").textContent = completedMissions;
-                        saveData();
-                    }
+    // ❌ DEDUCT 1 POINT (ONCE)
+    if (!li.dataset.deducted) {
+        completedMissions = Math.max(0, completedMissions - 1);
+        li.dataset.deducted = "true";
 
-                }
+        document.getElementById("missionCounter").textContent = completedMissions;
+        localStorage.setItem("completedMissions", completedMissions);
+
+        saveData();
+    }
+}
+
             });
         }
 
@@ -2728,40 +2741,48 @@
 
 
         function completeMission(btn) {
-            resetDailyImprovementIfNeeded();
+    resetDailyImprovementIfNeeded();
 
-            const li = btn.closest("li");
-            const linkedSkill = li.dataset.skill;
+    const li = btn.closest("li");
+    const linkedSkill = li.dataset.skill;
+    const deadline = li.dataset.deadline;
 
-            li.classList.add("remove");
-            li.dataset.completed = "true";
-            setTimeout(() => li.remove(), 400);
+    li.classList.add("remove");
+    li.dataset.completed = "true";
+    setTimeout(() => li.remove(), 400);
 
-            // ❌ DAILY LIMIT REACHED
-            if (dailyImprovementCount >= DAILY_IMPROVEMENT_LIMIT) {
-                showPopup("You're too tired today. No improvement points gained.");
-                saveData();
-                return;
-            }
+    // ❌ OVERDUE → NO GAIN
+    if (deadline && new Date(deadline).getTime() < Date.now()) {
+        showPopup("Mission was overdue. No improvement points gained.");
+        saveData();
+        return;
+    }
 
-            // ✅ ALLOW GAIN
-            dailyImprovementCount++;
-            completedMissions++;
+    // ❌ DAILY LIMIT REACHED
+    if (dailyImprovementCount >= DAILY_IMPROVEMENT_LIMIT) {
+        showPopup("You're too tired today. No improvement points gained.");
+        saveData();
+        return;
+    }
 
-            localStorage.setItem("dailyImprovementCount", dailyImprovementCount);
-            localStorage.setItem("completedMissions", completedMissions);
+    // ✅ SUCCESSFUL COMPLETION
+    dailyImprovementCount++;
+    completedMissions++;
 
-            document.getElementById("missionCounter").textContent = completedMissions;
+    localStorage.setItem("dailyImprovementCount", dailyImprovementCount);
+    localStorage.setItem("completedMissions", completedMissions);
 
-            // 🔥 ADD SKILL XP ONLY IF POINTS GAINED
-            if (linkedSkill) {
-                increaseSkillXP(linkedSkill, 1);
-            }
+    document.getElementById("missionCounter").textContent = completedMissions;
 
-            checkMissionAchievements();
-            showPopup("Mission completed! Improvement point gained.");
-            saveData();
-        }
+    if (linkedSkill) {
+        increaseSkillXP(linkedSkill, 1);
+    }
+
+    checkMissionAchievements();
+    showPopup("Mission completed! Improvement point gained.");
+    saveData();
+}
+
 
 
         function increaseSkillXP(skillName, amount) {
@@ -3019,29 +3040,41 @@
         }
 
         function addCountdown() {
-            const title = document.getElementById("countdownTitle").value;
-            const dateTime = document.getElementById("countdownDateTime").value;
+    const titleInput = document.getElementById("countdownTitle");
+    const timeInput = document.getElementById("countdownDateTime");
 
-            if (title && dateTime) {
-                countdowns.push({
-                    title,
-                    date: new Date(dateTime).toISOString(),
-                    startTime: new Date().toISOString()
-                });
+    const title = titleInput.value.trim();
+    const dateTime = timeInput.value;
 
-                if (isPastDateTime(dateTime)) {
-                    customAlert("Countdown time cannot be in the past.");
-                    return;
-                }
+    // ❌ EMPTY CHECK
+    if (!title || !dateTime) {
+        closeModal();
+        return;
+    }
 
+    // ❌ PAST TIME CHECK (HARD STOP)
+    if (isPastDateTime(dateTime)) {
+        customAlert("Countdown time cannot be in the past.");
+        return; // 🔥 DO NOT CONTINUE
+    }
 
+    // ✅ ONLY NOW MUTATE STATE
+    countdowns.push({
+        title,
+        date: new Date(dateTime).toISOString(),
+        startTime: new Date().toISOString()
+    });
 
-                saveCountdowns();
-                renderCountdowns();
-            }
+    saveCountdowns();
+    renderCountdowns();
 
-            closeModal();
-        }
+    // 🔥 CLEANUP
+    titleInput.value = "";
+    timeInput.value = "";
+
+    closeModal();
+}
+
 
 
 
@@ -3250,6 +3283,20 @@ localStorage.removeItem("dailyImprovementCount");
 localStorage.removeItem("lastImprovementDate");
 
 
+// RESET COUNTDOWNS
+countdowns = [];
+localStorage.removeItem("countdowns");
+
+if (window.timerInterval) {
+    clearInterval(window.timerInterval);
+    window.timerInterval = null;
+}
+
+document.getElementById("countdown-list").innerHTML = "";
+document.getElementById("countdownCounter").textContent = "0";
+
+
+
             // Reset achievements in memory
             achievementsData = achievements.map(a => ({ ...a, unlocked: false }));
 
@@ -3355,4 +3402,3 @@ localStorage.removeItem("lastImprovementDate");
 </body>
 
 </html>
-
