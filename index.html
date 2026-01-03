@@ -2861,9 +2861,8 @@ document.getElementById("countdownDateTime").min = now;
             <div class="progress-bar" style="width:0%"></div>
         </div>
         <small>XP: <span class="xp-count">0</span></small>
-        
+        <button class="remove-btn" onclick="deleteSkillDirect(this)">Remove</button>
         `;
-            // <button class="remove-btn" onclick="deleteSkillDirect(this)">✖</button>
 
             document.getElementById("skill-list").appendChild(div);
             saveData();
@@ -3402,3 +3401,4 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
