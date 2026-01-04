@@ -1188,6 +1188,16 @@
             color: #22c55e;
             cursor: default;
         }
+         /* Remove blue focus outline */
+*:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Disable blue tap highlight on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
     </style>
 </head>
 
@@ -3401,4 +3411,5 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
