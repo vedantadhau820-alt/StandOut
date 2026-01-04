@@ -14,36 +14,7 @@ const urlsToCache = [
   "/m4.mp3",
   "/m5.mp3",
   "/m6.mp3",
-  "/e1.jpg",
-  "/e2.jpg",
-  "/e3.jpg",
-  "/e4.jpg",
-  "/e5.jpg",
-  "/e6.jpg",
-  "/e7.jpg",
-  "/e8.jpg",
-  "/d1.jpg",
-  "/d2.jpg",
-  "/d3.jpg",
-  "/d4.jpg",
-  "/d5.jpg",
-  "/d6.jpg",
-  "/d7.jpg",
-  "/c1.jpg",
-  "/c2.jpg",
-  "/c3.jpg",
-  "/c4.jpg",
-  "/c5.jpg",
-  "/b1.jpg",
-  "/b2.jpg",
-  "/b3.jpg",
-  "/b4.jpg",
-  "/b5.jpg",
-  "/a1.jpg",
-  "/a2.jpg",
-  "/a3.jpg",
-  "/s1.jpg",
-  "/s2.jpg",
+  "/Images",
 ];
 
 self.addEventListener("install", event => {
@@ -67,3 +38,4 @@ self.addEventListener("fetch", event => {
     caches.match(event.request).then(res => res || fetch(event.request))
   );
 });
+
