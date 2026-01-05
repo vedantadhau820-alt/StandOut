@@ -1198,6 +1198,17 @@
 * {
   -webkit-tap-highlight-color: transparent;
 }
+        .limited-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #facc15;
+  border: 1px solid rgba(250, 204, 21, 0.4);
+        }
     </style>
 </head>
 
@@ -1233,6 +1244,7 @@
                 border-radius: 50%;
                 display: none;
               ">
+                    
                 </span>
             </div>
 
@@ -1318,6 +1330,7 @@
 
         <!-- Card Grid -->
         <div class="card-grid" id="cardShop"></div>
+        <span class="limited-badge">LIMITED</span>
     </section>
 
     <!-- <div class="flex-card grade-s locked">
@@ -1542,6 +1555,9 @@
     </script>
 
     <script>
+        if (!localStorage.getItem("appFirstSeen")) {
+  localStorage.setItem("appFirstSeen", Date.now());
+        }
         const DAILY_IMPROVEMENT_LIMIT = 10;
 
         let dailyImprovementCount = parseInt(localStorage.getItem("dailyImprovementCount")) || 0;
@@ -1619,7 +1635,20 @@
             ====================== */
             { id: "one_above_all", title: "One Above All", grade: "S", quote: "All things return to one.", image: "Images/s1.jpg", cost: 160 },
             { id: "the_presence", title: "The Presence", grade: "S", quote: "I am what must be.", image: "Images/s2.jpg", cost: 200 }
+,{
+  id: "eclipse_will",
+  title: "Eclipse Will",
+  grade: "SS",
+  quote: "I acted when time itself resisted.",
+  image: "Images/le1.jpg",
+  cost: 420,
 
+  // 🔥 Limited Edition Metadata
+  limited: true,
+  releaseStart: "2026-01-10T00:00:00",
+  releaseEnd: "2026-01-20T23:59:59",
+  neverReturn: true
+}
         ];
 
 
@@ -1744,6 +1773,10 @@
                 container.innerHTML = `<p style="opacity:.6;">No cards minted yet.</p>`;
                 return;
             }
+            if (card.limited) {
+  const remaining = new Date(card.releaseEnd) - Date.now();
+  const hours = Math.ceil(remaining / (1000 * 60 * 60));
+            }
 
             ownedList.forEach(card => {
                 const data = ownedCards[card.id];
@@ -1763,6 +1796,7 @@
         </p>
       </div>
     `;
+            
 
                 container.appendChild(div);
             });
@@ -1805,6 +1839,31 @@
             }
         };
 
+        function isLimitedCardActive(card) {
+  if (!card.limited) return true;
+
+  const now = Date.now();
+  const start = new Date(card.releaseStart).getTime();
+  const end = new Date(card.releaseEnd).getTime();
+
+  return now >= start && now <= end;
+        }
+
+        function notifyLimitedEnding(card) {
+  const key = `limited_warned_${card.id}`;
+  if (localStorage.getItem(key)) return;
+
+  const remaining = new Date(card.releaseEnd) - Date.now();
+  if (remaining <= 24 * 60 * 60 * 1000 && remaining > 0) {
+    pushNotification(
+      "Limited Card Ending",
+      `"${card.title}" will disappear forever in 24 hours.`
+    );
+    localStorage.setItem(key, "true");
+  }
+        }
+
+        
 
         document.getElementById("timerCloseBtn").onclick = () => {
             document.getElementById("timerScreen").style.display = "none";
@@ -3411,6 +3470,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
