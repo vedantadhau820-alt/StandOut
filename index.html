@@ -1219,6 +1219,22 @@
 .grade-ss {
   border: 2px solid #ff0080;
 }
+        .limited-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+
+  background: #e11d48;
+  color: white;
+
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 8px;
+
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 10px rgba(225, 29, 72, 0.6);
+        }
     </style>
 </head>
 
@@ -1728,22 +1744,7 @@ releaseEnd: "2026-12-31T23:59:59",
       ${isOwned ? "owned" : "locked"}
     `;
 
-                div.innerHTML = `
-      <img src="${card.image}" alt="${card.title}">
-      <span class="grade-badge">${card.grade}</span>
-
-      <div class="card-body">
-        <h3>${card.title}</h3>
-        <p class="card-quote">${card.quote}</p>
-
-        ${isOwned
-                        ? `<button class="buy-btn" disabled>OWNED</button>`
-                        : `<button class="buy-btn" ${!canBuy ? "disabled" : ""}>
-                 ${card.cost} pts
-               </button>`
-                    }
-      </div>
-    `;
+                
 
                 if (!isOwned && canBuy) {
                     div.querySelector(".buy-btn").onclick = () => buyCard(card.id);
@@ -1764,7 +1765,30 @@ releaseEnd: "2026-12-31T23:59:59",
 }
 
 if (ownedCards[card.id]) {
-  customAlert("You already own this card.");
+  customAlert("You already own this card.");div.innerHTML = `
+  <img src="${card.image}" alt="${card.title}">
+
+  <span class="grade-badge">${card.grade}</span>
+
+  ${
+    card.limited
+      ? `<span class="limited-badge">LIMITED</span>`
+      : ""
+  }
+
+  <div class="card-body">
+    <h3>${card.title}</h3>
+    <p class="card-quote">${card.quote}</p>
+
+    ${
+      isOwned
+        ? `<button class="buy-btn" disabled>OWNED</button>`
+        : `<button class="buy-btn" ${!canBuy ? "disabled" : ""}>
+            ${card.cost} pts
+          </button>`
+    }
+  </div>
+`;
   return;
 }
 
@@ -3526,6 +3550,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
