@@ -1665,9 +1665,16 @@
             let cards = [...cardCatalog];
 
             // 2️⃣ Apply grade filter
-            if (filterGrade !== "ALL") {
-                cards = cards.filter(c => c.grade === filterGrade);
-            }
+            cards = cards.filter(card => {
+  // ✅ If user owns it → ALWAYS keep it
+  if (ownedCards[card.id]) return true;
+
+  // Normal cards always visible
+  if (!card.limited) return true;
+
+  // Limited cards only during active window
+  return isLimitedCardActive(card);
+});
 
             // 3️⃣ SORT LOGIC (THIS IS THE KEY)
             cards.sort((a, b) => {
@@ -1726,6 +1733,15 @@
 
 
         function buyCard(cardId) {
+            if (card.limited && !isLimitedCardActive(card)) {
+  customAlert("This limited card has expired and can never be minted again.");
+  return;
+}
+
+if (ownedCards[card.id]) {
+  customAlert("You already own this card.");
+  return;
+}
             const card = cardCatalog.find(c => c.id === cardId);
             if (!card) return;
 
@@ -1838,22 +1854,32 @@
                 isMarketplaceOpen = true;
             }
         };
+function getSafeNow() {
+  const firstSeen = parseInt(localStorage.getItem("appFirstSeen")) || Date.now();
 
+  if (!localStorage.getItem("appFirstSeen")) {
+    localStorage.setItem("appFirstSeen", firstSeen);
+  }
+
+  return Math.max(Date.now(), firstSeen);
+}
         function isLimitedCardActive(card) {
   if (!card.limited) return true;
 
-  const now = Date.now();
+  const now = getSafeNow();
   const start = new Date(card.releaseStart).getTime();
   const end = new Date(card.releaseEnd).getTime();
 
   return now >= start && now <= end;
         }
-
         function notifyLimitedEnding(card) {
+  if (!card.limited) return;
+
   const key = `limited_warned_${card.id}`;
   if (localStorage.getItem(key)) return;
 
-  const remaining = new Date(card.releaseEnd) - Date.now();
+  const remaining = new Date(card.releaseEnd).getTime() - getSafeNow();
+
   if (remaining <= 24 * 60 * 60 * 1000 && remaining > 0) {
     pushNotification(
       "Limited Card Ending",
@@ -1861,7 +1887,12 @@
     );
     localStorage.setItem(key, "true");
   }
-        }
+}
+
+        cards.forEach(card => {
+  notifyLimitedEnding(card);
+  // render card
+});
 
         
 
@@ -3470,6 +3501,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
