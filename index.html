@@ -1320,6 +1320,7 @@
         <!-- Filter Tabs -->
         <div class="card-filters">
             <button class="active">All</button>
+            <button>SS</button>
             <button>S</button>
             <button>A</button>
             <button>B</button>
@@ -1646,7 +1647,7 @@
   // 🔥 Limited Edition Metadata
   limited: true,
   releaseStart: "2026-01-07T00:00:00",
-releaseEnd: "2026-01-07T01:01:00",
+releaseEnd: "2026-12-31T23:59:59",
   neverReturn: true
 }
         ];
@@ -1699,12 +1700,12 @@ releaseEnd: "2026-01-07T01:01:00",
 
             // 4️⃣ RENDER
             cards.forEach(card => {
-  notifyLimitedEnding(card);
-
-  const isOwned = ownedCards[card.id];
-  const canBuy = completedMissions >= card.cost;
-
-  // render card
+  console.log(
+    card.id,
+    "limited:", card.limited,
+    "active:", isLimitedCardActive(card),
+    "owned:", !!ownedCards[card.id]
+  );
 });
             cards.forEach(card => {
                 const isOwned = ownedCards[card.id];
@@ -1828,7 +1829,15 @@ if (ownedCards[card.id]) {
         }
 
         function gradeRank(grade) {
-            return { SS: 7,  S: 6, A: 5, B: 4, C: 3, D: 2, E: 1 }[grade] || 0;
+  return {
+    SS: 7,
+    S: 6,
+    A: 5,
+    B: 4,
+    C: 3,
+    D: 2,
+    E: 1
+  }[grade] || 0;
         }
 
         document.querySelectorAll(".card-filters button").forEach(btn => {
@@ -3507,6 +3516,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
