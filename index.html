@@ -1645,8 +1645,8 @@
 
   // 🔥 Limited Edition Metadata
   limited: true,
-  releaseStart: "2026-01-70T00:00:00",
-  releaseEnd: "2026-01-70T00:01:00",
+  releaseStart: "2026-01-07T00:00:00",
+releaseEnd: "2026-01-07T01:01:00",
   neverReturn: true
 }
         ];
@@ -1699,6 +1699,14 @@
 
             // 4️⃣ RENDER
             cards.forEach(card => {
+  notifyLimitedEnding(card);
+
+  const isOwned = ownedCards[card.id];
+  const canBuy = completedMissions >= card.cost;
+
+  // render card
+});
+            cards.forEach(card => {
                 const isOwned = ownedCards[card.id];
                 const canBuy = completedMissions >= card.cost;
 
@@ -1736,6 +1744,9 @@
 
 
         function buyCard(cardId) {
+            const card = cardCatalog.find(c => c.id === cardId);
+            if (!card) return;
+
             if (card.limited && !isLimitedCardActive(card)) {
   customAlert("This limited card has expired and can never be minted again.");
   return;
@@ -1745,8 +1756,6 @@ if (ownedCards[card.id]) {
   customAlert("You already own this card.");
   return;
 }
-            const card = cardCatalog.find(c => c.id === cardId);
-            if (!card) return;
 
             if (completedMissions < card.cost) {
                 customAlert("Not enough Improvement Points.");
@@ -1792,10 +1801,7 @@ if (ownedCards[card.id]) {
                 container.innerHTML = `<p style="opacity:.6;">No cards minted yet.</p>`;
                 return;
             }
-            if (card.limited) {
-  const remaining = new Date(card.releaseEnd) - Date.now();
-  const hours = Math.ceil(remaining / (1000 * 60 * 60));
-            }
+            
 
             ownedList.forEach(card => {
                 const data = ownedCards[card.id];
@@ -1822,7 +1828,7 @@ if (ownedCards[card.id]) {
         }
 
         function gradeRank(grade) {
-            return { S: 6, A: 5, B: 4, C: 3, D: 2, E: 1 }[grade] || 0;
+            return { SS: 7,  S: 6, A: 5, B: 4, C: 3, D: 2, E: 1 }[grade] || 0;
         }
 
         document.querySelectorAll(".card-filters button").forEach(btn => {
@@ -1892,10 +1898,7 @@ function getSafeNow() {
   }
 }
 
-        cards.forEach(card => {
-  notifyLimitedEnding(card);
-  // render card
-});
+        
 
         
 
@@ -3504,6 +3507,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
