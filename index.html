@@ -1668,77 +1668,99 @@ releaseEnd: "2026-12-31T23:59:59",
         let ownedCards = JSON.parse(localStorage.getItem("ownedCards")) || {};
 
         function renderMarketplace(filterGrade = "ALL") {
-            const shop = document.getElementById("cardShop");
-            if (!shop) return;
+  const shop = document.getElementById("cardShop");
+  if (!shop) return;
 
-            shop.innerHTML = "";
+  shop.innerHTML = "";
 
-            // 1️⃣ Clone catalog (never mutate original)
-            let cards = [...cardCatalog];
+  // 1️⃣ Clone catalog (never mutate original)
+  let cards = [...cardCatalog];
 
-            // 2️⃣ Apply grade filter
-            if (filterGrade !== "ALL") {
-                cards = cards.filter(c => c.grade === filterGrade);
-            }
-            cards = cards.filter(card => {
-  // ✅ If user owns it → ALWAYS keep it
-  if (ownedCards[card.id]) return true;
+  // 2️⃣ Grade filter
+  if (filterGrade !== "ALL") {
+    cards = cards.filter(card =>
+      card.grade === filterGrade ||
+      (filterGrade === "S" && card.grade === "SS") // SS treated as S
+    );
+  }
 
-  // Normal cards always visible
-  if (!card.limited) return true;
+  // 3️⃣ Visibility rules (CRITICAL)
+  cards = cards.filter(card => {
+    // Owned cards must ALWAYS stay visible
+    if (ownedCards[card.id]) return true;
 
-  // Limited cards only during active window
-  return isLimitedCardActive(card);
-});
+    // Normal cards always visible
+    if (!card.limited) return true;
 
-            // 3️⃣ SORT LOGIC (THIS IS THE KEY)
-            cards.sort((a, b) => {
-                const aOwned = ownedCards[a.id] ? 1 : 0;
-                const bOwned = ownedCards[b.id] ? 1 : 0;
+    // Limited cards only during active window
+    return isLimitedCardActive(card);
+  });
 
-                // Owned cards first
-                if (aOwned !== bOwned) return bOwned - aOwned;
+  // 4️⃣ Sorting (Owned → Affordable → Grade)
+  cards.sort((a, b) => {
+    const aOwned = ownedCards[a.id] ? 1 : 0;
+    const bOwned = ownedCards[b.id] ? 1 : 0;
+    if (aOwned !== bOwned) return bOwned - aOwned;
 
-                const aCanBuy = completedMissions >= a.cost ? 1 : 0;
-                const bCanBuy = completedMissions >= b.cost ? 1 : 0;
+    const aCanBuy = completedMissions >= a.cost ? 1 : 0;
+    const bCanBuy = completedMissions >= b.cost ? 1 : 0;
+    if (aCanBuy !== bCanBuy) return bCanBuy - aCanBuy;
 
-                // Affordable cards next
-                if (aCanBuy !== bCanBuy) return bCanBuy - aCanBuy;
+    return gradeRank(b.grade) - gradeRank(a.grade);
+  });
 
-                // Higher grade first
-                return gradeRank(b.grade) - gradeRank(a.grade);
-            });
+  // 5️⃣ Render cards
+  cards.forEach(card => {
+    notifyLimitedEnding(card);
 
-            // 4️⃣ RENDER
-            cards.forEach(card => {
-  console.log(
-    card.id,
-    "limited:", card.limited,
-    "active:", isLimitedCardActive(card),
-    "owned:", !!ownedCards[card.id]
-  );
-});
-            cards.forEach(card => {
-                const isOwned = ownedCards[card.id];
-                const canBuy = completedMissions >= card.cost;
+    const isOwned = !!ownedCards[card.id];
+    const canBuy = completedMissions >= card.cost;
+    const isActiveLimited = card.limited && isLimitedCardActive(card);
 
-                const div = document.createElement("div");
-                div.className = `
-      flex-card 
-      grade-${card.grade.toLowerCase()} 
+    const div = document.createElement("div");
+    div.className = `
+      flex-card
+      grade-${card.grade.toLowerCase()}
       ${isOwned ? "owned" : "locked"}
     `;
 
-                
+    div.innerHTML = `
+      <img src="${card.image}" alt="${card.title}">
 
-                if (!isOwned && canBuy) {
-                    div.querySelector(".buy-btn").onclick = () => buyCard(card.id);
-                }
+      <!-- Grade -->
+      <span class="grade-badge">${card.grade}</span>
 
-                shop.appendChild(div);
-            });
+      <!-- Limited Badge -->
+      ${
+        card.limited
+          ? `<span class="limited-badge ${isActiveLimited ? "" : "expired"}">
+              ${isActiveLimited ? "LIMITED" : "EXPIRED"}
+            </span>`
+          : ""
+      }
+
+      <div class="card-body">
+        <h3>${card.title}</h3>
+        <p class="card-quote">${card.quote}</p>
+
+        ${
+          isOwned
+            ? `<button class="buy-btn" disabled>OWNED</button>`
+            : `<button class="buy-btn" ${canBuy ? "" : "disabled"}>
+                ${card.cost} pts
+              </button>`
         }
+      </div>
+    `;
 
+    // Buy handler
+    if (!isOwned && canBuy && (!card.limited || isActiveLimited)) {
+      div.querySelector(".buy-btn").onclick = () => buyCard(card.id);
+    }
+
+    shop.appendChild(div);
+  });
+}
 
         function buyCard(cardId) {
             const card = cardCatalog.find(c => c.id === cardId);
@@ -3535,6 +3557,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
