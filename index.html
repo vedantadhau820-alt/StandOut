@@ -1209,6 +1209,16 @@
   color: #facc15;
   border: 1px solid rgba(250, 204, 21, 0.4);
         }
+        /* SS Grade (Limited / Mythic+) */
+.grade-ss .grade-badge {
+  background: linear-gradient(135deg, #ff0080, #7928ca);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(255, 0, 128, 0.7);
+}
+
+.grade-ss {
+  border: 2px solid #ff0080;
+}
     </style>
 </head>
 
@@ -1646,7 +1656,7 @@
 
   // 🔥 Limited Edition Metadata
   limited: true,
-  releaseStart: "2026-01-07T00:00:00",
+  releaseStart: "2026-01-01T00:00:00",
 releaseEnd: "2026-12-31T23:59:59",
   neverReturn: true
 }
@@ -3516,6 +3526,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
