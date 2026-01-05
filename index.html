@@ -1665,6 +1665,9 @@
             let cards = [...cardCatalog];
 
             // 2️⃣ Apply grade filter
+            if (filterGrade !== "ALL") {
+                cards = cards.filter(c => c.grade === filterGrade);
+            }
             cards = cards.filter(card => {
   // ✅ If user owns it → ALWAYS keep it
   if (ownedCards[card.id]) return true;
@@ -3501,6 +3504,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
