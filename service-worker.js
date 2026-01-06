@@ -46,41 +46,37 @@ const urlsToCache = [
   "/Images/s2.jpg",
 ];
 
+const CACHE_NAME = "standout-cache-v2";
+
 self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
-  );
-  self.skipWaiting();
+  self.skipWaiting(); // 🔥 FORCE ACTIVATE
 });
 
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.map(k => k !== CACHE_NAME && caches.delete(k)))
-    )
+    Promise.all([
+      self.clients.claim(), // 🔥 TAKE CONTROL IMMEDIATELY
+      caches.keys().then(keys =>
+        Promise.all(keys.map(k => k !== CACHE_NAME && caches.delete(k)))
+      )
+    ])
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", event => {
   const req = event.request;
 
+  // 🔥 ALWAYS FETCH LATEST JS
   if (req.destination === "script" || req.destination === "style") {
-    event.respondWith(
-      fetch(req)
-        .then(res => {
-          const copy = res.clone();
-          caches.open("standout-v2").then(cache => cache.put(req, copy));
-          return res;
-        })
-        .catch(() => caches.match(req))
-    );
+    event.respondWith(fetch(req));
     return;
   }
 
+  // Other assets → cache-first
   event.respondWith(
     caches.match(req).then(res => res || fetch(req))
   );
 });
+
 
 
