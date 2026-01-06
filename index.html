@@ -1206,31 +1206,29 @@
         .image-preview {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0,0,0,0.9);
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 9999;
-}
-
-.image-preview img {
-  max-width: 90%;
-  max-height: 90%;
-  border-radius: 10px;
+  align-items: center;
+  z-index: 99999;
 }
 
 .image-preview.hidden {
   display: none;
 }
 
+.image-preview img {
+  max-width: 90%;
+  max-height: 90%;
+}
+
 .close-btn {
   position: absolute;
   top: 20px;
   right: 25px;
-  font-size: 30px;
+  font-size: 32px;
   color: white;
   cursor: pointer;
-  user-select: none;
 }
     </style>
 </head>
@@ -1557,8 +1555,8 @@
     </div>
 
     <div id="imagePreview" class="image-preview hidden">
-  <span class="close-btn" onclick="closeImagePreview()">✕</span>
-  <img id="previewImg" src="" alt="">
+  <span class="close-btn">&times;</span>
+  <img id="previewImg">
     </div>
 
     <!-- ===========================
@@ -1662,18 +1660,29 @@
         ];
 
 
-function openImagePreview(src, alt) {
-  const modal = document.getElementById("imagePreview");
-  const img = document.getElementById("previewImg");
+document.addEventListener("click", (e) => {
 
-  img.src = src;
-  img.alt = alt;
-  modal.classList.remove("hidden");
-}
+  // IMAGE CLICK
+  if (e.target.classList.contains("card-image")) {
+    const src = e.target.dataset.full;
+    const modal = document.getElementById("imagePreview");
+    const img = document.getElementById("previewImg");
 
-function closeImagePreview() {
-  document.getElementById("imagePreview").classList.add("hidden");
-}
+    img.src = src;
+    modal.classList.remove("hidden");
+  }
+
+  // CLOSE BUTTON
+  if (e.target.classList.contains("close-btn")) {
+    document.getElementById("imagePreview").classList.add("hidden");
+  }
+
+  // CLICK OUTSIDE IMAGE
+  if (e.target.id === "imagePreview") {
+    document.getElementById("imagePreview").classList.add("hidden");
+  }
+
+});
 
 document.getElementById("imagePreview").addEventListener("click", (e) => {
   if (e.target.id === "imagePreview") {
@@ -1728,7 +1737,7 @@ document.getElementById("imagePreview").addEventListener("click", (e) => {
     `;
 
                 div.innerHTML = `
-      <img src="${card.image}" alt="${card.title} onclick="openImagePreview('${card.image}', '${card.title}')"">
+      <img src="${card.image}" alt="${card.title}">
       <span class="grade-badge">${card.grade}</span>
 
       <div class="card-body">
@@ -3470,6 +3479,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
