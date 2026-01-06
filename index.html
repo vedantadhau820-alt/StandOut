@@ -1768,9 +1768,11 @@
             });
         }
 
-        function gradeRank(grade) {
-            return { S: 6, A: 5, B: 4, C: 3, D: 2, E: 1 }[grade] || 0;
-        }
+        const GRADE_ORDER = ["E", "D", "C", "B", "A", "X", "S"];
+
+function gradeRank(grade) {
+  return GRADE_ORDER.indexOf(grade) + 1;
+}
 
         document.querySelectorAll(".card-filters button").forEach(btn => {
             btn.onclick = () => {
@@ -3411,6 +3413,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
