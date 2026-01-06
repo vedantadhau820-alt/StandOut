@@ -55,4 +55,4 @@
             { id: "the_presence", title: "The Presence", grade: "S", quote: "I am what must be.", image: "Images/s2.jpg", cost: 200 },
             { id: "the_writer", title: "The Writer", grade: "S", quote: "I am The Writer.", image: "Images/s3.jpg", cost: 200 }
         
-        ];
+        ]
