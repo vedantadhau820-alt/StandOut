@@ -1542,6 +1542,9 @@
     </script>
 
     <script>
+
+        const APP_VERSION = "2.1.0"; // change this on every update
+        
         const DAILY_IMPROVEMENT_LIMIT = 10;
 
         let dailyImprovementCount = parseInt(localStorage.getItem("dailyImprovementCount")) || 0;
@@ -3396,6 +3399,26 @@ document.getElementById("countdownCounter").textContent = "0";
             showPage(activePage);
         });
 
+        (function checkAppVersion() {
+  const storedVersion = localStorage.getItem("app_version");
+
+  if (storedVersion !== APP_VERSION) {
+    console.log("🔄 App updated:", storedVersion, "→", APP_VERSION);
+
+    localStorage.setItem("app_version", APP_VERSION);
+
+    // 🔥 DO NOT clear localStorage
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(reg => reg.unregister());
+      });
+    }
+
+    // Reload fresh assets
+    window.location.reload(true);
+  }
+})();
+
         document.querySelectorAll("#goal-list .goal").forEach(div => {
             div.classList.add("show");
             const removeBtn = div.querySelector(".remove-btn");
@@ -3411,6 +3434,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
