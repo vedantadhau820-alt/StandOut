@@ -63,8 +63,23 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", event => {
+  const req = event.request;
+
+  if (req.destination === "script" || req.destination === "style") {
+    event.respondWith(
+      fetch(req)
+        .then(res => {
+          const copy = res.clone();
+          caches.open("standout-v2").then(cache => cache.put(req, copy));
+          return res;
+        })
+        .catch(() => caches.match(req))
+    );
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request).then(res => res || fetch(event.request))
+    caches.match(req).then(res => res || fetch(req))
   );
 });
 
