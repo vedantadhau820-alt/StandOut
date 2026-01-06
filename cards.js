@@ -1,4 +1,4 @@
-[
+const cardCatalog = [
 
             /* ======================
                E GRADE — KNOWN BUT NICHE (8)
@@ -56,3 +56,27 @@
             { id: "the_writer", title: "The Writer", grade: "S", quote: "I am The Writer.", image: "Images/s3.jpg", cost: 200 }
         
         ]
+
+/* =========================
+   NEW CATEGORY: X GRADE
+   (Added in version 2.2.0)
+========================= */
+
+cardCatalog.push(
+  {
+    id: "void_walker",
+    title: "Void Walker",
+    grade: "X",
+    cost: 300,
+    image: "Images/x1.jpg",
+    quote: "I walk where certainty ends."
+  },
+  {
+    id: "time_breaker",
+    title: "Time Breaker",
+    grade: "X",
+    cost: 320,
+    image: "Images/x2.jpg",
+    quote: "I bend what cannot be bent."
+  }
+);
