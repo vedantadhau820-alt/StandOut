@@ -1202,6 +1202,36 @@
   background: linear-gradient(45deg, #7c3aed, #ec4899);
   color: #fff;
         }
+
+        .image-preview {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.image-preview img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 10px;
+}
+
+.image-preview.hidden {
+  display: none;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+}
     </style>
 </head>
 
@@ -1526,6 +1556,10 @@
         </div>
     </div>
 
+    <div id="imagePreview" class="image-preview hidden">
+  <span class="close-btn" onclick="closeImagePreview()">✕</span>
+  <img id="previewImg" src="" alt="">
+    </div>
 
     <!-- ===========================
        JavaScript (Message 3)
@@ -1628,7 +1662,25 @@
         ];
 
 
+function openImagePreview(src, alt) {
+  const modal = document.getElementById("imagePreview");
+  const img = document.getElementById("previewImg");
 
+  img.src = src;
+  img.alt = alt;
+  modal.classList.remove("hidden");
+}
+
+function closeImagePreview() {
+  document.getElementById("imagePreview").classList.add("hidden");
+}
+
+document.getElementById("imagePreview").addEventListener("click", (e) => {
+  if (e.target.id === "imagePreview") {
+    closeImagePreview();
+  }
+});
+        
         let ownedCards = JSON.parse(localStorage.getItem("ownedCards")) || {};
 
         function renderMarketplace(filterGrade = "ALL") {
@@ -1676,7 +1728,7 @@
     `;
 
                 div.innerHTML = `
-      <img src="${card.image}" alt="${card.title}">
+      <img src="${card.image}" alt="${card.title} onclick="openImagePreview('${card.image}', '${card.title}')"">
       <span class="grade-badge">${card.grade}</span>
 
       <div class="card-body">
@@ -3418,6 +3470,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
