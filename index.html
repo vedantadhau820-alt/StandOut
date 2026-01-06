@@ -1567,13 +1567,28 @@
         let isMarketplaceOpen = false;
 
 
-        const cardCatalog = [];
+        let cardCatalog = [];
+
+async function loadCardCatalog() {
+  try {
+    const res = await fetch("/data/cards.json?ts=" + Date.now());
+    cardCatalog = await res.json();
+    renderMarketplace();
+    renderMyCards();
+  } catch (e) {
+    console.error("Failed to load cards", e);
+  }
+}
 
                     
 
 
-        let ownedCards = JSON.parse(localStorage.getItem("ownedCards")) || {};
-
+        let ownedCards;
+try {
+  ownedCards = JSON.parse(localStorage.getItem("ownedCards")) || {};
+} catch {
+  ownedCards = {};
+}
         function renderMarketplace(filterGrade = "ALL") {
             const shop = document.getElementById("cardShop");
             if (!shop) return;
@@ -1738,6 +1753,7 @@
         window.addEventListener("load", () => {
             renderMarketplace();
             renderMyCards();
+            loadCardCatalog()
         });
 
 
@@ -3379,6 +3395,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
