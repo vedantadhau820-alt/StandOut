@@ -1564,7 +1564,7 @@
 
         let isMarketplaceOpen = false;
 
-
+cardCatalog.push(...newCards); // ONCE, not per render
 
         
 
@@ -1573,73 +1573,71 @@
         let ownedCards = JSON.parse(localStorage.getItem("ownedCards")) || {};
 
         function renderMarketplace(filterGrade = "ALL") {
-            const shop = document.getElementById("cardShop");
-            if (!shop) return;
+    const shop = document.getElementById("cardShop");
+    if (!shop) return;
 
-            shop.innerHTML = "";
+    shop.innerHTML = "";
 
-            // 1️⃣ Clone catalog (never mutate original)
-            cardCatalog.push(...newCards);
+    // ✅ 1. Clone catalog ONCE (safe)
+    let cards = [...cardCatalog];
 
-            // 2️⃣ Apply grade filter
-            if (filterGrade !== "ALL") {
-                cards = cards.filter(c => c.grade === filterGrade);
-            }
+    // ✅ 2. Apply grade filter
+    if (filterGrade !== "ALL") {
+        cards = cards.filter(c => c.grade === filterGrade);
+    }
 
-            // 3️⃣ SORT LOGIC (THIS IS THE KEY)
-            cards.sort((a, b) => {
-                const aOwned = ownedCards[a.id] ? 1 : 0;
-                const bOwned = ownedCards[b.id] ? 1 : 0;
+    // ✅ 3. Sort logic
+    cards.sort((a, b) => {
+        const aOwned = ownedCards[a.id] ? 1 : 0;
+        const bOwned = ownedCards[b.id] ? 1 : 0;
 
-                // Owned cards first
-                if (aOwned !== bOwned) return bOwned - aOwned;
+        if (aOwned !== bOwned) return bOwned - aOwned;
 
-                const aCanBuy = completedMissions >= a.cost ? 1 : 0;
-                const bCanBuy = completedMissions >= b.cost ? 1 : 0;
+        const aCanBuy = completedMissions >= a.cost ? 1 : 0;
+        const bCanBuy = completedMissions >= b.cost ? 1 : 0;
 
-                // Affordable cards next
-                if (aCanBuy !== bCanBuy) return bCanBuy - aCanBuy;
+        if (aCanBuy !== bCanBuy) return bCanBuy - aCanBuy;
 
-                // Higher grade first
-                return gradeRank(b.grade) - gradeRank(a.grade);
-            });
+        return gradeRank(b.grade) - gradeRank(a.grade);
+    });
 
-            // 4️⃣ RENDER
-            cards.forEach(card => {
-                const isOwned = ownedCards[card.id];
-                const canBuy = completedMissions >= card.cost;
+    // ✅ 4. Render
+    cards.forEach(card => {
+        const isOwned = ownedCards[card.id];
+        const canBuy = completedMissions >= card.cost;
 
-                const div = document.createElement("div");
-                div.className = `
-      flex-card 
-      grade-${card.grade.toLowerCase()} 
-      ${isOwned ? "owned" : "locked"}
-    `;
+        const div = document.createElement("div");
+        div.className = `
+            flex-card 
+            grade-${card.grade.toLowerCase()} 
+            ${isOwned ? "owned" : "locked"}
+        `;
 
-                div.innerHTML = `
-      <img src="${card.image}" alt="${card.title}">
-      <span class="grade-badge">${card.grade}</span>
+        div.innerHTML = `
+            <img src="${card.image}" alt="${card.title}">
+            <span class="grade-badge">${card.grade}</span>
 
-      <div class="card-body">
-        <h3>${card.title}</h3>
-        <p class="card-quote">${card.quote}</p>
+            <div class="card-body">
+                <h3>${card.title}</h3>
+                <p class="card-quote">${card.quote}</p>
 
-        ${isOwned
+                ${
+                    isOwned
                         ? `<button class="buy-btn" disabled>OWNED</button>`
                         : `<button class="buy-btn" ${!canBuy ? "disabled" : ""}>
-                 ${card.cost} pts
-               </button>`
-                    }
-      </div>
-    `;
-
-                if (!isOwned && canBuy) {
-                    div.querySelector(".buy-btn").onclick = () => buyCard(card.id);
+                              ${card.cost} pts
+                          </button>`
                 }
+            </div>
+        `;
 
-                shop.appendChild(div);
-            });
+        if (!isOwned && canBuy) {
+            div.querySelector(".buy-btn").onclick = () => buyCard(card.id);
         }
+
+        shop.appendChild(div);
+    });
+}
 
 
         function buyCard(cardId) {
@@ -3365,6 +3363,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
