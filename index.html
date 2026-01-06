@@ -1626,6 +1626,13 @@
         
         ];
 
+                    if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    alert("🔄 New version activated");
+    window.location.reload();
+  });
+                    }
+
 
 
         let ownedCards = JSON.parse(localStorage.getItem("ownedCards")) || {};
@@ -3435,6 +3442,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
