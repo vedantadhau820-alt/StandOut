@@ -1198,6 +1198,76 @@
 * {
   -webkit-tap-highlight-color: transparent;
 }
+        /* =========================
+   TOGGLE BUTTON (HARDCORE)
+========================= */
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.toggle-label {
+  font-size: 14px;
+  color: #f87171;
+  font-weight: 600;
+  user-select: none;
+}
+
+/* Switch container */
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
+
+/* Hide default checkbox */
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Slider background */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #374151;
+  border-radius: 999px;
+  transition: background-color 0.25s ease;
+}
+
+/* Circle */
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.25s ease;
+}
+
+/* ON state */
+.toggle input:checked + .slider {
+  background-color: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+}
+
+.toggle input:checked + .slider::before {
+  transform: translateX(22px);
+}
+
+/* Hover */
+.slider:hover {
+  background-color: #4b5563;
+}
     </style>
 </head>
 
@@ -2596,10 +2666,13 @@ window.loadProgressFromFile = loadProgressFromFile;
   <label>Deadline</label>
   <input id="missionDeadline" type="datetime-local">
 
-        <label style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+        <div class="toggle-row">
+  <label class="toggle">
     <input type="checkbox" id="hardcoreToggle">
-    Hardcore Mode
+    <span class="slider"></span>
   </label>
+  <span class="toggle-label">Hardcore Mode</span>
+</div>
 
   <button onclick="addMission()">Add</button>
   <button onclick="closeModal()">Cancel</button>
@@ -3590,6 +3663,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
