@@ -1913,7 +1913,11 @@ window.loadProgressFromFile = loadProgressFromFile;
     lastImprovementDate =
         localStorage.getItem("lastImprovementDate") || today;
         }
-        
+
+        function isExpired(card) {
+  if (!card.limited || !card.expiresAt) return false;
+  return Date.now() > new Date(card.expiresAt).getTime();
+        }
 
 
 
@@ -1974,7 +1978,19 @@ window.loadProgressFromFile = loadProgressFromFile;
                S GRADE — MYTHIC (2)
             ====================== */
             { id: "one_above_all", title: "One Above All", grade: "S", quote: "All things return to one.", image: "Images/s1.jpg", cost: 160 },
-            { id: "the_presence", title: "The Presence", grade: "S", quote: "I am what must be.", image: "Images/s2.jpg", cost: 200 }
+            { id: "the_presence", title: "The Presence", grade: "S", quote: "I am what must be.", image: "Images/s2.jpg", cost: 200 },
+            {
+  id: "thala_edition",
+  title: "Thala",
+  quote: "Seven forever.",
+  grade: "SS",
+  cost: 777,
+
+  image: "Images/thala.jpg",
+
+  limited: true,                 // ✅ tells system it's limited
+  expiresAt: "2026-01-20T23:59"   // ✅ ISO string (VERY IMPORTANT)
+            },
 
         ];
 
@@ -2016,53 +2032,71 @@ window.loadProgressFromFile = loadProgressFromFile;
 
             // 4️⃣ RENDER
             cards.forEach(card => {
-    const isOwned = ownedCards[card.id];
-    const canBuy = completedMissions >= card.cost;
+  const isOwned = !!ownedCards[card.id];
+  const expired = isExpired(card);
 
-    const mintDate =
-        isOwned && ownedCards[card.id]?.mintedAt
-            ? formatDate(ownedCards[card.id].mintedAt)
-            : "";
+  // ❌ hide expired cards if user never owned them
+  if (expired && !isOwned) return;
 
-    const div = document.createElement("div");
-    div.className = `
-        flex-card 
-        grade-${card.grade.toLowerCase()} 
-        ${isOwned ? "owned" : "locked"}
-    `;
+  const canBuy = completedMissions >= card.cost;
 
-    div.innerHTML = `
-        <img src="${card.image}" alt="${card.title}">
-        <span class="grade-badge">${card.grade}</span>
+  const mintDate =
+    isOwned && ownedCards[card.id]?.mintedAt
+      ? formatDate(ownedCards[card.id].mintedAt)
+      : "";
 
-        <div class="card-body">
-            <h3>${card.title}</h3>
-            <p class="card-quote">${card.quote}</p>
+  const div = document.createElement("div");
+  div.className = `
+    flex-card 
+    grade-${card.grade.toLowerCase()} 
+    ${isOwned ? "owned" : "locked"}
+  `;
 
-            ${
-                isOwned
-                    ? `
-                      <p class="mint-date">
-                          Minted on ${mintDate}
-                      </p>
-                      <button class="buy-btn" disabled>OWNED</button>
-                    `
-                    : `
-                      <button class="buy-btn" ${!canBuy ? "disabled" : ""}>
-                          ${card.cost} pts
-                      </button>
-                    `
-            }
-        </div>
-    `;
+  div.innerHTML = `
+    <img src="${card.image}">
 
-                if (!isOwned && canBuy) {
-                    div.querySelector(".buy-btn").onclick = () => buyCard(card.id);
-                }
+    <span class="grade-badge">${card.grade}</span>
 
-                shop.appendChild(div);
-            });
-        }
+    ${
+      card.limited
+        ? `<span class="limited-badge">${card.editionTag || "LIMITED"}</span>`
+        : ""
+    }
+
+    ${
+      expired && isOwned
+        ? `<div class="expired-overlay">EXPIRED</div>`
+        : ""
+    }
+
+    <div class="card-body">
+      <h3>${card.title}</h3>
+      <p class="card-quote">${card.quote}</p>
+
+      ${
+        isOwned
+          ? `<button class="buy-btn" disabled>OWNED</button>`
+          : expired
+            ? `<button class="buy-btn" disabled>EXPIRED</button>`
+            : `<button class="buy-btn" ${!canBuy ? "disabled" : ""}>
+                ${card.cost} pts
+              </button>`
+      }
+
+      ${
+        isOwned && mintDate
+          ? `<div class="mint-date">Minted on ${mintDate}</div>`
+          : ""
+      }
+    </div>
+  `;
+
+  if (!isOwned && canBuy && !expired) {
+    div.querySelector(".buy-btn").onclick = () => buyCard(card.id);
+  }
+
+  shop.appendChild(div);
+});
         
 function formatDate(isoDate) {
     if (!isoDate) return "";
@@ -2075,38 +2109,44 @@ function formatDate(isoDate) {
 }
 
         function buyCard(cardId) {
-            const card = cardCatalog.find(c => c.id === cardId);
-            if (!card) return;
+  const card = cardCatalog.find(c => c.id === cardId);
+  if (!card) return;
 
-            if (completedMissions < card.cost) {
-                customAlert("Not enough Improvement Points.");
-                return;
-            }
+  // ❌ Prevent minting expired limited cards
+  if (card.limited && isExpired(card)) {
+    customAlert("This limited edition card is no longer available.");
+    return;
+  }
 
-            customConfirm(
-                `Mint "${card.title}" for ${card.cost} points?\nThis is permanent.`,
-                () => {
-                    completedMissions -= card.cost;
-                    document.getElementById("missionCounter").textContent = completedMissions;
+  if (completedMissions < card.cost) {
+    customAlert("Not enough Improvement Points.");
+    return;
+  }
 
-                    ownedCards[card.id] = {
-                        owned: true,
-                        mintedAt: new Date().toDateString()
-                    };
+  customConfirm(
+    `Mint "${card.title}" for ${card.cost} points?\nThis is permanent.`,
+    () => {
+      completedMissions -= card.cost;
+      document.getElementById("missionCounter").textContent = completedMissions;
 
-                    localStorage.setItem("ownedCards", JSON.stringify(ownedCards));
-                    localStorage.setItem("completedMissions", completedMissions);
+      ownedCards[card.id] = {
+        mintedAt: new Date().toISOString()   // ✅ ISO format
+      };
 
-                    renderMarketplace();
-                    renderMyCards();
+      localStorage.setItem("ownedCards", JSON.stringify(ownedCards));
+      localStorage.setItem("completedMissions", completedMissions);
 
-                    showSmartNotification(
-                        "Card Minted",
-                        `"${card.title}" is now part of your identity.`
-                    );
-                }
-            );
+      renderMarketplace();
+      renderMyCards();
+
+      showSmartNotification(
+        "Card Minted",
+        `"${card.title}" is now part of your identity.`
+      );
+    }
+  );
         }
+        
 
         function renderMyCards() {
             const container = document.getElementById("ownedCards");
@@ -3975,6 +4015,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
