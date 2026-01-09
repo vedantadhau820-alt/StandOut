@@ -2079,24 +2079,24 @@ window.loadProgressFromFile = loadProgressFromFile;
 
     // 3️⃣ Sort logic
             cards.sort((a, b) => {
-  const aLimited = a.limited ? 1 : 0;
-  const bLimited = b.limited ? 1 : 0;
-  if (aLimited !== bLimited) return bLimited - aLimited;
-  return 0;
+    // 1️⃣ Limited cards ALWAYS on top
+    const aLimited = a.limited ? 1 : 0;
+    const bLimited = b.limited ? 1 : 0;
+    if (aLimited !== bLimited) return bLimited - aLimited;
+
+    // 2️⃣ Owned cards next
+    const aOwned = ownedCards[a.id] ? 1 : 0;
+    const bOwned = ownedCards[b.id] ? 1 : 0;
+    if (aOwned !== bOwned) return bOwned - aOwned;
+
+    // 3️⃣ Affordable cards next
+    const aCanBuy = completedMissions >= a.cost ? 1 : 0;
+    const bCanBuy = completedMissions >= b.cost ? 1 : 0;
+    if (aCanBuy !== bCanBuy) return bCanBuy - aCanBuy;
+
+    // 4️⃣ Higher grade first
+    return gradeRank(b.grade) - gradeRank(a.grade);
 });
-    cards.sort((a, b) => {
-        const aOwned = ownedCards[a.id] ? 1 : 0;
-        const bOwned = ownedCards[b.id] ? 1 : 0;
-
-        if (aOwned !== bOwned) return bOwned - aOwned;
-
-        const aCanBuy = completedMissions >= a.cost ? 1 : 0;
-        const bCanBuy = completedMissions >= b.cost ? 1 : 0;
-
-        if (aCanBuy !== bCanBuy) return bCanBuy - aCanBuy;
-
-        return gradeRank(b.grade) - gradeRank(a.grade);
-    });
 
     // 4️⃣ Render cards
     cards.forEach(card => {
@@ -4082,6 +4082,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
