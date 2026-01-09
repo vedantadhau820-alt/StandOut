@@ -1369,6 +1369,29 @@
   border-radius: 6px;
   cursor: pointer;
 }
+
+.limited-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #7c3aed;
+  color: white;
+  font-size: 10px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.expired-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-weight: bold;
+}
         
     </style>
 </head>
@@ -1974,9 +1997,30 @@ window.loadProgressFromFile = loadProgressFromFile;
                S GRADE — MYTHIC (2)
             ====================== */
             { id: "one_above_all", title: "One Above All", grade: "S", quote: "All things return to one.", image: "Images/s1.jpg", cost: 160 },
-            { id: "the_presence", title: "The Presence", grade: "S", quote: "I am what must be.", image: "Images/s2.jpg", cost: 200 }
+            { id: "the_presence", title: "The Presence", grade: "S", quote: "I am what must be.", image: "Images/s2.jpg", cost: 200 },
+            {
+  id: "iron_will_limited",
+  title: "Iron Will (Founders Edition)",
+  quote: "I do not bend.",
+  grade: "SS",
+  cost: 300,
+  image: "Images/SS_LIMITED.jpg",
+
+  limited: true,
+  availableUntil: "2026-02-01", // YYYY-MM-DD
+  editionTag: "FOUNDERS"
+            }
 
         ];
+
+        function isExpired(card) {
+  if (!card.limited || !card.availableUntil) return false;
+  return new Date(card.availableUntil).getTime() < Date.now();
+}
+
+function isLimited(card) {
+  return card.limited === true;
+}
 
 
 
@@ -2017,6 +2061,11 @@ window.loadProgressFromFile = loadProgressFromFile;
             // 4️⃣ RENDER
             cards.forEach(card => {
     const isOwned = ownedCards[card.id];
+const expired = isExpired(card);
+
+// ❌ Hide expired cards if NOT owned
+if (expired && !isOwned) return;
+    const isOwned = ownedCards[card.id];
     const canBuy = completedMissions >= card.cost;
 
     const mintDate =
@@ -2031,34 +2080,46 @@ window.loadProgressFromFile = loadProgressFromFile;
         ${isOwned ? "owned" : "locked"}
     `;
 
-    div.innerHTML = `
-        <img src="${card.image}" alt="${card.title}">
-        <span class="grade-badge">${card.grade}</span>
+    const expired = isExpired(card);
 
-        <div class="card-body">
-            <h3>${card.title}</h3>
-            <p class="card-quote">${card.quote}</p>
+div.innerHTML = `
+  <img src="${card.image}" alt="${card.title}">
 
-            ${
-                isOwned
-                    ? `
-                      <p class="mint-date">
-                          Minted on ${mintDate}
-                      </p>
-                      <button class="buy-btn" disabled>OWNED</button>
-                    `
-                    : `
-                      <button class="buy-btn" ${!canBuy ? "disabled" : ""}>
-                          ${card.cost} pts
-                      </button>
-                    `
-            }
-        </div>
-    `;
+  <span class="grade-badge">${card.grade}</span>
 
-                if (!isOwned && canBuy) {
-                    div.querySelector(".buy-btn").onclick = () => buyCard(card.id);
-                }
+  ${
+    card.limited
+      ? `<span class="limited-badge">
+           ${card.editionTag || "LIMITED"}
+         </span>`
+      : ""
+  }
+
+  ${
+    expired && isOwned
+      ? `<div class="expired-overlay">EXPIRED</div>`
+      : ""
+  }
+
+  <div class="card-body">
+    <h3>${card.title}</h3>
+    <p class="card-quote">${card.quote}</p>
+
+    ${
+      isOwned
+        ? `<button class="buy-btn" disabled>OWNED</button>`
+        : expired
+          ? `<button class="buy-btn" disabled>EXPIRED</button>`
+          : `<button class="buy-btn" ${!canBuy ? "disabled" : ""}>
+               ${card.cost} pts
+             </button>`
+    }
+  </div>
+`;
+
+               // if (!isOwned && canBuy) {
+                  //  div.querySelector(".buy-btn").onclick = () => buyCard(card.id);
+            //    }
 
                 shop.appendChild(div);
             });
@@ -2081,6 +2142,11 @@ function formatDate(isoDate) {
             if (completedMissions < card.cost) {
                 customAlert("Not enough Improvement Points.");
                 return;
+            }
+
+            if (card.limited && isExpired(card)) {
+  customAlert("This limited edition card is no longer available.");
+  return;
             }
 
             customConfirm(
@@ -3975,6 +4041,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
