@@ -1977,9 +1977,11 @@ window.loadProgressFromFile = loadProgressFromFile;
         }
 
         function isExpired(card) {
-  if (!card.limited || !card.expiresAt) return false;
+  if (!card.limited) return false;
+  if (!card.expiresAt) return false;
+
   return Date.now() > new Date(card.expiresAt).getTime();
-        }
+}
 
 
 
@@ -2042,16 +2044,14 @@ window.loadProgressFromFile = loadProgressFromFile;
             { id: "one_above_all", title: "One Above All", grade: "S", quote: "All things return to one.", image: "Images/s1.jpg", cost: 160 },
             { id: "the_presence", title: "The Presence", grade: "S", quote: "I am what must be.", image: "Images/s2.jpg", cost: 200 },
             {
-  id: "thala_edition",
-  title: "Thala",
-  quote: "Seven forever.",
-  grade: "SS",
-  cost: 777,
+  id: "reze",
+  title: "Reze",
+  grade: "X",
+  cost: 69,
+  image: "Images/b4.jpg",
 
-  image: "Images/b5.jpg",
-
-  limited: true,                 // ✅ tells system it's limited
-  expiresAt: "2026-01-20T23:59"   // ✅ ISO string (VERY IMPORTANT)
+  limited: true,
+  expiresAt: "2026-01-20T23:59:59Z"
             },
 
         ];
@@ -4084,6 +4084,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
