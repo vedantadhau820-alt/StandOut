@@ -1633,16 +1633,14 @@
 
     <script>
         function simulateNextDay() {
-    const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toDateString();
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
 
-    // ⏭ Force date change
-    localStorage.setItem("lastImprovementDate", tomorrow);
+    localStorage.setItem("lastImprovementDate", yesterday);
 
-    // ⏭ Force daily reset
     resetDailyImprovementIfNeeded();
     resetDailyRecurringMissionsIfNeeded();
 
-    customAlert("🧪 Simulated next day!");
+    customAlert("🧪 Next day simulated");
         }
 
         function getAppSnapshot() {
@@ -3089,46 +3087,51 @@ document.getElementById("countdownDateTime").min = now;
 
         function resetDailyRecurringMissionsIfNeeded() {
     const today = new Date().toDateString();
-    const missionsHTML = localStorage.getItem("missions");
-    if (!missionsHTML) return;
 
-    const temp = document.createElement("div");
-    temp.innerHTML = missionsHTML;
+    document.querySelectorAll("#mission-list li").forEach(li => {
+        if (li.dataset.repeat !== "daily") return;
 
-    let changed = false;
-
-    temp.querySelectorAll("li").forEach(li => {
-        if (li.dataset.repeat === "daily") {
-            if (li.dataset.lastRun !== today) {
-                li.dataset.completed = "false";
-                li.dataset.deaducted = "";
-                li.dataset.warned = "";
-                li.dataset.overdueNotified = "";
-
-                changed = true;
-            }
+        if (li.dataset.lastRun !== today) {
+            li.dataset.completed = "false";
+            li.dataset.deducted = "";
+            li.dataset.warned = "";
+            li.dataset.overdueNotified = "";
+            li.style.display = ""; // 👈 show again
         }
     });
 
-    if (changed) {
-        localStorage.setItem("missions", temp.innerHTML);
-    }
+    saveData(); // persist revived missions
         }
+        
 
-        function completeMission(btn) {
+        
+     function completeMission(btn) {
     resetDailyImprovementIfNeeded();
 
     const li = btn.closest("li");
+    if (!li) return;
+
     const linkedSkill = li.dataset.skill;
     const deadline = li.dataset.deadline;
+    const isHardcore = li.dataset.hardcore === "true";
+    const repeatType = li.dataset.repeat || "none";
 
-    li.classList.add("remove");
+    // Mark completion metadata FIRST
     li.dataset.completed = "true";
-    setTimeout(() => li.remove(), 400);
+    li.dataset.lastRun = new Date().toDateString();
 
-    // ❌ OVERDUE → NO GAIN
+    // ❌ OVERDUE → NO REWARD
     if (deadline && new Date(deadline).getTime() < Date.now()) {
         showPopup("Mission was overdue. No improvement points gained.");
+
+        // 🔁 Daily missions → hide only
+        if (repeatType === "daily") {
+            li.style.display = "none";
+        } else {
+            li.classList.add("remove");
+            setTimeout(() => li.remove(), 400);
+        }
+
         saveData();
         return;
     }
@@ -3136,21 +3139,17 @@ document.getElementById("countdownDateTime").min = now;
     // ❌ DAILY LIMIT REACHED
     if (dailyImprovementCount >= DAILY_IMPROVEMENT_LIMIT) {
         showPopup("You're too tired today. No improvement points gained.");
+
+        if (repeatType === "daily") {
+            li.style.display = "none";
+        } else {
+            li.classList.add("remove");
+            setTimeout(() => li.remove(), 400);
+        }
+
         saveData();
         return;
     }
-
-            // AFTER successful completion
-li.dataset.completed = "true";
-li.dataset.lastRun = new Date().toDateString();
-
-// 🔁 Daily missions should disappear but return tomorrow
-if (li.dataset.repeat === "daily") {
-    li.remove();
-} else {
-    li.classList.add("remove");
-    setTimeout(() => li.remove(), 400);
-}
 
     // ✅ SUCCESSFUL COMPLETION
     dailyImprovementCount++;
@@ -3161,15 +3160,26 @@ if (li.dataset.repeat === "daily") {
 
     document.getElementById("missionCounter").textContent = completedMissions;
 
+    // 🎯 Skill XP
     if (linkedSkill) {
         increaseSkillXP(linkedSkill, 1);
     }
 
+    // 🏆 Achievements
     checkMissionAchievements();
-    showPopup("Mission completed! Improvement point gained.");
-    saveData();
-}
 
+    showPopup("Mission completed! Improvement point gained.");
+
+    // 🔁 Daily missions → hide (NOT delete)
+    if (repeatType === "daily") {
+        li.style.display = "none";
+    } else {
+        li.classList.add("remove");
+        setTimeout(() => li.remove(), 400);
+    }
+
+    saveData();
+     }
 
 
         function increaseSkillXP(skillName, amount) {
@@ -3623,6 +3633,13 @@ if (li.dataset.repeat === "daily") {
             li.dataset.overdueNotified = "true";
         }
 
+        if (
+    li.dataset.repeat === "daily" &&
+    li.dataset.completed === "true"
+) {
+    li.style.display = "none";
+        }
+
         if (li.getAttribute("data-repeat")) {
     li.dataset.repeat = li.getAttribute("data-repeat");
 }
@@ -3810,6 +3827,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
