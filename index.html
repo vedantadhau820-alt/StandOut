@@ -1320,7 +1320,7 @@
 }
 
 .cheat-input {
-  width: 90%;
+  width: 95%;
   padding: 0.7rem;
   background: #1f2937;
   border: none;
@@ -3924,6 +3924,7 @@ resetBtn.addEventListener("mouseleave", cancelResetHold);
 
 function startResetHold() {
     resetHoldTimer = setTimeout(() => {
+        if (navigator.vibrate) navigator.vibrate(80);
         openCheatModal();
     }, RESET_HOLD_DURATION);
 }
@@ -3974,6 +3975,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
