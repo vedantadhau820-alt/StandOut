@@ -1814,6 +1814,9 @@
     </script>
 
     <script>
+        window.addEventListener("load", () => {
+    renderMarketplace();
+});
 
         function getTodayKey() {
     return new Date().toISOString().slice(0, 10);
@@ -4079,6 +4082,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
