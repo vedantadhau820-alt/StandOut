@@ -1268,6 +1268,11 @@
 .slider:hover {
   background-color: #4b5563;
 }
+.achievement-date {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-top: 4px;
+}
     </style>
 </head>
 
@@ -2440,10 +2445,18 @@ window.loadProgressFromFile = loadProgressFromFile;
                     : '<i class="fas fa-lock"></i>';
 
                 div.innerHTML = `
-      <div class="achievement-icon">${icon}</div>
-      <div class="achievement-title">${ach.title}</div>
-      <div class="achievement-desc">${ach.desc}</div>
-    `;
+  <div class="achievement-icon">${icon}</div>
+  <div class="achievement-title">${ach.title}</div>
+  <div class="achievement-desc">${ach.desc}</div>
+
+  ${
+    ach.unlocked && ach.unlockedAt
+      ? `<div class="achievement-date">
+           Achieved on: ${ach.unlockedAt}
+         </div>`
+      : ""
+  }
+`;
 
                 container.appendChild(div);
             });
@@ -2451,15 +2464,18 @@ window.loadProgressFromFile = loadProgressFromFile;
 
         /* Unlock an achievement */
         function unlockAchievement(id) {
-            const ach = achievementsData.find(a => a.id === id);
-            if (ach && !ach.unlocked) {
-                ach.unlocked = true;
-                localStorage.setItem("achievements", JSON.stringify(achievementsData));
+    const ach = achievementsData.find(a => a.id === id);
 
-                pushNotification("🏆 New Achievement", `You unlocked: "${ach.title}"`);
-                showAchievementPopup(ach.title, ach.desc);
-                renderAchievements();
-            }
+    if (ach && !ach.unlocked) {
+        ach.unlocked = true;
+        ach.unlockedAt = new Date().toDateString(); // 🔥 ADD THIS
+
+        localStorage.setItem("achievements", JSON.stringify(achievementsData));
+
+        pushNotification("🏆 New Achievement", `You unlocked: "${ach.title}"`);
+        showAchievementPopup(ach.title, ach.desc);
+        renderAchievements();
+    }
         }
 
         function showAchievementPopup(title, desc) {
@@ -3732,6 +3748,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
