@@ -2060,12 +2060,12 @@ function isLimited(card) {
 
             // 4️⃣ RENDER
             cards.forEach(card => {
-    const isOwned = ownedCards[card.id];
-const expired = isExpired(card);
+    const isOwned = !!ownedCards[card.id];
+    const expired = isExpired(card);
 
-// ❌ Hide expired cards if NOT owned
-if (expired && !isOwned) return;
-    const isOwned = ownedCards[card.id];
+    // ❌ Hide expired cards if NOT owned
+    if (expired && !isOwned) return;
+
     const canBuy = completedMissions >= card.cost;
 
     const mintDate =
@@ -2080,50 +2080,53 @@ if (expired && !isOwned) return;
         ${isOwned ? "owned" : "locked"}
     `;
 
-    const expired = isExpired(card);
+    div.innerHTML = `
+      <img src="${card.image}" alt="${card.title}">
 
-div.innerHTML = `
-  <img src="${card.image}" alt="${card.title}">
+      <span class="grade-badge">${card.grade}</span>
 
-  <span class="grade-badge">${card.grade}</span>
+      ${
+        card.limited
+          ? `<span class="limited-badge">
+               ${card.editionTag || "LIMITED"}
+             </span>`
+          : ""
+      }
 
-  ${
-    card.limited
-      ? `<span class="limited-badge">
-           ${card.editionTag || "LIMITED"}
-         </span>`
-      : ""
-  }
+      ${
+        expired && isOwned
+          ? `<div class="expired-overlay">EXPIRED</div>`
+          : ""
+      }
 
-  ${
-    expired && isOwned
-      ? `<div class="expired-overlay">EXPIRED</div>`
-      : ""
-  }
+      <div class="card-body">
+        <h3>${card.title}</h3>
+        <p class="card-quote">${card.quote}</p>
 
-  <div class="card-body">
-    <h3>${card.title}</h3>
-    <p class="card-quote">${card.quote}</p>
-
-    ${
-      isOwned
-        ? `<button class="buy-btn" disabled>OWNED</button>`
-        : expired
-          ? `<button class="buy-btn" disabled>EXPIRED</button>`
-          : `<button class="buy-btn" ${!canBuy ? "disabled" : ""}>
-               ${card.cost} pts
-             </button>`
-    }
-  </div>
-`;
-
-               // if (!isOwned && canBuy) {
-                  //  div.querySelector(".buy-btn").onclick = () => buyCard(card.id);
-            //    }
-
-                shop.appendChild(div);
-            });
+        ${
+          isOwned
+            ? `<button class="buy-btn" disabled>OWNED</button>`
+            : expired
+              ? `<button class="buy-btn" disabled>EXPIRED</button>`
+              : `<button class="buy-btn" ${!canBuy ? "disabled" : ""}>
+                   ${card.cost} pts
+                 </button>`
         }
+
+        ${
+          isOwned && mintDate
+            ? `<div class="mint-date">Minted on ${mintDate}</div>`
+            : ""
+        }
+      </div>
+    `;
+
+    if (!isOwned && canBuy && !expired) {
+        div.querySelector(".buy-btn").onclick = () => buyCard(card.id);
+    }
+
+    shop.appendChild(div);
+});
         
 function formatDate(isoDate) {
     if (!isoDate) return "";
@@ -4041,6 +4044,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
