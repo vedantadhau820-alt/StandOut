@@ -3946,12 +3946,14 @@ function closeCheatModal() {
 
         function confirmCheat() {
     const code = document.getElementById("cheatInput").value.trim();
+            
 
     if (code !== "Thala") {
         customAlert("Invalid cheat code.");
         return;
     }
 
+            if (navigator.vibrate) navigator.vibrate(80);
     // ✅ CHEAT SUCCESS
     completedMissions = 9999;
     dailyImprovementCount = 0;
@@ -3972,6 +3974,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
