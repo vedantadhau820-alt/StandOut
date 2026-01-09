@@ -2695,8 +2695,8 @@ window.loadProgressFromFile = loadProgressFromFile;
   <input id="missionDeadline" type="datetime-local">
 
   <label>Repeat</label>
-<select id="repeatMode">
-  <option value="once">One-time</option>
+<select id="repeatType">
+  <option value="none">One time</option>
   <option value="daily">Daily</option>
 </select>
 
@@ -2867,68 +2867,7 @@ document.getElementById("countdownDateTime").min = now;
         ========================================================= */
         const missionMilestones = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
 
-       function addMission() {
-    const text = document.getElementById("missionInput").value;
-    const deadline = document.getElementById("missionDeadline").value;
-    const linkedSkill = document.getElementById("linkedSkill").value;
-    const isHardcore = document.getElementById("hardcoreToggle").checked;
-    const repeatMode = document.getElementById("repeatMode").value; // 🔁 NEW
-
-    if (!text) {
-        closeModal();
-        return;
-    }
-
-    if (isPastDateTime(deadline)) {
-        customAlert("Deadline cannot be in the past.");
-        return;
-    }
-
-    // 🔥 HARD RULE: Hardcore or Daily requires deadline
-    if ((isHardcore || repeatMode === "daily") && !deadline) {
-        customAlert("Daily or Hardcore missions must have a deadline.");
-        return;
-    }
-
-    const li = document.createElement("li");
-
-    li.dataset.deadline = deadline || "";
-    li.dataset.skill = linkedSkill || "";
-    li.dataset.completed = "false";
-    li.dataset.hardcore = isHardcore ? "true" : "false";
-    li.dataset.repeat = repeatMode;                 // 🔁 NEW
-    li.dataset.lastReset = new Date().toDateString(); // 🔁 NEW
-
-    let deadlineText = "";
-    if (deadline) {
-        const d = new Date(deadline);
-        deadlineText = `${d.toLocaleDateString([], { day: "numeric", month: "short" })},
-                        ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
-    }
-
-    li.innerHTML = `
-      <span class="mission-text">
-        ${text}
-        ${isHardcore ? " 🔥" : ""}
-        ${repeatMode === "daily" ? " 🔁" : ""}
-      </span>
-
-      <div class="deadline-row">
-        <span class="deadlineDisplay">${deadlineText}</span>
-        <span class="overdueMark"></span>
-        <button class="complete-btn" onclick="completeMission(this)">✔</button>
-      </div>
-    `;
-
-    li.addEventListener("click", (e) => {
-        if (e.target.classList.contains("complete-btn")) return;
-        openModal("edit-mission", li);
-    });
-
-    document.getElementById("mission-list").appendChild(li);
-    saveData();
-    closeModal();
-       }
+       
 
 
 
@@ -2980,7 +2919,63 @@ document.getElementById("countdownDateTime").min = now;
     saveData();
     closeModal();
         }
-        
+
+        function addMission() {
+    const text = document.getElementById("missionInput").value;
+    const deadline = document.getElementById("missionDeadline").value;
+    const linkedSkill = document.getElementById("linkedSkill").value;
+    const isHardcore = document.getElementById("hardcoreToggle").checked;
+    const repeatType = document.getElementById("repeatType").value;
+
+    if (!deadline) {
+        customAlert("Mission must have a deadline.");
+        return;
+    }
+
+    if (isPastDateTime(deadline)) {
+        customAlert("Deadline cannot be in the past.");
+        return;
+    }
+
+    if (!text) {
+        closeModal();
+        return;
+    }
+
+    const li = document.createElement("li");
+
+    li.dataset.deadline = deadline;
+    li.dataset.skill = linkedSkill || "";
+    li.dataset.completed = "false";
+    li.dataset.hardcore = isHardcore ? "true" : "false";
+    li.dataset.repeat = repeatType;
+    li.dataset.lastRun = ""; // 👈 critical
+
+    const d = new Date(deadline);
+    const deadlineText = `${d.toLocaleDateString([], { day: "numeric", month: "short" })}, 
+                          ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+
+    li.innerHTML = `
+      <span class="mission-text">
+        ${text} ${isHardcore ? "🔥" : ""} ${repeatType === "daily" ? "🔁" : ""}
+      </span>
+
+      <div class="deadline-row">
+          <span class="deadlineDisplay">${deadlineText}</span>
+          <span class="overdueMark"></span>
+          <button class="complete-btn" onclick="completeMission(this)">✔</button>
+      </div>
+    `;
+
+    li.addEventListener("click", (e) => {
+        if (e.target.classList.contains("complete-btn")) return;
+        openModal("edit-mission", li);
+    });
+
+    document.getElementById("mission-list").appendChild(li);
+    saveData();
+    closeModal();
+        }
 
         function checkMissedDeadlines() {
     const missions = document.querySelectorAll("#mission-list li");
@@ -3094,34 +3089,31 @@ document.getElementById("countdownDateTime").min = now;
 
         function resetDailyRecurringMissionsIfNeeded() {
     const today = new Date().toDateString();
+    const missionsHTML = localStorage.getItem("missions");
+    if (!missionsHTML) return;
 
-    document.querySelectorAll("#mission-list li").forEach(li => {
-        if (li.dataset.repeat !== "daily") return;
+    const temp = document.createElement("div");
+    temp.innerHTML = missionsHTML;
 
-        // Prevent multiple resets in same day
-        if (li.dataset.lastReset === today) return;
+    let changed = false;
 
-        li.dataset.completed = "false";
-        li.dataset.lastReset = today;
+    temp.querySelectorAll("li").forEach(li => {
+        if (li.dataset.repeat === "daily") {
+            if (li.dataset.lastRun !== today) {
+                li.dataset.completed = "false";
+                li.dataset.deaducted = "";
+                li.dataset.warned = "";
+                li.dataset.overdueNotified = "";
 
-        // Clear punishment flags
-        delete li.dataset.deducted;
-        delete li.dataset.overdueNotified;
-        delete li.dataset.warned;
-
-        // Restore UI
-        li.classList.remove("remove");
-        li.querySelector(".overdueMark").innerHTML = "";
-
-        // Reattach if removed
-        if (!document.body.contains(li)) {
-            document.getElementById("mission-list").appendChild(li);
+                changed = true;
+            }
         }
     });
 
-    saveData();
+    if (changed) {
+        localStorage.setItem("missions", temp.innerHTML);
+    }
         }
-
 
         function completeMission(btn) {
     resetDailyImprovementIfNeeded();
@@ -3147,6 +3139,18 @@ document.getElementById("countdownDateTime").min = now;
         saveData();
         return;
     }
+
+            // AFTER successful completion
+li.dataset.completed = "true";
+li.dataset.lastRun = new Date().toDateString();
+
+// 🔁 Daily missions should disappear but return tomorrow
+if (li.dataset.repeat === "daily") {
+    li.remove();
+} else {
+    li.classList.add("remove");
+    setTimeout(() => li.remove(), 400);
+}
 
     // ✅ SUCCESSFUL COMPLETION
     dailyImprovementCount++;
@@ -3806,6 +3810,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
