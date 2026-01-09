@@ -1278,6 +1278,27 @@
   opacity: 0.65;
   margin-top: 4px;
         }
+        #cheatModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+#cheatModal.active {
+  display: flex;
+}
+
+#cheatModal .modal-content {
+  background: #111;
+  padding: 16px;
+  border-radius: 12px;
+  width: 85%;
+  max-width: 320px;
+}
     </style>
 </head>
 
@@ -1414,6 +1435,18 @@
         <button class="buy-btn">150 pts</button>
     </div>
 </div> -->
+    <div id="cheatModal" class="modal">
+  <div class="modal-content">
+    <h3>Cheat Access</h3>
+    <p style="opacity:.7;font-size:13px;">
+      Enter cheat code
+    </p>
+    <input id="cheatInput" placeholder="Cheat code">
+
+    <button onclick="confirmCheat()">Confirm</button>
+    <button onclick="closeCheatModal()">Cancel</button>
+  </div>
+    </div>
 
     <!-- ===========================
        Goals Section
@@ -3793,12 +3826,67 @@ document.getElementById("countdownCounter").textContent = "0";
         });
 
 
+        //Cheats
+
+      let resetHoldTimer = null;
+const RESET_HOLD_DURATION = 5000; // 5 seconds
+
+const resetBtn = document.getElementById("resetDataBtn"); // your reset button ID
+
+resetBtn.addEventListener("touchstart", startResetHold);
+resetBtn.addEventListener("mousedown", startResetHold);
+
+resetBtn.addEventListener("touchend", cancelResetHold);
+resetBtn.addEventListener("mouseup", cancelResetHold);
+resetBtn.addEventListener("mouseleave", cancelResetHold);
+
+function startResetHold() {
+    resetHoldTimer = setTimeout(() => {
+        openCheatModal();
+    }, RESET_HOLD_DURATION);
+}
+
+function cancelResetHold() {
+    clearTimeout(resetHoldTimer);
+}
+        function openCheatModal() {
+    document.getElementById("cheatModal").classList.add("active");
+    document.getElementById("cheatInput").value = "";
+}
+
+function closeCheatModal() {
+    document.getElementById("cheatModal").classList.remove("active");
+}
+
+        function confirmCheat() {
+    const code = document.getElementById("cheatInput").value.trim();
+
+    if (code !== "Thala") {
+        customAlert("Invalid cheat code.");
+        return;
+    }
+
+    // ✅ CHEAT SUCCESS
+    completedMissions = 9999;
+    dailyImprovementCount = 0;
+
+    localStorage.setItem("completedMissions", completedMissions);
+    document.getElementById("missionCounter").textContent = completedMissions;
+
+    closeCheatModal();
+
+    showSmartNotification(
+        "Cheat Activated",
+        "9999 Improvement Points granted."
+    );
+        }
     </script>
 
 
 </body>
 
 </html>
+
 
 
 
