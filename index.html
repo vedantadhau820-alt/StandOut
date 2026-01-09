@@ -1299,6 +1299,103 @@
   width: 85%;
   max-width: 320px;
 }
+        /* ===============================
+   CHEAT MODAL UI
+================================ */
+
+.cheat-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.cheat-modal.active {
+  display: flex;
+}
+
+.cheat-box {
+  width: 90%;
+  max-width: 340px;
+  background: linear-gradient(180deg, #111, #080808);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.8);
+  animation: cheatPop 0.35s ease;
+}
+
+@keyframes cheatPop {
+  from {
+    transform: scale(0.9) translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+.cheat-header {
+  font-size: 16px;
+  font-weight: 600;
+  color: #facc15;
+  margin-bottom: 6px;
+}
+
+.cheat-subtext {
+  font-size: 12px;
+  opacity: 0.65;
+  margin-bottom: 14px;
+}
+
+.cheat-input {
+  width: 100%;
+  padding: 10px;
+  background: #000;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+}
+
+.cheat-input:focus {
+  border-color: #facc15;
+  box-shadow: 0 0 0 1px rgba(250,204,21,0.4);
+}
+
+.cheat-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.cheat-confirm {
+  flex: 1;
+  background: #16a34a;
+  border: none;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.cheat-confirm:active {
+  transform: scale(0.97);
+}
+
+.cheat-cancel {
+  flex: 1;
+  background: #1f2933;
+  border: none;
+  color: #aaa;
+  padding: 10px;
+  border-radius: 8px;
+}
     </style>
 </head>
 
@@ -1435,16 +1532,27 @@
         <button class="buy-btn">150 pts</button>
     </div>
 </div> -->
-    <div id="cheatModal" class="modal">
-  <div class="modal-content">
-    <h3>Cheat Access</h3>
-    <p style="opacity:.7;font-size:13px;">
-      Enter cheat code
-    </p>
-    <input id="cheatInput" placeholder="Cheat code">
+    <div id="cheatModal" class="cheat-modal">
+  <div class="cheat-box">
+    <div class="cheat-header">
+    Developer Access
+    </div>
 
-    <button onclick="confirmCheat()">Confirm</button>
-    <button onclick="closeCheatModal()">Cancel</button>
+    <p class="cheat-subtext">
+      Long-press detected. Enter authorization code.
+    </p>
+
+    <input 
+      id="cheatInput" 
+      class="cheat-input"
+      placeholder="Enter cheat code"
+      autocomplete="off"
+    >
+
+    <div class="cheat-actions">
+      <button class="cheat-confirm" onclick="confirmCheat()">Unlock</button>
+      <button class="cheat-cancel" onclick="closeCheatModal()">Cancel</button>
+    </div>
   </div>
     </div>
 
@@ -3850,9 +3958,13 @@ function cancelResetHold() {
     clearTimeout(resetHoldTimer);
 }
         function openCheatModal() {
-    document.getElementById("cheatModal").classList.add("active");
-    document.getElementById("cheatInput").value = "";
-}
+    const modal = document.getElementById("cheatModal");
+    modal.classList.add("active");
+
+    setTimeout(() => {
+        document.getElementById("cheatInput").focus();
+    }, 150);
+        }
 
 function closeCheatModal() {
     document.getElementById("cheatModal").classList.remove("active");
@@ -3886,6 +3998,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
