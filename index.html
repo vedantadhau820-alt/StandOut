@@ -2682,20 +2682,46 @@ window.loadProgressFromFile = loadProgressFromFile;
 
             // ---- Edit Mission ----
             if (type === "edit-mission" && skillDiv) {
-                const oldText = skillDiv.querySelector(".mission-text").textContent;
-                const oldDeadline = skillDiv.dataset.deadline || "";
+    const oldText = skillDiv.querySelector(".mission-text").textContent.replace("🔥", "").trim();
+    const oldDeadline = skillDiv.dataset.deadline || "";
+    const isHardcore = skillDiv.dataset.hardcore === "true";
 
-                content.innerHTML = `
+    content.innerHTML = `
       <h3>Edit Mission</h3>
+
       <input id="editMissionInput" value="${oldText}">
+
       <label>Deadline</label>
-      <input id="editMissionDeadline" type="datetime-local" value="${oldDeadline}">
+      <input 
+        id="editMissionDeadline" 
+        type="datetime-local" 
+        value="${oldDeadline}"
+        ${isHardcore ? "disabled" : ""}
+      >
+
+      ${
+        isHardcore
+          ? `<p style="color:#ef4444;font-size:12px;margin-top:6px;">
+              🔥 Hardcore mission — deadline cannot be changed
+            </p>`
+          : ""
+      }
+
       <button onclick="updateMission()">Update</button>
-      <button onclick="deleteMission()">Delete</button>
+
+      ${
+        isHardcore
+          ? `<button disabled 
+              style="opacity:0.5;cursor:not-allowed;">
+              🔒 Hardcore — Cannot Delete
+            </button>`
+          : `<button onclick="deleteMission()">Delete</button>`
+      }
+
       <button onclick="closeModal()">Cancel</button>
     `;
 
-                window.missionBeingEdited = skillDiv;
+    window.missionBeingEdited = skillDiv;
             }
 
             // ---- Add Skill ----
@@ -2808,18 +2834,26 @@ document.getElementById("countdownDateTime").min = now;
         const missionMilestones = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
 
         function addMission() {
-    const text = document.getElementById("missionInput").value;
+    const text = document.getElementById("missionInput").value.trim();
     const deadline = document.getElementById("missionDeadline").value;
     const linkedSkill = document.getElementById("linkedSkill").value;
     const isHardcore = document.getElementById("hardcoreToggle").checked;
 
-    if (isPastDateTime(deadline)) {
-        customAlert("Deadline cannot be in the past.");
+    // ❌ Text required
+    if (!text) {
+        closeModal();
         return;
     }
 
-    if (!text) {
-        closeModal();
+    // 🔥 HARDCORE → DEADLINE REQUIRED
+    if (isHardcore && !deadline) {
+        customAlert("🔥 Hardcore missions require a deadline.");
+        return;
+    }
+
+    // ❌ Past deadline not allowed
+    if (deadline && isPastDateTime(deadline)) {
+        customAlert("Deadline cannot be in the past.");
         return;
     }
 
@@ -2829,11 +2863,13 @@ document.getElementById("countdownDateTime").min = now;
     li.dataset.completed = "false";
     li.dataset.hardcore = isHardcore ? "true" : "false";
 
+    // Format deadline text
     let deadlineText = "";
     if (deadline) {
         const d = new Date(deadline);
-        deadlineText = `${d.toLocaleDateString([], { day: "numeric", month: "short" })}, 
-                        ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+        const date = d.toLocaleDateString([], { day: "numeric", month: "short" });
+        const time = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        deadlineText = `${date}, ${time}`;
     }
 
     li.innerHTML = `
@@ -2848,6 +2884,7 @@ document.getElementById("countdownDateTime").min = now;
         </div>
     `;
 
+    // Click to edit (except complete)
     li.addEventListener("click", (e) => {
         if (e.target.classList.contains("complete-btn")) return;
         openModal("edit-mission", li);
@@ -2861,43 +2898,54 @@ document.getElementById("countdownDateTime").min = now;
 
 
 
-
-        setInterval(checkMissedDeadlines, 60000); // check every 1 minute
+        setInterval(checkMissedDeadlines, 15000); // check every 1 minute
 
         function updateMission() {
-            const li = window.missionBeingEdited;
-            if (!li) return;
+    const li = window.missionBeingEdited;
+    if (!li) return;
 
-            const newText = document.getElementById("editMissionInput").value;
-            const newDeadline = document.getElementById("editMissionDeadline").value;
-            if (isPastDateTime(newDeadline)) {
-                customAlert("Deadline cannot be in the past.");
-                return;
-            }
+    const newText = document.getElementById("editMissionInput").value.trim();
+    const newDeadline = document.getElementById("editMissionDeadline").value;
+    const isHardcore = li.dataset.hardcore === "true";
 
-            // Update text
-            li.querySelector(".mission-text").textContent = newText;
+    if (!newText) {
+        closeModal();
+        return;
+    }
 
-            // Update deadline
-            if (newDeadline) {
-                const d = new Date(newDeadline);
-                const dateString = d.toLocaleDateString([], { day: "numeric", month: "short" });
-                const timeString = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    // ❌ Hardcore → deadline cannot change
+    if (!isHardcore && newDeadline && isPastDateTime(newDeadline)) {
+        customAlert("Deadline cannot be in the past.");
+        return;
+    }
 
-                li.querySelector(".deadlineDisplay").textContent = `${dateString}, ${timeString}`;
-                li.dataset.deadline = newDeadline;
-            } else {
-                li.querySelector(".deadlineDisplay").textContent = "";
-                delete li.dataset.deadline;
-            }
+    // ✅ Restore 🔥 if hardcore
+    li.querySelector(".mission-text").innerHTML =
+        newText + (isHardcore ? " 🔥" : "");
 
-            // Reset overdue state on update
-            li.querySelector(".overdueMark").innerHTML = "";
-            delete li.dataset.deducted;
+    // Update deadline ONLY if not hardcore
+    if (!isHardcore) {
+        if (newDeadline) {
+            const d = new Date(newDeadline);
+            const date = d.toLocaleDateString([], { day: "numeric", month: "short" });
+            const time = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-            saveData();
-            closeModal();
+            li.querySelector(".deadlineDisplay").textContent = `${date}, ${time}`;
+            li.dataset.deadline = newDeadline;
+        } else {
+            li.querySelector(".deadlineDisplay").textContent = "";
+            li.dataset.deadline = "";
         }
+
+        // Reset overdue state if deadline changed
+        li.querySelector(".overdueMark").innerHTML = "";
+        delete li.dataset.deducted;
+    }
+
+    saveData();
+    closeModal();
+        }
+        
 
         function checkMissedDeadlines() {
     const missions = document.querySelectorAll("#mission-list li");
@@ -2980,12 +3028,33 @@ document.getElementById("countdownDateTime").min = now;
 
 
         function deleteMission() {
-            const li = window.missionBeingEdited;
-            if (!li) return;
+    const li = window.missionBeingEdited;
+    if (!li) return;
 
-            li.remove();
-            saveData();
-            closeModal();
+    if (li.dataset.hardcore === "true") {
+        const deadline = li.dataset.deadline;
+        const now = Date.now();
+
+        if (deadline && new Date(deadline).getTime() <= now) {
+            customAlert("🔥 Hardcore missions cannot be deleted after deadline.");
+            return;
+        }
+
+        customConfirm(
+            "🔥 This is a Hardcore mission.\nDelete only if created by mistake?",
+            () => {
+                li.remove();
+                saveData();
+                closeModal();
+            }
+        );
+        return;
+    }
+
+    // Normal mission
+    li.remove();
+    saveData();
+    closeModal();
         }
 
 
@@ -3663,6 +3732,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
