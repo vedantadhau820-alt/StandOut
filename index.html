@@ -1431,6 +1431,20 @@
 .flex-card.limited:not(.owned) {
   animation: limitedGlow 2.5s infinite ease-in-out;
 }
+
+    .limited-expiry {
+    margin-top: 6px;
+    font-size: 11px;
+    color: #facc15; /* amber */
+    opacity: 0.9;
+}
+
+.limited-expiry .time-left {
+    display: inline-block;
+    margin-top: 2px;
+    color: #ef4444; /* red */
+    font-weight: 600;
+}
         
     </style>
 </head>
@@ -1842,6 +1856,19 @@
 
         setInterval(enforceDailyReset, 60 * 1000);
 
+        function timeLeftUntil(dateStr) {
+    const diff = new Date(dateStr).getTime() - Date.now();
+    if (diff <= 0) return "Expired";
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const mins = Math.floor((diff / (1000 * 60)) % 60);
+
+    if (days > 0) return `${days}d ${hours}h left`;
+    if (hours > 0) return `${hours}h ${mins}m left`;
+    return `${mins}m left`;
+        }
+
 function getAppSnapshot() {
     return {
         version: "2.1.0",
@@ -2054,7 +2081,7 @@ window.loadProgressFromFile = loadProgressFromFile;
   image: "Images/b4.jpg",
 
   limited: true,
-  expiresAt: "2026-01-09T22:54:30Z"
+  expiresAt: "2026-01-09T23:03:30Z"
             },
 
         ];
@@ -2138,7 +2165,18 @@ window.loadProgressFromFile = loadProgressFromFile;
             <div class="card-body">
                 <h3>${card.title}</h3>
                 <p class="card-quote">${card.quote}</p>
-
+                ${
+  card.limited && !isOwned
+    ? `
+      <div class="limited-expiry">
+        ⏳ Expires: ${formatExpiryDate(card.expiresAt)}<br>
+        <span class="time-left">
+          ${timeLeftUntil(card.expiresAt)}
+        </span>
+      </div>
+    `
+    : ""
+                }
                 ${
                     isOwned
                         ? `<button class="buy-btn" disabled>OWNED</button>`
@@ -4082,6 +4120,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
