@@ -1999,104 +1999,104 @@ window.loadProgressFromFile = loadProgressFromFile;
         let ownedCards = JSON.parse(localStorage.getItem("ownedCards")) || {};
 
         function renderMarketplace(filterGrade = "ALL") {
-            const shop = document.getElementById("cardShop");
-            if (!shop) return;
+    const shop = document.getElementById("cardShop");
+    if (!shop) return;
 
-            shop.innerHTML = "";
+    shop.innerHTML = "";
 
-            // 1️⃣ Clone catalog (never mutate original)
-            let cards = [...cardCatalog];
+    // 1️⃣ Clone catalog (never mutate original)
+    let cards = [...cardCatalog];
 
-            // 2️⃣ Apply grade filter
-            if (filterGrade !== "ALL") {
-                cards = cards.filter(c => c.grade === filterGrade);
+    // 2️⃣ Apply grade filter
+    if (filterGrade !== "ALL") {
+        cards = cards.filter(c => c.grade === filterGrade);
+    }
+
+    // 3️⃣ Sort logic
+    cards.sort((a, b) => {
+        const aOwned = ownedCards[a.id] ? 1 : 0;
+        const bOwned = ownedCards[b.id] ? 1 : 0;
+
+        if (aOwned !== bOwned) return bOwned - aOwned;
+
+        const aCanBuy = completedMissions >= a.cost ? 1 : 0;
+        const bCanBuy = completedMissions >= b.cost ? 1 : 0;
+
+        if (aCanBuy !== bCanBuy) return bCanBuy - aCanBuy;
+
+        return gradeRank(b.grade) - gradeRank(a.grade);
+    });
+
+    // 4️⃣ Render cards
+    cards.forEach(card => {
+        const isOwned = !!ownedCards[card.id];
+        const expired = isExpired(card);
+
+        // ❌ Hide expired limited cards if not owned
+        if (expired && !isOwned) return;
+
+        const canBuy = completedMissions >= card.cost;
+
+        const mintDate =
+            isOwned && ownedCards[card.id]?.mintedAt
+                ? formatDate(ownedCards[card.id].mintedAt)
+                : "";
+
+        const div = document.createElement("div");
+        div.className = `
+            flex-card 
+            grade-${card.grade.toLowerCase()} 
+            ${isOwned ? "owned" : "locked"}
+        `;
+
+        div.innerHTML = `
+            <img src="${card.image}" alt="${card.title}">
+
+            <span class="grade-badge">${card.grade}</span>
+
+            ${
+                card.limited
+                    ? `<span class="limited-badge">
+                         ${card.editionTag || "LIMITED"}
+                       </span>`
+                    : ""
             }
 
-            // 3️⃣ SORT LOGIC (THIS IS THE KEY)
-            cards.sort((a, b) => {
-                const aOwned = ownedCards[a.id] ? 1 : 0;
-                const bOwned = ownedCards[b.id] ? 1 : 0;
+            ${
+                expired && isOwned
+                    ? `<div class="expired-overlay">EXPIRED</div>`
+                    : ""
+            }
 
-                // Owned cards first
-                if (aOwned !== bOwned) return bOwned - aOwned;
+            <div class="card-body">
+                <h3>${card.title}</h3>
+                <p class="card-quote">${card.quote}</p>
 
-                const aCanBuy = completedMissions >= a.cost ? 1 : 0;
-                const bCanBuy = completedMissions >= b.cost ? 1 : 0;
+                ${
+                    isOwned
+                        ? `<button class="buy-btn" disabled>OWNED</button>`
+                        : expired
+                            ? `<button class="buy-btn" disabled>EXPIRED</button>`
+                            : `<button class="buy-btn" ${!canBuy ? "disabled" : ""}>
+                                  ${card.cost} pts
+                               </button>`
+                }
 
-                // Affordable cards next
-                if (aCanBuy !== bCanBuy) return bCanBuy - aCanBuy;
+                ${
+                    isOwned && mintDate
+                        ? `<div class="mint-date">Minted on ${mintDate}</div>`
+                        : ""
+                }
+            </div>
+        `;
 
-                // Higher grade first
-                return gradeRank(b.grade) - gradeRank(a.grade);
-            });
+        if (!isOwned && canBuy && !expired) {
+            div.querySelector(".buy-btn").onclick = () => buyCard(card.id);
+        }
 
-            // 4️⃣ RENDER
-            cards.forEach(card => {
-  const isOwned = !!ownedCards[card.id];
-  const expired = isExpired(card);
-
-  // ❌ hide expired cards if user never owned them
-  if (expired && !isOwned) return;
-
-  const canBuy = completedMissions >= card.cost;
-
-  const mintDate =
-    isOwned && ownedCards[card.id]?.mintedAt
-      ? formatDate(ownedCards[card.id].mintedAt)
-      : "";
-
-  const div = document.createElement("div");
-  div.className = `
-    flex-card 
-    grade-${card.grade.toLowerCase()} 
-    ${isOwned ? "owned" : "locked"}
-  `;
-
-  div.innerHTML = `
-    <img src="${card.image}">
-
-    <span class="grade-badge">${card.grade}</span>
-
-    ${
-      card.limited
-        ? `<span class="limited-badge">${card.editionTag || "LIMITED"}</span>`
-        : ""
-    }
-
-    ${
-      expired && isOwned
-        ? `<div class="expired-overlay">EXPIRED</div>`
-        : ""
-    }
-
-    <div class="card-body">
-      <h3>${card.title}</h3>
-      <p class="card-quote">${card.quote}</p>
-
-      ${
-        isOwned
-          ? `<button class="buy-btn" disabled>OWNED</button>`
-          : expired
-            ? `<button class="buy-btn" disabled>EXPIRED</button>`
-            : `<button class="buy-btn" ${!canBuy ? "disabled" : ""}>
-                ${card.cost} pts
-              </button>`
-      }
-
-      ${
-        isOwned && mintDate
-          ? `<div class="mint-date">Minted on ${mintDate}</div>`
-          : ""
-      }
-    </div>
-  `;
-
-  if (!isOwned && canBuy && !expired) {
-    div.querySelector(".buy-btn").onclick = () => buyCard(card.id);
-  }
-
-  shop.appendChild(div);
-});
+        shop.appendChild(div);
+    });
+        }
         
 function formatDate(isoDate) {
     if (!isoDate) return "";
@@ -4015,6 +4015,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
