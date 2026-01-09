@@ -1632,6 +1632,18 @@
     </script>
 
     <script>
+        function simulateNextDay() {
+    const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toDateString();
+
+    // ⏭ Force date change
+    localStorage.setItem("lastImprovementDate", tomorrow);
+
+    // ⏭ Force daily reset
+    resetDailyImprovementIfNeeded();
+    resetDailyRecurringMissionsIfNeeded();
+
+    customAlert("🧪 Simulated next day!");
+        }
 
         function getAppSnapshot() {
     return {
@@ -3794,6 +3806,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
