@@ -1273,6 +1273,11 @@
     opacity: 0.6;
     margin-top: 4px;
 }
+        .mint-date {
+  font-size: 11px;
+  opacity: 0.65;
+  margin-top: 4px;
+        }
     </style>
 </head>
 
@@ -1633,7 +1638,31 @@
 
     <script>
 
-        function getAppSnapshot() {
+        function getTodayKey() {
+    return new Date().toISOString().slice(0, 10);
+        }
+
+        function enforceDailyReset() {
+    const today = getTodayKey();
+
+    if (lastImprovementDate !== today) {
+        dailyImprovementCount = 0;
+        lastImprovementDate = today;
+
+        localStorage.setItem("dailyImprovementCount", "0");
+        localStorage.setItem("lastImprovementDate", today);
+
+        console.log("✅ Daily reset enforced:", today);
+    }
+        }
+
+        window.addEventListener("load", () => {
+    enforceDailyReset();
+});
+
+        setInterval(enforceDailyReset, 60 * 1000);
+
+function getAppSnapshot() {
     return {
         version: "2.1.0",
         exportedAt: new Date().toISOString(),
@@ -1697,7 +1726,6 @@
         }
         
 function saveProgressToFile() {
-    
 
     const snapshot = getAppSnapshot();
     const blob = new Blob(
@@ -1770,6 +1798,7 @@ window.loadProgressFromFile = loadProgressFromFile;
     lastImprovementDate =
         localStorage.getItem("lastImprovementDate") || today;
         }
+        
 
 
 
@@ -1872,31 +1901,44 @@ window.loadProgressFromFile = loadProgressFromFile;
 
             // 4️⃣ RENDER
             cards.forEach(card => {
-                const isOwned = ownedCards[card.id];
-                const canBuy = completedMissions >= card.cost;
+    const isOwned = ownedCards[card.id];
+    const canBuy = completedMissions >= card.cost;
 
-                const div = document.createElement("div");
-                div.className = `
-      flex-card 
-      grade-${card.grade.toLowerCase()} 
-      ${isOwned ? "owned" : "locked"}
+    const mintDate =
+        isOwned && ownedCards[card.id]?.mintedAt
+            ? formatDate(ownedCards[card.id].mintedAt)
+            : "";
+
+    const div = document.createElement("div");
+    div.className = `
+        flex-card 
+        grade-${card.grade.toLowerCase()} 
+        ${isOwned ? "owned" : "locked"}
     `;
 
-                div.innerHTML = `
-      <img src="${card.image}" alt="${card.title}">
-      <span class="grade-badge">${card.grade}</span>
+    div.innerHTML = `
+        <img src="${card.image}" alt="${card.title}">
+        <span class="grade-badge">${card.grade}</span>
 
-      <div class="card-body">
-        <h3>${card.title}</h3>
-        <p class="card-quote">${card.quote}</p>
+        <div class="card-body">
+            <h3>${card.title}</h3>
+            <p class="card-quote">${card.quote}</p>
 
-        ${isOwned
-                        ? `<button class="buy-btn" disabled>OWNED</button>`
-                        : `<button class="buy-btn" ${!canBuy ? "disabled" : ""}>
-                 ${card.cost} pts
-               </button>`
-                    }
-      </div>
+            ${
+                isOwned
+                    ? `
+                      <p class="mint-date">
+                          Minted on ${mintDate}
+                      </p>
+                      <button class="buy-btn" disabled>OWNED</button>
+                    `
+                    : `
+                      <button class="buy-btn" ${!canBuy ? "disabled" : ""}>
+                          ${card.cost} pts
+                      </button>
+                    `
+            }
+        </div>
     `;
 
                 if (!isOwned && canBuy) {
@@ -1906,7 +1948,16 @@ window.loadProgressFromFile = loadProgressFromFile;
                 shop.appendChild(div);
             });
         }
-
+        
+function formatDate(isoDate) {
+    if (!isoDate) return "";
+    const d = new Date(isoDate);
+    return d.toLocaleDateString([], {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    });
+}
 
         function buyCard(cardId) {
             const card = cardCatalog.find(c => c.id === cardId);
@@ -3748,6 +3799,7 @@ document.getElementById("countdownCounter").textContent = "0";
 </body>
 
 </html>
+
 
 
 
