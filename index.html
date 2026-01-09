@@ -2081,7 +2081,7 @@ window.loadProgressFromFile = loadProgressFromFile;
   image: "Images/b4.jpg",
 
   limited: true,
-  expiresAt: "2026-01-09T23:09:40Z"
+  expiresAt: "2026-01-09T23:12:10Z"
             },
 
         ];
@@ -2113,24 +2113,22 @@ window.loadProgressFromFile = loadProgressFromFile;
 
     // 4️⃣ SORT (single, unified sort)
     cards.sort((a, b) => {
-        // Limited cards on top (only in ALL view)
-        if (filterGrade === "ALL") {
-            const aLimited = a.limited ? 1 : 0;
-            const bLimited = b.limited ? 1 : 0;
-            if (aLimited !== bLimited) return bLimited - aLimited;
-        }
-
-        // Owned cards
+  const aLimited = a.limited ? 1 : 0;
+  const bLimited = b.limited ? 1 : 0;
+  if (aLimited !== bLimited) return bLimited - aLimited;
+  return 0;
+});
+    cards.sort((a, b) => {
         const aOwned = ownedCards[a.id] ? 1 : 0;
         const bOwned = ownedCards[b.id] ? 1 : 0;
+
         if (aOwned !== bOwned) return bOwned - aOwned;
 
-        // Affordable cards
         const aCanBuy = completedMissions >= a.cost ? 1 : 0;
         const bCanBuy = completedMissions >= b.cost ? 1 : 0;
+
         if (aCanBuy !== bCanBuy) return bCanBuy - aCanBuy;
 
-        // Grade
         return gradeRank(b.grade) - gradeRank(a.grade);
     });
 
@@ -4121,6 +4119,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
