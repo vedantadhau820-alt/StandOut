@@ -1278,40 +1278,18 @@
   opacity: 0.65;
   margin-top: 4px;
         }
-        #cheatModal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.6);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-#cheatModal.active {
-  display: flex;
-}
-
-#cheatModal .modal-content {
-  background: #111;
-  padding: 16px;
-  border-radius: 12px;
-  width: 85%;
-  max-width: 320px;
-}
         /* ===============================
-   CHEAT MODAL UI
+   CHEAT MODAL (APP THEME)
 ================================ */
 
 .cheat-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.75);
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 99999;
+  z-index: 9999;
 }
 
 .cheat-modal.active {
@@ -1320,82 +1298,78 @@
 
 .cheat-box {
   width: 90%;
-  max-width: 340px;
-  background: linear-gradient(180deg, #111, #080808);
-  border-radius: 14px;
-  padding: 18px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.8);
-  animation: cheatPop 0.35s ease;
+  max-width: 360px;
+  background: #111827;               /* same as modals */
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.35);
+  animation: fadeIn 0.3s ease;
 }
 
-@keyframes cheatPop {
-  from {
-    transform: scale(0.9) translateY(10px);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-  }
-}
-
-.cheat-header {
-  font-size: 16px;
+.cheat-title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  color: #3B82F6;                    /* app primary */
   font-weight: 600;
-  color: #facc15;
-  margin-bottom: 6px;
 }
 
-.cheat-subtext {
-  font-size: 12px;
-  opacity: 0.65;
-  margin-bottom: 14px;
+.cheat-desc {
+  font-size: 13px;
+  opacity: 0.75;
+  margin-bottom: 1rem;
 }
 
 .cheat-input {
   width: 100%;
-  padding: 10px;
-  background: #000;
-  border: 1px solid #333;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 14px;
+  padding: 0.7rem;
+  background: #1f2937;
+  border: none;
+  border-radius: 6px;
+  color: white;
   outline: none;
+  font-size: 14px;
+}
+
+.cheat-input::placeholder {
+  color: #9ca3af;
 }
 
 .cheat-input:focus {
-  border-color: #facc15;
-  box-shadow: 0 0 0 1px rgba(250,204,21,0.4);
+  outline: 2px solid #3B82F6;
 }
 
 .cheat-actions {
   display: flex;
   gap: 10px;
-  margin-top: 16px;
+  margin-top: 1.2rem;
 }
 
 .cheat-confirm {
   flex: 1;
-  background: #16a34a;
+  background: #3B82F6;
+  color: white;
   border: none;
-  color: #fff;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 0.6rem;
+  border-radius: 6px;
   font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-.cheat-confirm:active {
-  transform: scale(0.97);
+.cheat-confirm:hover {
+  background: #2563EB;
 }
 
 .cheat-cancel {
   flex: 1;
-  background: #1f2933;
+  background: #1f2937;
+  color: #9ca3af;
   border: none;
-  color: #aaa;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
 }
+        
     </style>
 </head>
 
@@ -3998,6 +3972,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
