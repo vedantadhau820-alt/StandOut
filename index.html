@@ -2081,7 +2081,7 @@ window.loadProgressFromFile = loadProgressFromFile;
   image: "Images/b4.jpg",
 
   limited: true,
-  expiresAt: "2026-01-09T23:03:30Z"
+  expiresAt: "2026-01-09T23:06:10Z"
             },
 
         ];
@@ -2106,10 +2106,12 @@ window.loadProgressFromFile = loadProgressFromFile;
 
     // 3️⃣ Sort logic
             cards.sort((a, b) => {
-    // 1️⃣ Limited cards ALWAYS on top
-    const aLimited = a.limited ? 1 : 0;
-    const bLimited = b.limited ? 1 : 0;
-    if (aLimited !== bLimited) return bLimited - aLimited;
+    // 1️⃣ LIMITED PRIORITY — only when filter allows it
+    if (filterGrade === "ALL") {
+        const aLimited = a.limited ? 1 : 0;
+        const bLimited = b.limited ? 1 : 0;
+        if (aLimited !== bLimited) return bLimited - aLimited;
+    }
 
     // 2️⃣ Owned cards next
     const aOwned = ownedCards[a.id] ? 1 : 0;
@@ -4120,6 +4122,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
