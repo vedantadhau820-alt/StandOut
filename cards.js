@@ -1,4 +1,4 @@
-const cardCatalog = [
+window.cardCatalog = [
 
             /* ======================
                E GRADE — KNOWN BUT NICHE (8)
@@ -53,30 +53,15 @@ const cardCatalog = [
             ====================== */
             { id: "one_above_all", title: "One Above All", grade: "S", quote: "All things return to one.", image: "Images/s1.jpg", cost: 160 },
             { id: "the_presence", title: "The Presence", grade: "S", quote: "I am what must be.", image: "Images/s2.jpg", cost: 200 },
-            { id: "the_writer", title: "The Writer", grade: "S", quote: "I am The Writer.", image: "Images/s3.jpg", cost: 200 }
-        
-        ]
+            {
+  id: "chainsaw_man",
+  title: "Chainsaw Man",
+  grade: "w",
+  cost: 11,
+  image: "Images/w2.jpg",
 
-/* =========================
-   NEW CATEGORY: X GRADE
-   (Added in version 2.2.0)
-========================= */
+  limited: true,
+  expiresAt: "2026-01-10T23:29:30Z"
+            },
 
-cardCatalog.push(
-  {
-    id: "void_walker",
-    title: "Void Walker",
-    grade: "X",
-    cost: 300,
-    image: "Images/x1.jpg",
-    quote: "I walk where certainty ends."
-  },
-  {
-    id: "time_breaker",
-    title: "Time Breaker",
-    grade: "X",
-    cost: 320,
-    image: "Images/x2.jpg",
-    quote: "I bend what cannot be bent."
-  }
-);
+        ];
