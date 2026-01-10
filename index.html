@@ -1812,12 +1812,19 @@
             });
         }
     </script>
+    <script src="cards.js"></script>
 
     <script>
+        if (!window.cardCatalog) {
+  console.error("❌ cardCatalog not loaded");
+  window.cardCatalog = [];
+        }
+        
         window.addEventListener("load", () => {
     renderMarketplace();
 });
 
+        
         function getTodayKey() {
     return new Date().toISOString().slice(0, 10);
         }
@@ -1980,10 +1987,10 @@ window.loadProgressFromFile = loadProgressFromFile;
         }
 
         function isExpired(card) {
-  if (!card.limited) return false;
-  if (!card.expiresAt) return false;
+  if (!card.limited || !card.expiresAt) return false;
 
-  return Date.now() > new Date(card.expiresAt).getTime();
+  const now = window.__timeTravelNow || Date.now();
+  return new Date(card.expiresAt).getTime() < now;
 }
 
 
@@ -2002,7 +2009,7 @@ window.loadProgressFromFile = loadProgressFromFile;
     shop.innerHTML = "";
 
     // 1️⃣ Clone catalog (never mutate original)
-    let cards = [...cardCatalog];
+    let cards = [...window.cardCatalog];
 
     // 2️⃣ Apply grade filter
     if (filterGrade !== "ALL") {
@@ -2108,7 +2115,7 @@ function formatDate(isoDate) {
 }
 
         function buyCard(cardId) {
-  const card = cardCatalog.find(c => c.id === cardId);
+  const card = window.cardCatalog.find(c => c.id === cardId);
   if (!card) return;
 
   // ❌ Prevent minting expired limited cards
@@ -2153,7 +2160,7 @@ function formatDate(isoDate) {
 
             container.innerHTML = "";
 
-            const ownedList = cardCatalog
+            const ownedList = window.cardCatalog
                 .filter(card => ownedCards[card.id])
                 .sort((a, b) => gradeRank(b.grade) - gradeRank(a.grade));
 
@@ -4014,6 +4021,7 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
 
