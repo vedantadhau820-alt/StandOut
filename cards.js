@@ -73,5 +73,15 @@ window.cardCatalog = [
   limited: true,
   expiresAt: "2026-01-10T23:29:30Z"
             },
+            {
+  id: "okarun",
+  title: "Okarun",
+  grade: "w",
+  cost: 11,
+  image: "Images/w3.jpg",
+
+  limited: true,
+  expiresAt: "2026-01-10T23:29:30Z"
+            },
 
         ];
