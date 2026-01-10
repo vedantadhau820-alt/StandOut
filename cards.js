@@ -63,5 +63,15 @@ window.cardCatalog = [
   limited: true,
   expiresAt: "2026-01-10T23:29:30Z"
             },
+            {
+  id: "momo_ayase",
+  title: "Momo Ayase",
+  grade: "w",
+  cost: 11,
+  image: "Images/w1.jpg",
+
+  limited: true,
+  expiresAt: "2026-01-10T23:29:30Z"
+            },
 
         ];
