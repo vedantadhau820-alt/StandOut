@@ -198,3 +198,15 @@ section.active {
     bottom: 6.8rem;
   }
     }
+
+/* =========================================================
+   SECTION VISIBILITY (FIX)
+========================================================= */
+
+section {
+    display: none;
+}
+
+section.active {
+    display: block !important;
+}
