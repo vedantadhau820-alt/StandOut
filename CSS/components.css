@@ -341,3 +341,40 @@ ul li.remove {
   opacity: 0.6;
   margin-top: 4px;
 }
+
+/* =========================================================
+   MARKETPLACE FILTER BUTTONS
+========================================================= */
+
+.card-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.card-filters button {
+    background: #111827;
+    color: #9ca3af;
+    border: 1px solid #1f2937;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+/* Hover */
+.card-filters button:hover {
+    color: #3B82F6;
+    border-color: #3B82F6;
+    background: #0f172a;
+}
+
+/* Active filter */
+.card-filters button.active {
+    color: #3B82F6;
+    border-color: #3B82F6;
+    background: #0f172a;
+    font-weight: 600;
+}
