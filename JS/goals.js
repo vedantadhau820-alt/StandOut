@@ -6,7 +6,7 @@
 /* -------------------------
    ADD GOAL
 ------------------------- */
-function addGoal() {
+window.addGoal() {
   const goalText =
     document.getElementById("goalInput").value.trim();
   const priority =
@@ -66,7 +66,7 @@ function addGoal() {
 /* -------------------------
    REMOVE GOAL
 ------------------------- */
-function removeGoal(btn) {
+window.removeGoal(btn) {
   const goalDiv = btn.closest(".goal");
   if (!goalDiv) return;
 
