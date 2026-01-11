@@ -111,7 +111,7 @@ function showAchievementPopup(title, desc) {
   popup.innerHTML = `<h3>${title}</h3><p>${desc}</p>`;
   document.body.appendChild(popup);
 
-  const audio = new Audio("Achievements.mp3");
+  const audio = new Audio("Music/Achievements.mp3");
   audio.volume = 0.5;
   audio.play().catch(() => {});
 
