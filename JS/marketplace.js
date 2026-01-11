@@ -3,12 +3,6 @@
 ========================================================= */
 
 /* -------------------------
-   OWNED CARDS STATE
-------------------------- */
-let ownedCards = JSON.parse(localStorage.getItem("ownedCards")) || {};
-
-
-/* -------------------------
    DATE FORMATTER
 ------------------------- */
 function formatDate(isoDate) {
@@ -21,32 +15,19 @@ function formatDate(isoDate) {
   });
 }
 
-
 /* -------------------------
    EXPIRY CHECK
 ------------------------- */
 function isExpired(card) {
   if (!card.limited || !card.expiresAt) return false;
-
   const now = window.__timeTravelNow || Date.now();
   return new Date(card.expiresAt).getTime() < now;
 }
 
-
-/* -------------------------
-   GRADE SORTING
-------------------------- */
-const GRADE_ORDER = ["E", "D", "C", "B", "A", "X", "S", "SS"];
-
-function gradeRank(grade) {
-  return GRADE_ORDER.indexOf(grade) + 1;
-}
-
-
 /* -------------------------
    RENDER MARKETPLACE
 ------------------------- */
-function renderMarketplace(filterGrade = "ALL") {
+window.renderMarketplace = function (filterGrade = "ALL") {
   const shop = document.getElementById("cardShop");
   if (!shop) return;
 
@@ -54,12 +35,10 @@ function renderMarketplace(filterGrade = "ALL") {
 
   let cards = [...window.cardCatalog];
 
-  // Filter
   if (filterGrade !== "ALL") {
     cards = cards.filter(c => c.grade === filterGrade);
   }
 
-  // Single safe sort
   cards.sort((a, b) => {
     const aLimited = a.limited ? 1 : 0;
     const bLimited = b.limited ? 1 : 0;
@@ -80,11 +59,9 @@ function renderMarketplace(filterGrade = "ALL") {
     const isOwned = !!ownedCards[card.id];
     const expired = isExpired(card);
 
-    // Hide expired limited cards if not owned
     if (expired && !isOwned) return;
 
     const canBuy = completedMissions >= card.cost;
-
     const mintDate =
       isOwned && ownedCards[card.id]?.mintedAt
         ? formatDate(ownedCards[card.id].mintedAt)
@@ -99,11 +76,9 @@ function renderMarketplace(filterGrade = "ALL") {
     `;
 
     div.innerHTML = `
-      <img src="${card.image}" alt="${card.title}">
+      <img src="${card.image}">
       <span class="grade-badge">${card.grade}</span>
-
       ${card.limited ? `<span class="limited-badge">LIMITED</span>` : ""}
-
       ${expired && isOwned ? `<div class="expired-overlay">EXPIRED</div>` : ""}
 
       <div class="card-body">
@@ -122,26 +97,25 @@ function renderMarketplace(filterGrade = "ALL") {
 
         ${
           isOwned && mintDate
-            ? `<div class="mint-date">Minted on ${mintDate}</div>
-               <div class="mint-date">Card Cost ${card.cost} pts</div>`
+            ? `<div class="mint-date">Minted on ${mintDate}</div>`
             : ""
         }
       </div>
     `;
 
     if (!isOwned && canBuy && !expired) {
-      div.querySelector(".buy-btn").onclick = () => buyCard(card.id);
+      div.querySelector(".buy-btn").onclick = () =>
+        buyCard(card.id);
     }
 
     shop.appendChild(div);
   });
-}
-
+};
 
 /* -------------------------
    BUY / MINT CARD
 ------------------------- */
-function buyCard(cardId) {
+window.buyCard = function (cardId) {
   const card = window.cardCatalog.find(c => c.id === cardId);
   if (!card) return;
 
@@ -177,13 +151,12 @@ function buyCard(cardId) {
       );
     }
   );
-}
-
+};
 
 /* -------------------------
    RENDER OWNED CARDS
 ------------------------- */
-function renderMyCards() {
+window.renderMyCards = function () {
   const container = document.getElementById("ownedCards");
   if (!container) return;
 
@@ -205,22 +178,19 @@ function renderMyCards() {
     div.className = `flex-card owned grade-${card.grade.toLowerCase()}`;
 
     div.innerHTML = `
-      <img src="${card.image}" alt="${card.title}">
+      <img src="${card.image}">
       <span class="grade-badge">${card.grade}</span>
 
       <div class="card-body">
         <h3>${card.title}</h3>
         <p class="card-quote">${card.quote}</p>
-        <p class="mint-date">
-          Minted on ${formatDate(data.mintedAt)}
-        </p>
+        <p class="mint-date">Minted on ${formatDate(data.mintedAt)}</p>
       </div>
     `;
 
     container.appendChild(div);
   });
-}
-
+};
 
 /* -------------------------
    FILTER BUTTONS
@@ -240,9 +210,8 @@ document.querySelectorAll(".card-filters button").forEach(btn => {
   };
 });
 
-
 /* -------------------------
-   INITIAL RENDER
+   INITIAL LOAD
 ------------------------- */
 window.addEventListener("load", () => {
   renderMarketplace();
