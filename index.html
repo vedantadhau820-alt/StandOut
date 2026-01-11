@@ -2,420 +2,242 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#3B82F6">
-    <link rel="icon" type="image/png" href="icon.jpeg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#3B82F6" />
+  <link rel="icon" type="image/png" href="icon.jpeg" />
 
-    <title>Stand Out</title>
+  <title>Stand Out</title>
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
 
-    <!-- Stylesheet will be injected in Message 2 -->
-    <link rel="stylesheet" href="CSS/base.css">
-    <link rel="stylesheet" href="CSS/buttons.css">
-<link rel="stylesheet" href="CSS/components.css">
-    <link rel="stylesheet" href="CSS/account.css">
-    <link rel="stylesheet" href="CSS/timer.css">
-<link rel="stylesheet" href="CSS/features.css">
-<link rel="stylesheet" href="CSS/effects.css">
-    
+  <!-- CSS -->
+  <link rel="stylesheet" href="CSS/base.css" />
+  <link rel="stylesheet" href="CSS/buttons.css" />
+  <link rel="stylesheet" href="CSS/components.css" />
+  <link rel="stylesheet" href="CSS/account.css" />
+  <link rel="stylesheet" href="CSS/timer.css" />
+  <link rel="stylesheet" href="CSS/features.css" />
+  <link rel="stylesheet" href="CSS/effects.css" />
 </head>
 
 <body>
-    <!-- ===========================
-       Top Navbar
+
+<!-- ===========================
+     TOP NAVBAR
 =========================== -->
-    <nav class="top-navbar">
-        <div class="nav-left">Stand Out</div>
-        <div class="nav-right">
-            <!-- 🃏 Marketplace Icon -->
-            <div id="marketplaceIcon" style="position: relative; margin-right: 1.4rem; cursor:pointer;">
-                <i class="fas fa-layer-group" style="font-size:22px; color:#3B82F6;"></i>
-            </div>
-            <!-- ⏱ Fullscreen Timer Icon -->
-            <div id="timerIcon" style="position: relative; margin-right: 1.4rem; cursor:pointer;">
-                <i class="fas fa-clock" style="font-size:22px; color:#3B82F6;"></i>
-            </div>
+<nav class="top-navbar">
+  <div class="nav-left">Stand Out</div>
 
-            <!-- 🔔 Notification Bell -->
-            <div id="notifyBell" style="position: relative; margin-right: 1.4rem; cursor: pointer;">
-                <i class="fas fa-bell" style="font-size: 22px; color: #3B82F6;"></i>
-
-                <!-- Badge -->
-                <span id="notifyBadge" style="
-                position: absolute;
-                top: -6px;
-                right: -8px;
-                background: red;
-                color: white;
-                font-size: 11px;
-                padding: 2px 5px;
-                border-radius: 50%;
-                display: none;
-              ">
-                </span>
-            </div>
-
-            <img src="icon.jpeg" alt="Profile" class="nav-img">
-            <input type="file" id="importProgressFile" accept=".json" hidden>
-        </div>
-    </nav>
-
-    <!-- ===========================
-       Bottom Navigation
-  ============================ -->
-
-    <nav class="bottom-nav">
-        <button id="nav-missions" onclick="showPage('missions')">
-            <span class="icon"></span><span class="label">Missions</span>
-        </button>
-        <button id="nav-skillset" onclick="showPage('skillset')">
-            <span class="icon"></span><span class="label">Skillset</span>
-        </button>
-        <button id="nav-time" onclick="showPage('time')">
-            <span class="icon"></span><span class="label">Time</span>
-        </button>
-        <button id="nav-goals" onclick="showPage('goals')">
-            <span class="icon"></span><span class="label">Goals</span>
-        </button>
-        <button id="nav-account" onclick="showPage('account')">
-            <span class="icon"></span><span class="label">Account</span>
-        </button>
-    </nav>
-
-
-    <!-- ===========================
-       Mission Completion Popup
-  ============================ -->
-    <div id="motivationPopup" class="popup">
-        <div class="popup-content">
-            <h2 id="popup-title">Mission Complete</h2>
-            <p id="motivationQuote"></p>
-            <p id="achievement"></p>
-            <button onclick="closePopup()">Continue</button>
-        </div>
-
-        <audio id="popupSound" src="Music/Complete.mp3" preload="auto"></audio>
+  <div class="nav-right">
+    <div id="marketplaceIcon" style="margin-right:1.4rem; cursor:pointer;">
+      <i class="fas fa-layer-group" style="font-size:22px; color:#3B82F6;"></i>
     </div>
 
-
-    <!-- ===========================
-       Missions Section
-  ============================ -->
-    <section id="missions" class="active">
-        <h2>Missions</h2>
-        <p>Improvement Points: <span id="missionCounter">0</span></p>
-        <ul id="mission-list"></ul>
-    </section>
-
-    <!-- Floating Add Button -->
-    <button class="plus-btn" id="globalAddBtn" onclick="openModal('mission')">+ Add</button>
-
-
-    <!-- ===========================
-       Skillset Section
-  ============================ -->
-    <section id="skillset">
-        <h2>Skillset</h2>
-        <div id="skill-list"></div>
-    </section>
-
-    <section id="marketplace-cards">
-        <h2>Marketplace</h2>
-        <p class="marketplace-sub">
-            Spend Improvement Points to mint proof of discipline.
-        </p>
-
-        <!-- Filter Tabs -->
-        <div class="card-filters">
-            <button class="active">All</button>
-            <button>w</button>
-            <button>SS</button>
-            <button>S</button>
-            <button>A</button>
-            <button>B</button>
-            <button>C</button>
-            <button>D</button>
-            <button>E</button>
-        </div>
-
-        <!-- Card Grid -->
-        <div class="card-grid" id="cardShop"></div>
-    </section>
-
-    <!-- <div class="flex-card grade-s locked">
-    <img src="cards/iron_discipline.jpg" alt="Iron Discipline">
-
-    <span class="grade-badge">S</span>
-
-    <div class="card-body">
-        <h3>Iron Discipline</h3>
-        <p class="card-quote">
-            “I act even when my mind begs me to stop.”
-        </p>
-
-        <button class="buy-btn">150 pts</button>
-    </div>
-</div> -->
-    <div id="cheatModal" class="cheat-modal">
-  <div class="cheat-box">
-    <div class="cheat-header">
-      🧪 Developer Access
+    <div id="timerIcon" style="margin-right:1.4rem; cursor:pointer;">
+      <i class="fas fa-clock" style="font-size:22px; color:#3B82F6;"></i>
     </div>
 
-    <p class="cheat-subtext">
-      Long-press detected. Enter authorization code.
-    </p>
-
-    <input 
-      id="cheatInput" 
-      class="cheat-input"
-      placeholder="Enter cheat code"
-      autocomplete="off"
-    >
-
-    <div class="cheat-actions">
-      <button class="cheat-confirm" onclick="confirmCheat()">Unlock</button>
-      <button class="cheat-cancel" onclick="closeCheatModal()">Cancel</button>
+    <div id="notifyBell" style="margin-right:1.4rem; cursor:pointer;">
+      <i class="fas fa-bell" style="font-size:22px; color:#3B82F6;"></i>
+      <span id="notifyBadge"></span>
     </div>
+
+    <img src="icon.jpeg" class="nav-img" />
+    <input type="file" id="importProgressFile" accept=".json" hidden />
   </div>
-    </div>
+</nav>
 
-    <!-- ===========================
-       Goals Section
-  ============================ -->
-    <section id="goals">
-        <h2>Goals</h2>
-        <div id="goal-list"></div>
-    </section>
-
-
-    <!-- ===========================
-       Time / Countdown Section
-  ============================ -->
-    <section id="time">
-        <h2>Time</h2>
-        <p>Countdowns: <span id="countdownCounter">0</span></p>
-        <div id="countdown-list"></div>
-    </section>
-
-
-    <!-- ===========================
-       Account Section
-  ============================ -->
-    <section id="account" class="hidden">
-        <h2>Documentation</h2>
-
-        <h5><a href="documentation.html">Stand Out Version 2.1</a></h5>
-        <h5>Date of Documentation: 9 Jan 2026</h5>
-
-        <h3>Achievements</h3>
-        <div id="achievementsViewer" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
-
-        <h3>Backup & Restore</h3>
-
-<button class="danger-btn" style="background:#2563EB; margin-bottom:10px;"
-    onclick="saveProgressToFile()">
-    💾 Save Progress
-</button>
-
-<button class="danger-btn" style="background:#16a34a;"
-    onclick="loadProgressFromFile()">
-    📂 Restore Progress
-</button>
-
-<input type="file" id="importProgressFile" accept=".json" hidden>
-
-        <h3>Reset Data</h3>
-        <button id="resetDataBtn" onclick="customConfirm('Are you sure you want to reset all data?', resetData)" class="danger-btn">
-            Reset My Data
-        </button>
-    </section>
-
-
-    <!-- ===========================
-       Modals (Add/Edit + Alert + Confirm)
-  ============================ -->
-    <div class="modal" id="modal">
-        <div class="modal-content" id="modal-content"></div>
-    </div>
-
-    <div class="alert-modal" id="alertModal">
-        <div class="alert-content">
-            <h3 id="alertMsg"></h3>
-            <button onclick="closeAlert()">OK</button>
-        </div>
-    </div>
-
-    <div class="confirm-modal" id="confirmModal">
-        <div class="confirm-content">
-            <h3 id="confirmMsg"></h3>
-            <button onclick="confirmYes()">Yes</button>
-            <button onclick="confirmNo()">No</button>
-        </div>
-    </div>
-    <!-- ===========================
-    SMART NOTIFICATION POPUP
+<!-- ===========================
+     BOTTOM NAV
 =========================== -->
-    <div id="smartNotify" class="achievement-popup" style="display:none; background:#1f2937; color:#fff;">
-        <h3 id="notifyTitle"></h3>
-        <p id="notifyMsg"></p>
-    </div>
-    <!-- ===========================
-     Notification Drawer
+<nav class="bottom-nav">
+  <button id="nav-missions" onclick="showPage('missions')">Missions</button>
+  <button id="nav-skillset" onclick="showPage('skillset')">Skillset</button>
+  <button id="nav-time" onclick="showPage('time')">Time</button>
+  <button id="nav-goals" onclick="showPage('goals')">Goals</button>
+  <button id="nav-account" onclick="showPage('account')">Account</button>
+</nav>
+
+<!-- ===========================
+     MISSIONS
 =========================== -->
-    <div id="notificationDrawer" style="
-       position: fixed;
-       top: 60px;
-       right: 0;
-       width: 300px;
-       height: calc(100vh - 60px);
-       background: #1f2937;
-       border-left: 2px solid #111;
-       padding: 1rem;
-       overflow-y: auto;
-       display: none;
-       z-index: 9999;
-     ">
-        <h3 style="margin-top:0; color:#3B82F6;">Notifications</h3>
-        <button onclick="clearAllNotifications()" style="
-            width:100%; 
-            padding:8px; 
-            background:#e63946; 
-            color:white; 
-            border:none; 
-            border-radius:6px; 
-            margin-bottom:10px;">
-            Clear All Notifications
-        </button>
-        <div id="notificationList"></div>
-    </div>
-    <!-- ===============================
-     FULL SCREEN TIMER MODE
-================================ -->
-    <div id="timerScreen" style="
-       display:none;
-       position:fixed;
-       top:0px; left:0px;
-       width:100vw;
-       height:100vh;
-       background:#000;
-       z-index:99999;
-       color:white;
-       overflow:hidden;
-     ">
+<section id="missions" class="active">
+  <h2>Missions</h2>
+  <p>Improvement Points: <span id="missionCounter">0</span></p>
+  <ul id="mission-list"></ul>
+</section>
 
-        <!-- Top-right vertical buttons -->
-        <div class="top-right-btns">
-            <i id="timerMusicBtn" class="fas fa-music" style="color:#3B82F6;"></i>
-            <i id="timerSettingsBtn" class="fas fa-gear" style="color:#3B82F6;"></i>
-            <i id="timerCloseBtn" class="fas fa-times" style="color:#3B82F6;"></i>
-        </div>
+<button class="plus-btn" id="globalAddBtn">+ Add</button>
 
-        <!-- Timer -->
-        <div id="flipTimer" style="
-           position:absolute;
-           top:50%; left:50%;
-           transform:translate(-50%, -50%);
-           font-size:70px;
-           font-weight:bold;
-           font-family:monospace;
-           display:flex;
-           gap:20px;
-         ">
-            <div id="h" class="static-digit">00</div>
-            <span class="colon">:</span>
-            <div id="m" class="static-digit">00</div>
-            <span class="colon">:</span>
-            <div id="s" class="static-digit">00</div>
-        </div>
-    </div>
+<!-- ===========================
+     SKILLS
+=========================== -->
+<section id="skillset">
+  <h2>Skillset</h2>
+  <div id="skill-list"></div>
+</section>
 
-    <!-- Music Selector Modal -->
-    <div id="musicModal" class="modal timer-modal">
-        <div class="modal-content">
-            <h3>Select Music</h3>
+<!-- ===========================
+     MARKETPLACE
+=========================== -->
+<section id="marketplace-cards">
+  <h2>Marketplace</h2>
+  <p class="marketplace-sub">Spend Improvement Points to mint proof of discipline.</p>
 
-            <!-- Preset wrapper -->
-            <div id="presetControls">
-                <select id="musicSelect">
-                    <option value="Music/m1.mp3">Inception</option>
-                    <option value="Music/m2.mp3">Namami Shamishan</option>
-                    <option value="Music/m3.mp3">Interstellar</option>
-                    <option value="Music/m4.mp3">Oppenheimer</option>
-                    <option value="Music/m5.mp3">Lofi</option>
-                    <option value="Music/m6.mp3">Demon Slayer</option>
-                    <option value="">None</option>
-                </select>
+  <div class="card-filters">
+    <button class="active">All</button>
+    <button>SS</button>
+    <button>S</button>
+    <button>X</button>
+    <button>A</button>
+    <button>B</button>
+    <button>C</button>
+    <button>D</button>
+    <button>E</button>
+  </div>
 
-                <button id="presetSelectBtn" onclick="setSelectedMusic()">Select</button>
-            </div>
+  <div class="card-grid" id="cardShop"></div>
+</section>
 
-            <!-- Folder picker -->
-            <button onclick="openFolderPicker()">📁 Select Music Folder</button>
+<!-- ===========================
+     GOALS
+=========================== -->
+<section id="goals">
+  <h2>Goals</h2>
+  <div id="goal-list"></div>
+</section>
 
-            <input type="file" id="folderPicker" webkitdirectory multiple accept="audio/*" style="display:none" />
+<!-- ===========================
+     TIME
+=========================== -->
+<section id="time">
+  <h2>Time</h2>
+  <p>Countdowns: <span id="countdownCounter">0</span></p>
+  <div id="countdown-list"></div>
+</section>
 
-            <label style="margin-top:10px;">Volume</label>
-            <input id="musicVolume" type="range" min="0" max="1" step="0.01" value="1"
-                oninput="music.volume = this.value">
+<!-- ===========================
+     ACCOUNT
+=========================== -->
+<section id="account">
+  <h2>Documentation</h2>
+  <h5><a href="documentation.html">Stand Out Version 2.1</a></h5>
 
-            <!-- <button onclick="setSelectedMusic()">Select</button> -->
-            <button onclick="closeMusicModal()">Close</button>
-        </div>
-    </div>
+  <h3>Achievements</h3>
+  <div id="achievementsViewer"></div>
 
-    <!-- Timer Setting Modal -->
-    <div id="timerSettingModal" class="modal timer-modal">
-        <div class="modal-content">
-            <h3>Set Timer</h3>
-            <label>Hours</label>
-            <input type="number" id="setH" min="0" max="23" value="0">
-            <label>Minutes</label>
-            <input type="number" id="setM" min="0" max="59" value="25">
-            <label>Seconds</label>
-            <input type="number" id="setS" min="0" max="59" value="0">
+  <h3>Backup & Restore</h3>
+  <button onclick="saveProgressToFile()">💾 Save Progress</button>
+  <button onclick="loadProgressFromFile()">📂 Restore Progress</button>
 
-            <button onclick="applyTimerSettings()">Apply</button>
-            <button onclick="closeTimerSettingModal()">Close</button>
-        </div>
-    </div>
+  <h3>Reset Data</h3>
+  <button id="resetDataBtn"
+    onclick="customConfirm('Are you sure?', resetData)">
+    Reset My Data
+  </button>
+</section>
 
+<!-- ===========================
+     MODALS
+=========================== -->
+<div class="modal" id="modal">
+  <div class="modal-content" id="modal-content"></div>
+</div>
 
-    <!-- ===========================
-       JavaScript (Message 3)
-  ============================ -->
+<div class="alert-modal" id="alertModal">
+  <div class="alert-content">
+    <h3 id="alertMsg"></h3>
+    <button onclick="closeAlert()">OK</button>
+  </div>
+</div>
 
+<div class="confirm-modal" id="confirmModal">
+  <div class="confirm-content">
+    <h3 id="confirmMsg"></h3>
+    <button onclick="confirmYes()">Yes</button>
+    <button onclick="confirmNo()">No</button>
+  </div>
+</div>
 
+<!-- ===========================
+     SMART NOTIFICATION
+=========================== -->
+<div id="smartNotify" class="achievement-popup" style="display:none;">
+  <h3 id="notifyTitle"></h3>
+  <p id="notifyMsg"></p>
+</div>
 
-  <!-- 🔥 THIS WAS MISSING -->
+<!-- ===========================
+     FULLSCREEN TIMER
+=========================== -->
+<div id="timerScreen"></div>
 
+<!-- ===========================
+     MUSIC MODAL
+=========================== -->
+<div id="musicModal" class="modal timer-modal">
+  <div class="modal-content">
+    <h3>Select Music</h3>
+
+    <select id="musicSelect">
+      <option value="Music/m1.mp3">Inception</option>
+      <option value="Music/m2.mp3">Namami</option>
+      <option value="Music/m3.mp3">Interstellar</option>
+      <option value="Music/m4.mp3">Oppenheimer</option>
+      <option value="Music/m5.mp3">Lofi</option>
+      <option value="Music/m6.mp3">Demon Slayer</option>
+      <option value="">None</option>
+    </select>
+
+    <button onclick="setSelectedMusic()">Select</button>
+    <button onclick="openFolderPicker()">📁 Folder</button>
+
+    <input id="folderPicker" type="file" webkitdirectory multiple hidden />
+
+    <label>Volume</label>
+    <input id="musicVolume" type="range" min="0" max="1" step="0.01" value="1" />
+
+    <button onclick="closeMusicModal()">Close</button>
+  </div>
+</div>
+
+<!-- ===========================
+     TIMER SETTINGS
+=========================== -->
+<div id="timerSettingModal" class="modal timer-modal">
+  <div class="modal-content">
+    <h3>Set Timer</h3>
+    <input id="setH" type="number" min="0" max="23" value="0" />
+    <input id="setM" type="number" min="0" max="59" value="25" />
+    <input id="setS" type="number" min="0" max="59" value="0" />
+    <button onclick="applyTimerSettings()">Apply</button>
+    <button onclick="closeTimerSettingModal()">Close</button>
+  </div>
+</div>
+
+<!-- ===========================
+     JAVASCRIPT (ORDER MATTERS)
+=========================== -->
+<script src="JS/app.js"></script>
 <script src="JS/storage.js"></script>
-<script src="modals.js"></script>
-<script src="JS/missions.js"></script>
+<script src="JS/modals.js"></script>
+<script src="JS/notifications.js"></script>
+<script src="JS/achievements.js"></script>
 <script src="JS/skills.js"></script>
+<script src="JS/missions.js"></script>
 <script src="JS/goals.js"></script>
 <script src="JS/countdown.js"></script>
-<script src="JS/timer.js"></script>
 <script src="JS/marketplace.js"></script>
-<script src="JS/achievements.js"></script>
-<script src="JS/notifications.js"></script>
+<script src="JS/timer.js"></script>
 <script src="JS/navigation.js"></script>
-<script src="JS/app.js"></script>
-<script src="JS/app.js"></script>
-
 
 </body>
-
 </html>
-
-
-
-
-
-
-
