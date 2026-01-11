@@ -1,0 +1,344 @@
+/* =========================================================
+   MISSIONS / DEADLINES
+========================================================= */
+
+.deadline-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.deadlineDisplay {
+  font-size: 12px;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+.overdueMark {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.overdue-badge {
+  background: #e63946;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   GOALS
+========================================================= */
+
+.goal-subrow {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.goal-deadline {
+  font-size: 12px;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.goal-timer {
+  margin-top: 6px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* =========================================================
+   COUNTDOWNS / TIMERS
+========================================================= */
+
+.timer-row {
+  margin-top: 6px;
+}
+
+.timer-bar-container {
+  width: 100%;
+  height: 6px;
+  background: #1f2937;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.timer-bar {
+  height: 100%;
+  width: 0%;
+  background: #3b82f6;
+  transition: width 0.3s linear;
+}
+
+.timer-text {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* =========================================================
+   POPUP (MISSION COMPLETE)
+========================================================= */
+
+.popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.popup-content {
+  background: #121212;
+  color: #e0e0e0;
+  padding: 25px;
+  border-radius: 20px;
+  text-align: center;
+  width: 85%;
+  max-width: 320px;
+  box-shadow: 0 0 25px #3B82F6;
+  transform: scale(0.7);
+  opacity: 0;
+}
+
+.popup-content h2 {
+  margin-bottom: 10px;
+  color: #3B82F6;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.popup-content p {
+  margin: 8px 0;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.popup-content button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: #3B82F6;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #121212;
+}
+
+/* =========================================================
+   ACHIEVEMENTS
+========================================================= */
+
+.achievement-popup {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111827;
+  color: #3B82F6;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  text-align: center;
+  font-weight: bold;
+}
+
+.achievements-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+  padding: 1rem;
+}
+
+.achievement-tile {
+  width: 120px;
+  padding: 10px;
+  background: #1f2937;
+  border-radius: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.achievement-icon {
+  font-size: 28px;
+  margin-bottom: 5px;
+  color: #3B82F6;
+}
+
+.locked .achievement-icon {
+  color: #6b7280;
+}
+
+.achievement-title {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 3px;
+  color: #fff;
+}
+
+.locked .achievement-title,
+.locked .achievement-desc {
+  color: #6b7280;
+}
+
+.achievement-desc {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* =========================================================
+   MODALS (ADD / EDIT / ALERT / CONFIRM)
+========================================================= */
+
+.modal,
+.alert-modal,
+.confirm-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal.active,
+.alert-modal.active,
+.confirm-modal.active {
+  display: flex;
+}
+
+.modal-content,
+.alert-content,
+.confirm-content {
+  background: #111827;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.modal-content h3,
+.alert-content h3,
+.confirm-content h3 {
+  margin-top: 0;
+  color: #3B82F6;
+}
+
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  padding: 0.7rem;
+  margin: 0.5rem 0 1rem;
+  border-radius: 6px;
+  border: none;
+  background: #1f2937;
+  color: white;
+}
+
+/* =========================================================
+   NOTIFICATIONS DRAWER
+========================================================= */
+
+#notificationDrawer {
+  position: fixed;
+  top: 60px;
+  right: 0;
+  width: 310px;
+  height: calc(100vh - 60px);
+  background: #0f172a;
+  padding: 1rem;
+  overflow-y: auto;
+  display: none;
+  z-index: 9999;
+}
+
+.notification-card {
+  background: #1e293b;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+}
+
+.notification-card strong {
+  color: #3b82f6;
+  font-size: 14px;
+}
+
+.notification-card span {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.notification-time {
+  display: block;
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 4px;
+}
+
+/* =========================================================
+   CHEAT MODAL
+========================================================= */
+
+.cheat-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.cheat-modal.active {
+  display: flex;
+}
+
+.cheat-box {
+  width: 90%;
+  max-width: 360px;
+  background: #111827;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.35);
+}
+
+.cheat-title {
+  font-size: 18px;
+  color: #3B82F6;
+  font-weight: 600;
+}
+
+.cheat-desc {
+  font-size: 13px;
+  opacity: 0.75;
+  margin-bottom: 1rem;
+}
+
+.cheat-input {
+  width: 95%;
+  padding: 0.7rem;
+  background: #1f2937;
+  border-radius: 6px;
+  color: white;
+}
+
+.cheat-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 1.2rem;
+}
