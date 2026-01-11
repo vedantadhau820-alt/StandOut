@@ -2,13 +2,10 @@
    NAVIGATION SYSTEM
 ========================================================= */
 
-/* Track marketplace toggle */
-let isMarketplaceOpen = false;
-
 /* -------------------------
    PAGE SWITCHING
 ------------------------- */
-function showPage(pageId) {
+window.showPage = function (pageId) {
   // Hide all sections
   document.querySelectorAll("section").forEach(sec =>
     sec.classList.remove("active")
@@ -27,19 +24,19 @@ function showPage(pageId) {
 
   updatePlusBtn(pageId);
 
-  // Marketplace state
-  isMarketplaceOpen = (pageId === "marketplace-cards");
+  // Marketplace state (GLOBAL from app.js)
+  window.isMarketplaceOpen = (pageId === "marketplace-cards");
 
   // Lazy renders
   if (pageId === "account") {
     renderAchievements();
   }
-}
+};
 
 /* -------------------------
    PLUS BUTTON HANDLER
 ------------------------- */
-function updatePlusBtn(pageId) {
+window.updatePlusBtn = function (pageId) {
   const btn = document.getElementById("globalAddBtn");
   if (!btn) return;
 
@@ -62,20 +59,21 @@ function updatePlusBtn(pageId) {
   else {
     btn.style.display = "none";
   }
-}
+};
 
 /* -------------------------
    MARKETPLACE ICON TOGGLE
 ------------------------- */
-document.getElementById("marketplaceIcon")?.addEventListener("click", () => {
-  if (isMarketplaceOpen) {
-    showPage("missions");
-    isMarketplaceOpen = false;
-  } else {
-    showPage("marketplace-cards");
-    isMarketplaceOpen = true;
-  }
-});
+document.getElementById("marketplaceIcon")
+  ?.addEventListener("click", () => {
+    if (window.isMarketplaceOpen) {
+      showPage("missions");
+      window.isMarketplaceOpen = false;
+    } else {
+      showPage("marketplace-cards");
+      window.isMarketplaceOpen = true;
+    }
+  });
 
 /* -------------------------
    INITIAL PAGE RESOLUTION
