@@ -1,24 +1,23 @@
-// ===============================
-// MODAL SYSTEM (GLOBAL)
-// ===============================
+/* =========================================================
+   MODAL SYSTEM (GLOBAL)
+========================================================= */
 
-let confirmCallback = null;
-
-// ===============================
-// OPEN MODAL
-// ===============================
-window.openModal = function (type, skillDiv = null) {
+/* =========================
+   MAIN ADD / EDIT MODAL
+========================= */
+window.openModal = function (type, target = null) {
   const modal = document.getElementById("modal");
   const content = document.getElementById("modal-content");
 
   if (!modal || !content) {
-    console.error("❌ Modal elements not found");
+    console.error("❌ Modal container not found");
     return;
   }
 
   modal.classList.add("active");
+  content.innerHTML = "";
 
-  // ---- ADD MISSION ----
+  /* ---------- ADD MISSION ---------- */
   if (type === "mission") {
     const skills = [...document.querySelectorAll("#skill-list strong")]
       .map(s => `<option value="${s.textContent}">${s.textContent}</option>`)
@@ -26,6 +25,7 @@ window.openModal = function (type, skillDiv = null) {
 
     content.innerHTML = `
       <h3>Add Mission</h3>
+
       <input id="missionInput" placeholder="Enter mission">
 
       <label>Link Skill</label>
@@ -50,12 +50,17 @@ window.openModal = function (type, skillDiv = null) {
     `;
   }
 
-  // ---- EDIT MISSION ----
-  if (type === "edit-mission" && skillDiv) {
-    const oldText = skillDiv.querySelector(".mission-text")
-      .textContent.replace("🔥", "").trim();
-    const oldDeadline = skillDiv.dataset.deadline || "";
-    const isHardcore = skillDiv.dataset.hardcore === "true";
+  /* ---------- EDIT MISSION ---------- */
+  if (type === "edit-mission" && target) {
+    const oldText =
+      target.querySelector(".mission-text")
+        ?.textContent.replace("🔥", "")
+        .trim() || "";
+
+    const oldDeadline = target.dataset.deadline || "";
+    const isHardcore = target.dataset.hardcore === "true";
+
+    window.missionBeingEdited = target;
 
     content.innerHTML = `
       <h3>Edit Mission</h3>
@@ -73,24 +78,22 @@ window.openModal = function (type, skillDiv = null) {
       ${
         isHardcore
           ? `<p style="color:#ef4444;font-size:12px;margin-top:6px;">
-              🔥 Hardcore mission — deadline cannot be changed
-            </p>`
+               🔥 Hardcore mission — deadline locked
+             </p>`
           : ""
       }
 
       <button onclick="updateMission()">Update</button>
       ${
         isHardcore
-          ? `<button disabled style="opacity:.5;cursor:not-allowed;">🔒 Delete</button>`
+          ? `<button disabled style="opacity:.5;">🔒 Delete</button>`
           : `<button onclick="deleteMission()">Delete</button>`
       }
       <button onclick="closeModal()">Cancel</button>
     `;
-
-    window.missionBeingEdited = skillDiv;
   }
 
-  // ---- ADD SKILL ----
+  /* ---------- ADD SKILL ---------- */
   if (type === "skill") {
     content.innerHTML = `
       <h3>Add Skill</h3>
@@ -100,10 +103,11 @@ window.openModal = function (type, skillDiv = null) {
     `;
   }
 
-  // ---- ADD GOAL ----
+  /* ---------- ADD GOAL ---------- */
   if (type === "goal") {
     content.innerHTML = `
       <h3>Add Goal</h3>
+
       <input id="goalInput" placeholder="Goal">
 
       <label>Priority</label>
@@ -121,10 +125,11 @@ window.openModal = function (type, skillDiv = null) {
     `;
   }
 
-  // ---- ADD COUNTDOWN ----
+  /* ---------- ADD COUNTDOWN ---------- */
   if (type === "multi-time") {
     content.innerHTML = `
       <h3>Add Countdown</h3>
+
       <input id="countdownTitle" placeholder="Title">
       <input id="countdownDateTime" type="datetime-local">
 
@@ -137,9 +142,10 @@ window.openModal = function (type, skillDiv = null) {
   }
 };
 
-// ===============================
-// CLOSE MODAL
-// ===============================
+
+/* =========================
+   CLOSE MODAL
+========================= */
 window.closeModal = function () {
   const modal = document.getElementById("modal");
   if (!modal) return;
@@ -151,9 +157,10 @@ window.closeModal = function () {
     .forEach(el => (el.value = ""));
 };
 
-// ===============================
-// ALERT
-// ===============================
+
+/* =========================
+   ALERT MODAL
+========================= */
 window.customAlert = function (msg) {
   document.getElementById("alertMsg").textContent = msg;
   document.getElementById("alertModal").classList.add("active");
@@ -163,9 +170,12 @@ window.closeAlert = function () {
   document.getElementById("alertModal").classList.remove("active");
 };
 
-// ===============================
-// CONFIRM
-// ===============================
+
+/* =========================
+   CONFIRM MODAL
+========================= */
+let confirmCallback = null;
+
 window.customConfirm = function (msg, callback) {
   confirmCallback = callback;
   document.getElementById("confirmMsg").textContent = msg;
@@ -174,16 +184,23 @@ window.customConfirm = function (msg, callback) {
 
 window.confirmYes = function () {
   if (confirmCallback) confirmCallback();
+  confirmCallback = null;
   document.getElementById("confirmModal").classList.remove("active");
 };
 
 window.confirmNo = function () {
+  confirmCallback = null;
   document.getElementById("confirmModal").classList.remove("active");
 };
 
-// ===============================
-// CHEAT MODAL
-// ===============================
+
+/* =========================
+   CHEAT MODAL
+========================= */
+window.closeCheatModal = function () {
+  document.getElementById("cheatModal").classList.remove("active");
+};
+
 window.confirmCheat = function () {
   const code = document.getElementById("cheatInput").value.trim();
 
@@ -199,13 +216,8 @@ window.confirmCheat = function () {
   document.getElementById("missionCounter").textContent = completedMissions;
 
   closeCheatModal();
-
   showSmartNotification(
     "Cheat Activated",
     "9999 Improvement Points granted."
   );
-};
-
-window.closeCheatModal = function () {
-  document.getElementById("cheatModal")?.classList.remove("active");
 };
