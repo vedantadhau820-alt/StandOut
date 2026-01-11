@@ -48,7 +48,7 @@ function resetDailyImprovementIfNeeded() {
 /* -------------------------
    ADD MISSION
 ------------------------- */
-function addMission() {
+window.addMission() {
   const text =
     document.getElementById("missionInput").value.trim();
 
@@ -117,7 +117,7 @@ function addMission() {
 /* -------------------------
    UPDATE MISSION
 ------------------------- */
-function updateMission() {
+window.updateMission() {
   const li = window.missionBeingEdited;
   if (!li) return;
 
@@ -166,7 +166,7 @@ function updateMission() {
 /* -------------------------
    DELETE MISSION
 ------------------------- */
-function deleteMission() {
+window.deleteMission() {
   const li = window.missionBeingEdited;
   if (!li) return;
 
@@ -199,7 +199,7 @@ function deleteMission() {
 /* -------------------------
    COMPLETE MISSION
 ------------------------- */
-function completeMission(btn) {
+window.completeMission(btn) {
   resetDailyImprovementIfNeeded();
 
   const li = btn.closest("li");
