@@ -20,7 +20,7 @@ function saveCountdowns() {
 /* -------------------------
    ADD COUNTDOWN
 ------------------------- */
-function addCountdown() {
+window.addCountdown() {
   const titleInput =
     document.getElementById("countdownTitle");
   const timeInput =
@@ -58,7 +58,7 @@ function addCountdown() {
 /* -------------------------
    REMOVE COUNTDOWN
 ------------------------- */
-function removeCountdown(index) {
+window.removeCountdown(index) {
   countdowns.splice(index, 1);
   saveCountdowns();
   renderCountdowns();
