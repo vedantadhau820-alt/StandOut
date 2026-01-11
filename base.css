@@ -1,0 +1,200 @@
+/* =========================================================
+   BASE RESET & BODY
+========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: #0a0a0a;
+  color: #ffffff;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Disable mobile tap highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Remove focus outline globally (you already rely on visual cues) */
+*:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header {
+  text-align: center;
+  padding: 2rem;
+  background: #001f3f;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  color: #3b82f6;
+}
+
+/* =========================================================
+   TOP NAVBAR
+========================================================= */
+
+.top-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 60px;
+  padding: 0 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+
+  background: #111827;
+  z-index: 9999;
+}
+
+.nav-left {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #3b82f6;
+  white-space: nowrap;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.nav-right .nav-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* =========================================================
+   BOTTOM NAVIGATION
+========================================================= */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+  height: 55px;
+
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+
+  background: #1f2937;
+  border-top: 2px solid #111;
+  z-index: 50;
+}
+
+.bottom-nav button {
+  flex: 1;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  background: none;
+  border: none;
+  color: #9ca3af;
+
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.bottom-nav button:hover {
+  color: #3b82f6;
+  transform: scale(1.05);
+}
+
+.bottom-nav button.active {
+  color: #3b82f6;
+  font-weight: 700;
+}
+
+/* =========================================================
+   PAGE SECTIONS
+========================================================= */
+
+section {
+  display: none;
+
+  padding: 1rem 1rem 120px;
+  margin-top: 60px;
+  margin-bottom: 120px;
+
+  opacity: 0;
+  transform: translateY(20px);
+
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+section.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Special account section behavior */
+#account {
+  height: auto !important;
+  overflow-y: auto !important;
+  padding-bottom: 80px !important;
+}
+
+/* =========================================================
+   FLOATING ACTION BUTTONS (POSITION ONLY)
+========================================================= */
+
+.plus-btn {
+  position: fixed;
+  bottom: 4.5rem;
+  right: 1rem;
+  z-index: 100;
+}
+
+.plus-btn2 {
+  position: sticky;
+  bottom: 0;
+}
+
+/* =========================================================
+   RESPONSIVE FIXES
+========================================================= */
+
+@media (max-width: 450px) {
+  .bottom-nav {
+    bottom: 0;
+  }
+
+  .plus-btn {
+    bottom: 6.8rem;
+  }
+}
