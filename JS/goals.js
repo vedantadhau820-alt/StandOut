@@ -2,17 +2,19 @@
    GOALS MODULE
 ========================================================= */
 
-
 /* -------------------------
    ADD GOAL
 ------------------------- */
-window.addGoal() {
-  const goalText =
-    document.getElementById("goalInput").value.trim();
-  const priority =
-    document.getElementById("priorityInput").value;
-  const deadline =
-    document.getElementById("goalDeadline").value;
+window.addGoal = function () {
+  const goalInput = document.getElementById("goalInput");
+  const priorityInput = document.getElementById("priorityInput");
+  const deadlineInput = document.getElementById("goalDeadline");
+
+  if (!goalInput || !priorityInput || !deadlineInput) return;
+
+  const goalText = goalInput.value.trim();
+  const priority = priorityInput.value;
+  const deadline = deadlineInput.value;
 
   if (isPastDateTime(deadline)) {
     customAlert("Deadline cannot be in the past.");
@@ -26,7 +28,7 @@ window.addGoal() {
 
   const div = document.createElement("div");
   div.className = "goal show";
-  div.dataset.deadline = deadline;
+  div.dataset.deadline = deadline || "";
 
   let formattedDeadline = "";
   if (deadline) {
@@ -39,7 +41,7 @@ window.addGoal() {
 
   div.innerHTML = `
     <div class="goal-header">
-      <span class="goal-title">${goalText} -</span>
+      <span class="goal-title">${goalText}</span>
       <span class="goal-priority ${priority}">
         <strong>${priority}</strong>
       </span>
@@ -60,51 +62,41 @@ window.addGoal() {
 
   saveData();
   closeModal();
-}
-
+};
 
 /* -------------------------
    REMOVE GOAL
 ------------------------- */
-window.removeGoal(btn) {
+window.removeGoal = function (btn) {
   const goalDiv = btn.closest(".goal");
   if (!goalDiv) return;
 
   goalDiv.remove();
   saveData();
-}
-
+};
 
 /* -------------------------
    UPDATE GOAL TIMERS
 ------------------------- */
-function updateGoalTimers() {
-  const goals =
-    document.querySelectorAll("#goal-list .goal");
+window.updateGoalTimers = function () {
+  const goals = document.querySelectorAll("#goal-list .goal");
 
   goals.forEach(goal => {
     const deadline = goal.dataset.deadline;
     if (!deadline) return;
 
-    const timer =
-      goal.querySelector(".goal-timer");
-    const overdueBadge =
-      goal.querySelector(".goal-overdue");
+    const timer = goal.querySelector(".goal-timer");
+    const overdueBadge = goal.querySelector(".goal-overdue");
 
-    const diff =
-      new Date(deadline).getTime() - Date.now();
+    const diff = new Date(deadline).getTime() - Date.now();
 
     if (diff > 0) {
-      const hours =
-        Math.floor(diff / (1000 * 60 * 60));
-      const minutes =
-        Math.floor((diff / (1000 * 60)) % 60);
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
 
-      timer.textContent =
-        `${hours}h ${minutes}m left`;
+      timer.textContent = `${hours}h ${minutes}m left`;
       overdueBadge.innerHTML = "";
 
-      // 🔔 Due soon warning (once)
       if (
         diff <= 2 * 60 * 60 * 1000 &&
         !goal.dataset.warned
@@ -112,51 +104,38 @@ function updateGoalTimers() {
         goal.dataset.warned = "true";
         pushNotification(
           "Goal Reminder",
-          `Your goal "${goal
-            .querySelector(".goal-title")
-            .textContent}" is due soon (within 2 hours).`
+          `Your goal "${goal.querySelector(".goal-title").textContent}" is due soon (within 2 hours).`
         );
       }
-
     } else {
       timer.textContent = "";
       overdueBadge.innerHTML =
         `<span class="overdue-badge">Overdue</span>`;
 
-      // 🔔 Overdue notification (once)
       if (!goal.dataset.overdueNotified) {
         goal.dataset.overdueNotified = "true";
         pushNotification(
           "⚠ Goal Overdue",
-          `"${goal
-            .querySelector(".goal-title")
-            .textContent}" deadline has passed!`
+          `"${goal.querySelector(".goal-title").textContent}" deadline has passed!`
         );
       }
     }
   });
-}
-
+};
 
 /* -------------------------
    RESTORE GOALS AFTER LOAD
 ------------------------- */
-function restoreGoalsUI() {
-  document
-    .querySelectorAll("#goal-list .goal")
-    .forEach(div => {
-      div.classList.add("show");
+window.restoreGoalsUI = function () {
+  document.querySelectorAll("#goal-list .goal").forEach(div => {
+    div.classList.add("show");
 
-      const removeBtn =
-        div.querySelector(".remove-btn");
-
-      if (removeBtn) {
-        removeBtn.onclick = () =>
-          removeGoal(removeBtn);
-      }
-    });
-}
-
+    const removeBtn = div.querySelector(".remove-btn");
+    if (removeBtn) {
+      removeBtn.onclick = () => removeGoal(removeBtn);
+    }
+  });
+};
 
 /* -------------------------
    AUTO TIMER LOOP
