@@ -5,38 +5,68 @@
 /* -------------------------
    STATE
 ------------------------- */
-let timerInterval = null;
+let fullscreenTimerInterval = null;
 let playlist = [];
 let currentTrackIndex = 0;
-let currentMusic = null;
 let music = new Audio();
 let musicMode = "preset"; // "preset" | "playlist"
 
 
 /* -------------------------
-   OPEN / CLOSE FULLSCREEN
+   DOM SAFE BINDINGS
 ------------------------- */
-document.getElementById("timerIcon").onclick = () => {
+window.addEventListener("load", () => {
+  const timerIcon = document.getElementById("timerIcon");
+  const timerCloseBtn = document.getElementById("timerCloseBtn");
+  const musicBtn = document.getElementById("timerMusicBtn");
+  const settingsBtn = document.getElementById("timerSettingsBtn");
+  const folderPicker = document.getElementById("folderPicker");
+
+  if (timerIcon) {
+    timerIcon.onclick = openFullscreenTimer;
+  }
+
+  if (timerCloseBtn) {
+    timerCloseBtn.onclick = closeFullscreenTimer;
+  }
+
+  if (musicBtn) {
+    musicBtn.onclick = openMusicModal;
+  }
+
+  if (settingsBtn) {
+    settingsBtn.onclick = openTimerSettings;
+  }
+
+  if (folderPicker) {
+    folderPicker.addEventListener("change", handleFolderPick);
+  }
+});
+
+
+/* -------------------------
+   FULLSCREEN OPEN / CLOSE
+------------------------- */
+function openFullscreenTimer() {
   document.getElementById("timerScreen").style.display = "block";
   document.querySelector(".top-navbar").style.display = "none";
   document.querySelector(".bottom-nav").style.display = "none";
-};
+}
 
-document.getElementById("timerCloseBtn").onclick = () => {
+function closeFullscreenTimer() {
   document.getElementById("timerScreen").style.display = "none";
   document.querySelector(".top-navbar").style.display = "flex";
   document.querySelector(".bottom-nav").style.display = "flex";
 
-  clearInterval(timerInterval);
+  clearInterval(fullscreenTimerInterval);
   stopAllMusic();
-};
+}
 
 
 /* -------------------------
-   MUSIC CONTROLS
+   MUSIC CORE
 ------------------------- */
 function stopAllMusic() {
-  if (!music) return;
   music.pause();
   music.currentTime = 0;
   music.onended = null;
@@ -46,20 +76,25 @@ function stopAllMusic() {
 /* -------------------------
    MUSIC MODAL
 ------------------------- */
-document.getElementById("timerMusicBtn").onclick = () => {
+function openMusicModal() {
   document.getElementById("musicModal").classList.add("active");
-  if (musicMode === "preset") showPresetUI();
-};
 
-function closeMusicModal() {
-  document.getElementById("musicModal").classList.remove("active");
+  if (musicMode === "preset") {
+    showPresetUI();
+  } else {
+    hidePresetUI();
+  }
 }
+
+window.closeMusicModal = function () {
+  document.getElementById("musicModal").classList.remove("active");
+};
 
 
 /* -------------------------
    PRESET MUSIC
 ------------------------- */
-function setSelectedMusic() {
+window.setSelectedMusic = function () {
   stopAllMusic();
 
   const file = document.getElementById("musicSelect").value;
@@ -77,45 +112,42 @@ function setSelectedMusic() {
 
   music.play().catch(() => {});
   closeMusicModal();
-}
+};
 
 
 /* -------------------------
    PLAYLIST MUSIC
 ------------------------- */
-function openFolderPicker() {
-  const picker = document.getElementById("folderPicker");
-  if (picker) picker.click();
-}
+window.openFolderPicker = function () {
+  document.getElementById("folderPicker")?.click();
+};
 
-document
-  .getElementById("folderPicker")
-  .addEventListener("change", e => {
-    stopAllMusic();
+function handleFolderPick(e) {
+  stopAllMusic();
 
-    const files = Array.from(e.target.files)
-      .filter(f => f.type.startsWith("audio/"));
+  const files = Array.from(e.target.files)
+    .filter(f => f.type.startsWith("audio/"));
 
-    if (!files.length) {
-      customAlert("No audio files found in this folder.");
-      return;
+  if (!files.length) {
+    customAlert("No audio files found in this folder.");
+    return;
+  }
+
+  playlist = files;
+  musicMode = "playlist";
+  currentTrackIndex = 0;
+  hidePresetUI();
+
+  customConfirm(
+    `Play ${playlist.length} songs from this folder?`,
+    () => {
+      playCurrentTrack();
+      closeMusicModal();
     }
+  );
 
-    playlist = files;
-    musicMode = "playlist";
-    currentTrackIndex = 0;
-
-    customConfirm(
-      `Play ${playlist.length} songs from this folder?`,
-      () => {
-        playCurrentTrack();
-        closeMusicModal();
-      }
-    );
-
-    e.target.value = "";
-  });
-
+  e.target.value = "";
+}
 
 function playCurrentTrack() {
   if (musicMode !== "playlist") return;
@@ -126,10 +158,9 @@ function playCurrentTrack() {
   music.loop = false;
   music.volume = document.getElementById("musicVolume").value;
 
-  music.play().catch(() => resumeMusicOnUserGesture());
+  music.play().catch(resumeMusicOnUserGesture);
 
   music.onended = () => {
-    if (musicMode !== "playlist") return;
     currentTrackIndex =
       (currentTrackIndex + 1) % playlist.length;
     playCurrentTrack();
@@ -156,76 +187,73 @@ function resumeMusicOnUserGesture() {
    PRESET UI
 ------------------------- */
 function showPresetUI() {
-  document.getElementById("presetControls").style.display = "block";
+  const el = document.getElementById("presetControls");
+  if (el) el.style.display = "block";
 }
 
 function hidePresetUI() {
-  document.getElementById("presetControls").style.display = "none";
+  const el = document.getElementById("presetControls");
+  if (el) el.style.display = "none";
 }
 
 
 /* -------------------------
-   TIMER SETTINGS MODAL
+   TIMER SETTINGS
 ------------------------- */
-document.getElementById("timerSettingsBtn").onclick = () => {
-  document.getElementById("timerSettingModal")
+function openTimerSettings() {
+  document
+    .getElementById("timerSettingModal")
     .classList.add("active");
-};
-
-function closeTimerSettingModal() {
-  document.getElementById("timerSettingModal")
-    .classList.remove("active");
 }
 
-function applyTimerSettings() {
-  const h = parseInt(
-    document.getElementById("setH").value
-  );
-  const m = parseInt(
-    document.getElementById("setM").value
-  );
-  const s = parseInt(
-    document.getElementById("setS").value
-  );
+window.closeTimerSettingModal = function () {
+  document
+    .getElementById("timerSettingModal")
+    .classList.remove("active");
+};
+
+window.applyTimerSettings = function () {
+  const h = parseInt(document.getElementById("setH").value) || 0;
+  const m = parseInt(document.getElementById("setM").value) || 0;
+  const s = parseInt(document.getElementById("setS").value) || 0;
 
   startStaticTimer(h, m, s);
   closeTimerSettingModal();
-}
+};
 
 
 /* -------------------------
    TIMER CORE
 ------------------------- */
 function startStaticTimer(h, m, s) {
-  clearInterval(timerInterval);
+  clearInterval(fullscreenTimerInterval);
 
   let total = h * 3600 + m * 60 + s;
 
-  document.getElementById("h").textContent =
-    h.toString().padStart(2, "0");
-  document.getElementById("m").textContent =
-    m.toString().padStart(2, "0");
-  document.getElementById("s").textContent =
-    s.toString().padStart(2, "0");
+  updateTimerUI(h, m, s);
 
-  timerInterval = setInterval(() => {
+  fullscreenTimerInterval = setInterval(() => {
     if (total <= 0) {
-      clearInterval(timerInterval);
+      clearInterval(fullscreenTimerInterval);
       stopAllMusic();
       return;
     }
 
     total--;
 
-    const hh = Math.floor(total / 3600);
-    const mm = Math.floor((total % 3600) / 60);
-    const ss = total % 60;
-
-    document.getElementById("h").textContent =
-      hh.toString().padStart(2, "0");
-    document.getElementById("m").textContent =
-      mm.toString().padStart(2, "0");
-    document.getElementById("s").textContent =
-      ss.toString().padStart(2, "0");
+    updateTimerUI(
+      Math.floor(total / 3600),
+      Math.floor((total % 3600) / 60),
+      total % 60
+    );
   }, 1000);
+}
+
+function updateTimerUI(h, m, s) {
+  document.getElementById("h").textContent =
+    h.toString().padStart(2, "0");
+  document.getElementById("m").textContent =
+    m.toString().padStart(2, "0");
+  document.getElementById("s").textContent =
+    s.toString().padStart(2, "0");
 }
