@@ -1,0 +1,186 @@
+/* =========================================================
+   BUTTONS (GLOBAL)
+========================================================= */
+
+/* Floating + Add Buttons */
+.plus-btn {
+  position: fixed;
+  bottom: 4.5rem;
+  right: 1rem;
+  z-index: 100;
+  padding: 0.6rem 1.2rem;
+  background: #3B82F6;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.plus-btn:hover {
+  background: #2563EB;
+  transform: scale(1.05);
+}
+
+.plus-btn2 {
+  position: sticky;
+  bottom: 0px;
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background: #3B82F6;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.complete-btn {
+  background: transparent;
+  border: none;
+  color: #3B82F6;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.complete-btn:hover {
+  transform: scale(1.2);
+  color: #2563EB;
+}
+
+.remove-btn,
+.remove-btn2 {
+  background: transparent;
+  border: none;
+  color: #e63946;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  margin-right: 1rem;
+}
+
+.remove-btn:hover,
+.remove-btn2:hover {
+  transform: scale(1.2);
+  color: #f87171;
+}
+
+.danger-btn {
+  background: #e63946;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.danger-btn:hover {
+  background: #d62828;
+}
+
+/* =========================================================
+   MARKETPLACE BUTTONS
+========================================================= */
+
+.buy-btn {
+  width: 100%;
+  padding: 6px;
+  background: #111827;
+  border: 1px solid #3B82F6;
+  color: #3B82F6;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.buy-btn:hover {
+  background: #3B82F6;
+  color: #000;
+}
+
+/* Locked cards */
+.flex-card.locked .buy-btn {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Owned cards */
+.flex-card.owned .buy-btn {
+  background: transparent;
+  border: none;
+  color: #22c55e;
+  cursor: default;
+}
+
+/* =========================================================
+   MODAL BUTTONS
+========================================================= */
+
+.modal-content button,
+.alert-content button,
+.confirm-content button {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: #3B82F6;
+  color: white;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+/* =========================================================
+   CHEAT MODAL BUTTONS
+========================================================= */
+
+.cheat-confirm {
+  flex: 1;
+  background: #3B82F6;
+  color: white;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cheat-confirm:hover {
+  background: #2563EB;
+}
+
+.cheat-cancel {
+  flex: 1;
+  background: #1f2937;
+  color: #9ca3af;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* =========================================================
+   NOTIFICATION DRAWER BUTTON
+========================================================= */
+
+#notificationDrawer button {
+  width: 100%;
+  padding: 10px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#notificationDrawer button:hover {
+  background: #dc2626;
+}
