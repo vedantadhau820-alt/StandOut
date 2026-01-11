@@ -3,25 +3,20 @@
 ========================================================= */
 
 /* -------------------------
-   STATE
-------------------------- */
-let appNotifications =
-  JSON.parse(localStorage.getItem("appNotifications")) || [];
-
-
-/* -------------------------
    STORAGE
 ------------------------- */
 function saveNotifications() {
-  localStorage.setItem("appNotifications", JSON.stringify(appNotifications));
+  localStorage.setItem(
+    "appNotifications",
+    JSON.stringify(window.appNotifications)
+  );
 }
-
 
 /* -------------------------
    PUSH NOTIFICATION
 ------------------------- */
-function pushNotification(title, msg) {
-  appNotifications.unshift({
+window.pushNotification = function (title, msg) {
+  window.appNotifications.unshift({
     title,
     msg,
     time: new Date().toLocaleString()
@@ -29,20 +24,20 @@ function pushNotification(title, msg) {
 
   updateNotificationBadge();
   saveNotifications();
-}
-
+};
 
 /* -------------------------
    BADGE COUNT
 ------------------------- */
-function updateNotificationBadge() {
+window.updateNotificationBadge = function () {
   const badge = document.getElementById("notifyBadge");
   if (!badge) return;
 
   const lastCount =
     parseInt(localStorage.getItem("lastNotifCount")) || 0;
 
-  const unread = appNotifications.length - lastCount;
+  const unread =
+    window.appNotifications.length - lastCount;
 
   if (unread <= 0) {
     badge.style.display = "none";
@@ -51,21 +46,21 @@ function updateNotificationBadge() {
     badge.style.display = "inline-block";
     badge.textContent = unread;
   }
-}
-
+};
 
 /* -------------------------
    CLEAR ALL
 ------------------------- */
-function clearAllNotifications() {
-  appNotifications = [];
+window.clearAllNotifications = function () {
+  window.appNotifications = [];
 
   localStorage.removeItem("appNotifications");
   localStorage.removeItem("lastNotifCount");
 
   const list = document.getElementById("notificationList");
   if (list) {
-    list.innerHTML = `<p style="opacity:0.6;">No notifications</p>`;
+    list.innerHTML =
+      `<p style="opacity:0.6;">No notifications</p>`;
   }
 
   const badge = document.getElementById("notifyBadge");
@@ -73,27 +68,25 @@ function clearAllNotifications() {
     badge.style.display = "none";
     badge.textContent = "";
   }
-
-  console.log("All notifications cleared.");
-}
-
+};
 
 /* -------------------------
    RENDER DRAWER
 ------------------------- */
 function renderNotifications() {
-  const container = document.getElementById("notificationList");
+  const container =
+    document.getElementById("notificationList");
   if (!container) return;
 
   container.innerHTML = "";
 
-  if (appNotifications.length === 0) {
+  if (window.appNotifications.length === 0) {
     container.innerHTML =
       `<p style="opacity:0.7; text-align:center;">No notifications</p>`;
     return;
   }
 
-  appNotifications.forEach(n => {
+  window.appNotifications.forEach(n => {
     const div = document.createElement("div");
     div.className = "notification-card";
 
@@ -107,39 +100,34 @@ function renderNotifications() {
   });
 }
 
-
 /* -------------------------
    DRAWER TOGGLE
 ------------------------- */
-document.getElementById("notifyBell")?.addEventListener("click", e => {
-  e.stopPropagation();
+document.getElementById("notifyBell")
+  ?.addEventListener("click", e => {
+    e.stopPropagation();
 
-  const drawer = document.getElementById("notificationDrawer");
-  if (!drawer) return;
+    const drawer =
+      document.getElementById("notificationDrawer");
+    if (!drawer) return;
 
-  if (drawer.style.display === "none" || drawer.style.display === "") {
-    renderNotifications();
-    drawer.style.display = "block";
+    const isOpen = drawer.style.display === "block";
 
-    // Mark all as read
-    localStorage.setItem(
-      "lastNotifCount",
-      appNotifications.length
-    );
+    if (!isOpen) {
+      renderNotifications();
+      drawer.style.display = "block";
 
-    const badge = document.getElementById("notifyBadge");
-    if (badge) {
-      badge.style.display = "none";
-      badge.textContent = "";
+      localStorage.setItem(
+        "lastNotifCount",
+        window.appNotifications.length
+      );
+
+      updateNotificationBadge();
+      saveNotifications();
+    } else {
+      drawer.style.display = "none";
     }
-
-    updateNotificationBadge();
-    saveNotifications();
-  } else {
-    drawer.style.display = "none";
-  }
-});
-
+  });
 
 /* -------------------------
    CLICK SAFETY
@@ -149,17 +137,17 @@ document
   ?.addEventListener("click", e => e.stopPropagation());
 
 document.addEventListener("click", () => {
-  const drawer = document.getElementById("notificationDrawer");
+  const drawer =
+    document.getElementById("notificationDrawer");
   if (drawer && drawer.style.display === "block") {
     drawer.style.display = "none";
   }
 });
 
-
 /* -------------------------
    SMART POPUP
 ------------------------- */
-function showSmartNotification(title, message) {
+window.showSmartNotification = function (title, message) {
   const popup = document.getElementById("smartNotify");
   if (!popup) return;
 
@@ -183,15 +171,15 @@ function showSmartNotification(title, message) {
       popup.style.display = "none";
     }, 400);
   }, 3000);
-}
-
+};
 
 /* -------------------------
    DAILY GOAL REMINDER
 ------------------------- */
 function dailyGoalReminder() {
   const today = new Date().toDateString();
-  const lastRun = localStorage.getItem("dailyGoalReminder");
+  const lastRun =
+    localStorage.getItem("dailyGoalReminder");
 
   if (lastRun === today) return;
 
@@ -211,8 +199,10 @@ function dailyGoalReminder() {
     });
 }
 
-
 /* -------------------------
    INIT
 ------------------------- */
-window.addEventListener("load", updateNotificationBadge);
+window.addEventListener(
+  "load",
+  updateNotificationBadge
+);
