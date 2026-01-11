@@ -1,0 +1,343 @@
+/* =========================================================
+   LIST ITEMS (MISSIONS, SKILLS, GOALS)
+========================================================= */
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+ul li {
+  background: #1f2937;
+  margin: 0.5rem 0;
+  padding: 1rem;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+ul li.remove {
+  transform: translateX(100%);
+  opacity: 0;
+  display: none;
+}
+
+.skill,
+.goal {
+  background: #1f2937;
+  margin: 0.5rem 0;
+  padding: 0.7rem;
+  border-radius: 6px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  cursor: pointer;
+  display: none;
+}
+
+.skill.show,
+.goal.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.complete-btn {
+  background: transparent;
+  border: none;
+  color: #3B82F6;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.complete-btn:hover {
+  transform: scale(1.2);
+  color: #2563EB;
+}
+
+.remove-btn,
+.remove-btn2 {
+  background: transparent;
+  border: none;
+  color: #e63946;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  margin-right: 1rem;
+}
+
+.remove-btn:hover,
+.remove-btn2:hover {
+  transform: scale(1.2);
+  color: #f87171;
+}
+
+.danger-btn {
+  background: #e63946;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.danger-btn:hover {
+  background: #d62828;
+}
+
+/* =========================================================
+   PROGRESS BARS
+========================================================= */
+
+.progress {
+  background: #333;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 10px;
+  margin-top: 5px;
+}
+
+.progress-bar {
+  height: 10px;
+  background: #3B82F6;
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+/* =========================================================
+   MARKETPLACE CARD GRID
+========================================================= */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+  padding-bottom: 80px;
+}
+
+/* =========================================================
+   FLEX CARD (CARD COMPONENT)
+========================================================= */
+
+.flex-card {
+  background: #0b1220;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid #1f2937;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.flex-card img {
+  width: 100%;
+  height: 110px;
+  z-index: -12;
+  object-fit: cover;
+  object-position: top;
+  filter: contrast(1.1) brightness(0.9);
+}
+
+.flex-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.card-body {
+  padding: 10px;
+}
+
+.flex-card h3 {
+  font-size: 14px;
+  margin: 0;
+  color: #fff;
+}
+
+.card-quote {
+  font-size: 12px;
+  opacity: 0.75;
+  margin: 6px 0 10px;
+  line-height: 1.4;
+}
+
+/* =========================================================
+   BUY BUTTON
+========================================================= */
+
+.buy-btn {
+  width: 100%;
+  padding: 6px;
+  background: #111827;
+  border: 1px solid #3B82F6;
+  color: #3B82F6;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.buy-btn:hover {
+  background: #3B82F6;
+  color: #000;
+}
+
+/* =========================================================
+   CARD BADGES
+========================================================= */
+
+.grade-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+/* Grade Colors */
+.grade-s .grade-badge {
+  background: gold;
+  color: #000;
+}
+
+.grade-a .grade-badge {
+  background: #8b5cf6;
+}
+
+.grade-b .grade-badge {
+  background: #38bdf8;
+}
+
+.grade-c .grade-badge {
+  background: #22c55e;
+}
+
+.grade-d .grade-badge {
+  background: #8B5A2B;
+}
+
+.grade-e .grade-badge {
+  background: #6b7280;
+}
+
+.grade-ss .grade-badge {
+  background: linear-gradient(45deg, #facc15, #fde047);
+  color: #000;
+}
+
+.grade-x .grade-badge {
+  background: linear-gradient(45deg, #7c3aed, #ec4899);
+  color: #fff;
+}
+
+/* =========================================================
+   CARD STATES
+========================================================= */
+
+.flex-card.locked img {
+  filter: grayscale(1) brightness(0.5);
+}
+
+.flex-card.locked .buy-btn {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.flex-card.owned {
+  border-color: #3B82F6;
+}
+
+.flex-card.owned .buy-btn {
+  background: transparent;
+  border: none;
+  color: #22c55e;
+  cursor: default;
+}
+
+/* =========================================================
+   TOGGLE BUTTON (HARDCORE)
+========================================================= */
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 5px 0px 20px 0px;
+}
+
+.toggle-label {
+  font-size: 14px;
+  color: #f87171;
+  font-weight: 600;
+  user-select: none;
+}
+
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #374151;
+  border-radius: 999px;
+  transition: background-color 0.25s ease;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.25s ease;
+}
+
+.toggle input:checked + .slider {
+  background-color: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+}
+
+.toggle input:checked + .slider::before {
+  transform: translateX(22px);
+}
+
+.slider:hover {
+  background-color: #4b5563;
+}
+
+/* =========================================================
+   SMALL META TEXT
+========================================================= */
+
+.mint-date {
+  font-size: 11px;
+  opacity: 0.65;
+  margin-top: 4px;
+}
+
+.achievement-date {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 4px;
+}
