@@ -2,29 +2,26 @@
    COUNTDOWNS MODULE
 ========================================================= */
 
-let countdowns =
-  JSON.parse(localStorage.getItem("countdowns")) || [];
-
-
 /* -------------------------
    SAVE
 ------------------------- */
-function saveCountdowns() {
+window.saveCountdowns = function () {
   localStorage.setItem(
     "countdowns",
-    JSON.stringify(countdowns)
+    JSON.stringify(window.countdowns)
   );
-}
-
+};
 
 /* -------------------------
    ADD COUNTDOWN
 ------------------------- */
-window.addCountdown() {
+window.addCountdown = function () {
   const titleInput =
     document.getElementById("countdownTitle");
   const timeInput =
     document.getElementById("countdownDateTime");
+
+  if (!titleInput || !timeInput) return;
 
   const title = titleInput.value.trim();
   const dateTime = timeInput.value;
@@ -39,7 +36,7 @@ window.addCountdown() {
     return;
   }
 
-  countdowns.push({
+  window.countdowns.push({
     title,
     date: new Date(dateTime).toISOString(),
     startTime: new Date().toISOString()
@@ -52,37 +49,38 @@ window.addCountdown() {
   timeInput.value = "";
 
   closeModal();
-}
-
+};
 
 /* -------------------------
    REMOVE COUNTDOWN
 ------------------------- */
-window.removeCountdown(index) {
-  countdowns.splice(index, 1);
+window.removeCountdown = function (index) {
+  window.countdowns.splice(index, 1);
   saveCountdowns();
   renderCountdowns();
-}
-
+};
 
 /* -------------------------
    RENDER COUNTDOWNS
 ------------------------- */
-function renderCountdowns() {
+window.renderCountdowns = function () {
   const list =
     document.getElementById("countdown-list");
 
+  if (!list) return;
+
   list.innerHTML = "";
 
-  document.getElementById("countdownCounter")
-    .textContent = countdowns.length;
+  const counter =
+    document.getElementById("countdownCounter");
+  if (counter) counter.textContent = window.countdowns.length;
 
-  if (countdowns.length === 0) {
+  if (window.countdowns.length === 0) {
     list.textContent = "No countdowns added";
     return;
   }
 
-  countdowns.forEach((c, index) => {
+  window.countdowns.forEach((c, index) => {
     const div = document.createElement("div");
     div.className = "goal show";
 
@@ -91,13 +89,9 @@ function renderCountdowns() {
 
       <div class="timer-row">
         <div class="timer-bar-container">
-          <div class="timer-bar"
-               id="timerbar-${index}">
-          </div>
+          <div class="timer-bar" id="timerbar-${index}"></div>
         </div>
-        <div class="timer-text"
-             id="timer-${index}">
-        </div>
+        <div class="timer-text" id="timer-${index}"></div>
       </div>
 
       <button class="remove-btn2"
@@ -110,43 +104,31 @@ function renderCountdowns() {
   });
 
   updateTimers();
-}
-
+};
 
 /* -------------------------
-   UPDATE COUNTDOWN TIMERS
+   UPDATE TIMERS
 ------------------------- */
-function updateTimers() {
+window.updateTimers = function () {
   clearInterval(window.timerInterval);
 
   window.timerInterval = setInterval(() => {
-    countdowns.forEach((c, index) => {
+    window.countdowns.forEach((c, index) => {
       const now = Date.now();
-      const target =
-        new Date(c.date).getTime();
+      const target = new Date(c.date).getTime();
       const diff = target - now;
 
       const totalDuration =
         target -
-        new Date(
-          countdowns[index].startTime || c.date
-        ).getTime();
+        new Date(c.startTime || c.date).getTime();
 
-      let percent =
-        (diff / totalDuration) * 100;
-
-      if (percent < 0) percent = 0;
-      if (percent > 100) percent = 100;
+      let percent = (diff / totalDuration) * 100;
+      percent = Math.max(0, Math.min(100, percent));
 
       const bar =
-        document.getElementById(
-          `timerbar-${index}`
-        );
+        document.getElementById(`timerbar-${index}`);
+      if (bar) bar.style.width = percent + "%";
 
-      if (bar)
-        bar.style.width = percent + "%";
-
-      // 🔔 1 hour warning (once)
       if (
         diff > 0 &&
         diff <= 60 * 60 * 1000 &&
@@ -160,10 +142,7 @@ function updateTimers() {
       }
 
       const el =
-        document.getElementById(
-          `timer-${index}`
-        );
-
+        document.getElementById(`timer-${index}`);
       if (!el) return;
 
       if (diff <= 0) {
@@ -172,27 +151,13 @@ function updateTimers() {
         return;
       }
 
-      const days =
-        Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours =
-        Math.floor(
-          (diff %
-            (1000 * 60 * 60 * 24)) /
-            (1000 * 60 * 60)
-        );
-      const mins =
-        Math.floor(
-          (diff %
-            (1000 * 60 * 60)) /
-            (1000 * 60)
-        );
-      const secs =
-        Math.floor(
-          (diff % (1000 * 60)) / 1000
-        );
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
 
       el.textContent =
         `${days}d ${hours}h ${mins}m ${secs}s`;
     });
   }, 1000);
-}
+};
