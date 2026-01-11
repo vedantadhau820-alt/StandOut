@@ -6,7 +6,7 @@
 /* -------------------------
    ADD SKILL
 ------------------------- */
-function addSkill() {
+window.addSkill() {
   const skill =
     document.getElementById("skillInput").value.trim();
 
@@ -38,7 +38,7 @@ function addSkill() {
 /* -------------------------
    DELETE SKILL (DIRECT)
 ------------------------- */
-function deleteSkillDirect(btn) {
+window.deleteSkillDirect(btn) {
   const skillDiv = btn.closest(".skill");
   const skillName =
     skillDiv.querySelector("strong").textContent;
