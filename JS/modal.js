@@ -144,3 +144,65 @@ window.closeModal = function () {
         el.value = "";
     });
 };
+
+// ===== ALERT =====
+window.customAlert(msg) {
+  document.getElementById("alertMsg").textContent = msg;
+  document.getElementById("alertModal").classList.add("active");
+}
+
+window.closeAlert() {
+  document.getElementById("alertModal").classList.remove("active");
+}
+
+// ===== CONFIRM =====
+let confirmCallback = null;
+
+window.customConfirm(msg, callback) {
+  confirmCallback = callback;
+  document.getElementById("confirmMsg").textContent = msg;
+  document.getElementById("confirmModal").classList.add("active");
+}
+
+window.confirmYes() {
+  if (confirmCallback) confirmCallback();
+  document.getElementById("confirmModal").classList.remove("active");
+}
+
+window.confirmNo() {
+  document.getElementById("confirmModal").classList.remove("active");
+}
+
+// ===== MAIN MODAL =====
+function openModal(type, skillDiv = null) {
+  // ⬅️ paste your FULL openModal logic here (unchanged)
+}
+
+window.closeModal() {
+  document.getElementById("modal").classList.remove("active");
+  document.querySelectorAll("#modal input, #modal select").forEach(el => {
+    el.value = "";
+  });
+}
+
+// ===== CHEAT =====
+window.confirmCheat() {
+  const code = document.getElementById("cheatInput").value.trim();
+  if (code !== "Thala") {
+    customAlert("Invalid cheat code.");
+    return;
+  }
+
+  completedMissions = 9999;
+  dailyImprovementCount = 0;
+
+  localStorage.setItem("completedMissions", completedMissions);
+  document.getElementById("missionCounter").textContent = completedMissions;
+
+  closeCheatModal();
+  showSmartNotification("Cheat Activated", "9999 Improvement Points granted.");
+}
+
+window.closeCheatModal() {
+  document.getElementById("cheatModal").classList.remove("active");
+}
