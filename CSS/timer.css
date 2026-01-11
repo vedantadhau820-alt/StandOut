@@ -223,3 +223,21 @@
     height: 100vw !important;
   }
 }
+
+/* =========================================================
+   FULLSCREEN TIMER — STACKING FIX
+========================================================= */
+
+/* Fullscreen timer base */
+#timerScreen {
+    z-index: 900000 !important;
+}
+
+/* Any modal opened ABOVE timer */
+.timer-modal,
+.modal,
+.alert-modal,
+.confirm-modal,
+.cheat-modal {
+    z-index: 999999 !important;
+}
