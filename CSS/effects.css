@@ -252,3 +252,16 @@
     animation: none !important;
   }
   }
+
+/* =========================================================
+   ACHIEVEMENT POPUP — FORCE VISIBILITY
+========================================================= */
+
+.achievement-popup {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000001 !important; /* ABOVE modals & timer */
+    pointer-events: none;
+}
