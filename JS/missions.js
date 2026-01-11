@@ -24,10 +24,14 @@ function resetDailyImprovementIfNeeded() {
    ADD MISSION
 ------------------------- */
 window.addMission = function () {
-  const text = document.getElementById("missionInput").value.trim();
-  const deadline = document.getElementById("missionDeadline").value;
-  const linkedSkill = document.getElementById("linkedSkill").value;
-  const isHardcore = document.getElementById("hardcoreToggle").checked;
+  const text =
+    document.getElementById("missionInput")?.value.trim();
+  const deadline =
+    document.getElementById("missionDeadline")?.value;
+  const linkedSkill =
+    document.getElementById("linkedSkill")?.value;
+  const isHardcore =
+    document.getElementById("hardcoreToggle")?.checked;
 
   if (!text) {
     closeModal();
@@ -65,7 +69,8 @@ window.addMission = function () {
     <div class="deadline-row">
       <span class="deadlineDisplay">${deadlineText}</span>
       <span class="overdueMark"></span>
-      <button class="complete-btn" onclick="completeMission(this)">✔</button>
+      <button class="complete-btn"
+              onclick="completeMission(this)">✔</button>
     </div>
   `;
 
@@ -74,7 +79,9 @@ window.addMission = function () {
     openModal("edit-mission", li);
   });
 
-  document.getElementById("mission-list").appendChild(li);
+  document.getElementById("mission-list")
+    .appendChild(li);
+
   saveData();
   closeModal();
 };
@@ -86,8 +93,11 @@ window.updateMission = function () {
   const li = window.missionBeingEdited;
   if (!li) return;
 
-  const newText = document.getElementById("editMissionInput").value.trim();
-  const newDeadline = document.getElementById("editMissionDeadline").value;
+  const newText =
+    document.getElementById("editMissionInput")?.value.trim();
+  const newDeadline =
+    document.getElementById("editMissionDeadline")?.value;
+
   const isHardcore = li.dataset.hardcore === "true";
 
   if (!newText) {
@@ -132,6 +142,7 @@ window.deleteMission = function () {
 
   if (li.dataset.hardcore === "true") {
     const deadline = li.dataset.deadline;
+
     if (deadline && new Date(deadline).getTime() <= Date.now()) {
       customAlert("🔥 Hardcore missions cannot be deleted after deadline.");
       return;
@@ -160,6 +171,8 @@ window.completeMission = function (btn) {
   resetDailyImprovementIfNeeded();
 
   const li = btn.closest("li");
+  if (!li) return;
+
   const linkedSkill = li.dataset.skill;
   const deadline = li.dataset.deadline;
 
@@ -182,13 +195,26 @@ window.completeMission = function (btn) {
   dailyImprovementCount++;
   completedMissions++;
 
-  localStorage.setItem("dailyImprovementCount", dailyImprovementCount);
-  localStorage.setItem("completedMissions", completedMissions);
-  document.getElementById("missionCounter").textContent = completedMissions;
+  localStorage.setItem(
+    "dailyImprovementCount",
+    dailyImprovementCount
+  );
+  localStorage.setItem(
+    "completedMissions",
+    completedMissions
+  );
 
-  if (linkedSkill) increaseSkillXP(linkedSkill, 1);
+  document.getElementById("missionCounter")
+    .textContent = completedMissions;
 
-  checkMissionAchievements();
+  if (linkedSkill && window.increaseSkillXP) {
+    window.increaseSkillXP(linkedSkill, 1);
+  }
+
+  if (window.checkMissionAchievements) {
+    window.checkMissionAchievements();
+  }
+
   showPopup("Mission completed! Improvement point gained.");
   saveData();
 };
