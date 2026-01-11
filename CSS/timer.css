@@ -1,0 +1,225 @@
+/* =========================================================
+   FULLSCREEN TIMER
+========================================================= */
+
+#timerScreen {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden !important;
+  z-index: 999999;
+}
+
+/* =========================================================
+   TIMER TOP CONTROLS
+========================================================= */
+
+#timerScreen .top-right-btns {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: row;
+  gap: 18px;
+  font-size: 26px;
+  cursor: pointer;
+  z-index: 2000000;
+}
+
+/* =========================================================
+   FLIP TIMER CORE
+========================================================= */
+
+.flip-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-family: monospace;
+}
+
+.colon {
+  font-size: 70px;
+  color: #3B82F6;
+}
+
+.flip-unit {
+  position: relative;
+  width: 90px;
+  height: 120px;
+  perspective: 300px;
+}
+
+.flip-card {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  overflow: hidden;
+  line-height: 60px;
+  font-size: 60px;
+  color: #3B82F6;
+  background: #111;
+  border-radius: 10px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+}
+
+.flip-card.top {
+  z-index: 2;
+}
+
+.flip-card.bottom {
+  top: 60px;
+}
+
+/* =========================================================
+   FLIP ANIMATIONS
+========================================================= */
+
+.flip-animate .top {
+  animation: flipTop 0.5s linear forwards;
+}
+
+.flip-animate .bottom {
+  animation: flipBottom 0.5s linear forwards;
+}
+
+@keyframes flipTop {
+  0% {
+    transform: rotateX(0deg);
+  }
+  100% {
+    transform: rotateX(-90deg);
+  }
+}
+
+@keyframes flipBottom {
+  0% {
+    transform: rotateX(90deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+/* =========================================================
+   STATIC DIGITS (SET TIMER)
+========================================================= */
+
+.static-digit {
+  font-size: 90px;
+  font-weight: bold;
+  font-family: monospace;
+  color: #3B82F6;
+  width: 90px;
+  text-align: center;
+}
+
+/* =========================================================
+   TIMER MODALS (MUSIC & SETTINGS)
+========================================================= */
+
+.timer-modal .modal-content {
+  width: 40% !important;
+  height: 60% !important;
+  max-width: none !important;
+  max-height: 40% !important;
+
+  background: #000 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  padding: 30px !important;
+
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  animation: fadeIn 0.25s ease;
+}
+
+/* Inputs larger */
+.timer-modal input,
+.timer-modal select {
+  width: 70%;
+  padding: 6px !important;
+  font-size: 12px !important;
+  margin-bottom: 10px !important;
+  background: #111 !important;
+  border: 2px solid #3B82F6;
+  border-radius: 10px;
+}
+
+/* Buttons */
+.timer-modal button {
+  width: 70%;
+  padding: 6px !important;
+  font-size: 10px !important;
+  border-radius: 12px !important;
+  margin-top: 7px;
+}
+
+/* Header */
+.timer-modal h3 {
+  font-size: 25px !important;
+  margin-bottom: 30px !important;
+}
+
+/* =========================================================
+   PRESET CONTROLS
+========================================================= */
+
+#presetControls {
+  padding-left: 50px;
+  margin-bottom: 10px;
+}
+
+/* =========================================================
+   MOBILE LANDSCAPE FORCE (TIMER ONLY)
+========================================================= */
+
+@media (max-width: 768px) {
+  #timerScreen {
+    position: fixed;
+    top: 0 !important;
+    left: 0 !important;
+
+    width: 100vh !important;
+    height: 100vw !important;
+
+    background: #000;
+
+    transform: rotate(90deg) translateX(25%) translateY(50%);
+    transform-origin: center center;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden !important;
+    z-index: 999999;
+  }
+
+  /* Disable transitions during rotation */
+  #musicModal,
+  #musicModal *,
+  #timerSettingModal,
+  #timerSettingModal * {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* Rotate modals instantly */
+  #musicModal .modal-content,
+  #timerSettingModal .modal-content {
+    transform: rotate(90deg);
+    transform-origin: center center;
+    width: 100vh !important;
+    height: 100vw !important;
+  }
+}
