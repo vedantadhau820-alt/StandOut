@@ -3,30 +3,6 @@
 ========================================================= */
 
 /* -------------------------
-   CONSTANTS
-------------------------- */
-const DAILY_IMPROVEMENT_LIMIT = 10;
-const missionMilestones = [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
-
-
-/* -------------------------
-   STATE
-------------------------- */
-let completedMissions =
-  parseInt(localStorage.getItem("completedMissions")) || 0;
-
-let dailyImprovementCount =
-  parseInt(localStorage.getItem("dailyImprovementCount")) || 0;
-
-let lastImprovementDate =
-  localStorage.getItem("lastImprovementDate") ||
-  new Date().toDateString();
-
-
-document.getElementById("missionCounter").textContent = completedMissions;
-
-
-/* -------------------------
    DAILY RESET
 ------------------------- */
 function resetDailyImprovementIfNeeded() {
@@ -44,22 +20,14 @@ function resetDailyImprovementIfNeeded() {
     parseInt(localStorage.getItem("dailyImprovementCount")) || 0;
 }
 
-
 /* -------------------------
    ADD MISSION
 ------------------------- */
-window.addMission() {
-  const text =
-    document.getElementById("missionInput").value.trim();
-
-  const deadline =
-    document.getElementById("missionDeadline").value;
-
-  const linkedSkill =
-    document.getElementById("linkedSkill").value;
-
-  const isHardcore =
-    document.getElementById("hardcoreToggle").checked;
+window.addMission = function () {
+  const text = document.getElementById("missionInput").value.trim();
+  const deadline = document.getElementById("missionDeadline").value;
+  const linkedSkill = document.getElementById("linkedSkill").value;
+  const isHardcore = document.getElementById("hardcoreToggle").checked;
 
   if (!text) {
     closeModal();
@@ -77,7 +45,6 @@ window.addMission() {
   }
 
   const li = document.createElement("li");
-
   li.dataset.deadline = deadline || "";
   li.dataset.skill = linkedSkill || "";
   li.dataset.completed = "false";
@@ -95,7 +62,6 @@ window.addMission() {
     <span class="mission-text">
       ${text} ${isHardcore ? "🔥" : ""}
     </span>
-
     <div class="deadline-row">
       <span class="deadlineDisplay">${deadlineText}</span>
       <span class="overdueMark"></span>
@@ -111,22 +77,17 @@ window.addMission() {
   document.getElementById("mission-list").appendChild(li);
   saveData();
   closeModal();
-}
-
+};
 
 /* -------------------------
    UPDATE MISSION
 ------------------------- */
-window.updateMission() {
+window.updateMission = function () {
   const li = window.missionBeingEdited;
   if (!li) return;
 
-  const newText =
-    document.getElementById("editMissionInput").value.trim();
-
-  const newDeadline =
-    document.getElementById("editMissionDeadline").value;
-
+  const newText = document.getElementById("editMissionInput").value.trim();
+  const newDeadline = document.getElementById("editMissionDeadline").value;
   const isHardcore = li.dataset.hardcore === "true";
 
   if (!newText) {
@@ -160,21 +121,18 @@ window.updateMission() {
 
   saveData();
   closeModal();
-}
-
+};
 
 /* -------------------------
    DELETE MISSION
 ------------------------- */
-window.deleteMission() {
+window.deleteMission = function () {
   const li = window.missionBeingEdited;
   if (!li) return;
 
   if (li.dataset.hardcore === "true") {
     const deadline = li.dataset.deadline;
-    const now = Date.now();
-
-    if (deadline && new Date(deadline).getTime() <= now) {
+    if (deadline && new Date(deadline).getTime() <= Date.now()) {
       customAlert("🔥 Hardcore missions cannot be deleted after deadline.");
       return;
     }
@@ -193,13 +151,12 @@ window.deleteMission() {
   li.remove();
   saveData();
   closeModal();
-}
-
+};
 
 /* -------------------------
    COMPLETE MISSION
 ------------------------- */
-window.completeMission(btn) {
+window.completeMission = function (btn) {
   resetDailyImprovementIfNeeded();
 
   const li = btn.closest("li");
@@ -227,7 +184,6 @@ window.completeMission(btn) {
 
   localStorage.setItem("dailyImprovementCount", dailyImprovementCount);
   localStorage.setItem("completedMissions", completedMissions);
-
   document.getElementById("missionCounter").textContent = completedMissions;
 
   if (linkedSkill) increaseSkillXP(linkedSkill, 1);
@@ -235,91 +191,4 @@ window.completeMission(btn) {
   checkMissionAchievements();
   showPopup("Mission completed! Improvement point gained.");
   saveData();
-}
-
-
-/* -------------------------
-   DEADLINE CHECKER
-------------------------- */
-function checkMissedDeadlines() {
-  const missions = document.querySelectorAll("#mission-list li");
-  const now = Date.now();
-
-  missions.forEach(li => {
-    const deadline = li.dataset.deadline;
-    if (!deadline || li.dataset.completed === "true") return;
-
-    const deadlineTime = new Date(deadline).getTime();
-    const timeLeft = deadlineTime - now;
-    const overdueSpan = li.querySelector(".overdueMark");
-
-    if (
-      timeLeft > 0 &&
-      timeLeft <= 2 * 60 * 60 * 1000 &&
-      !li.dataset.warned
-    ) {
-      li.dataset.warned = "true";
-      pushNotification(
-        "Mission Deadline",
-        `"${li.querySelector('.mission-text').textContent}" is due soon (within 2 hours!)`
-      );
-    }
-
-    if (timeLeft <= 0) {
-      overdueSpan.innerHTML = `<span class="overdue-badge">Overdue</span>`;
-
-      if (!li.dataset.overdueNotified) {
-        li.dataset.overdueNotified = "true";
-        pushNotification(
-          "⚠ Mission Overdue",
-          `"${li.querySelector('.mission-text').textContent}" is overdue!`
-        );
-      }
-
-      if (
-        li.dataset.hardcore === "true" &&
-        !li.dataset.hardcorePunished
-      ) {
-        li.dataset.hardcorePunished = "true";
-        completedMissions = 0;
-
-        localStorage.setItem("completedMissions", 0);
-        document.getElementById("missionCounter").textContent = "0";
-
-        renderMarketplace();
-        renderMyCards();
-
-        showSmartNotification(
-          "🔥 Hardcore Failed",
-          "Improvement Points reset to ZERO."
-        );
-
-        saveData();
-        return;
-      }
-
-      if (!li.dataset.deducted) {
-        completedMissions = Math.max(0, completedMissions - 1);
-        li.dataset.deducted = "true";
-
-        localStorage.setItem("completedMissions", completedMissions);
-        document.getElementById("missionCounter").textContent = completedMissions;
-        saveData();
-      }
-    }
-  });
-}
-
-setInterval(checkMissedDeadlines, 60000);
-
-
-/* -------------------------
-   ACHIEVEMENTS
-------------------------- */
-function checkMissionAchievements() {
-  missionMilestones.forEach(m => {
-    if (completedMissions === m) {
-      unlockAchievement("mission" + m);
-    }
-  });
-  }
+};
