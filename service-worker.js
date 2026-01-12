@@ -14,18 +14,7 @@ const APP_SHELL = [
   "/CSS/timer.css",
   "/CSS/account.css",
 
-  // JS (order does not matter for caching)
-  "/JS/globals.js",
-  "/JS/modals.js",
-  "/JS/missions.js",
-  "/JS/skills.js",
-  "/JS/goals.js",
-  "/JS/countdown.js",
-  "/JS/marketplace.js",
-  "/JS/achievements.js",
-  "/JS/notifications.js",
-  "/JS/navigation.js",
-  "/JS/app.js",
+  
 
   // Assets
   "/icon.jpeg",
@@ -96,3 +85,4 @@ self.addEventListener("fetch", event => {
     })
   );
 });
+
