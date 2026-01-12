@@ -2,7 +2,7 @@ window.cardCatalog = [
 
             /* ======================
                E GRADE — KNOWN BUT NICHE (8)
-            ====================== */
+            ===================== */
             { id: "hawkeye", title: "Hawkeye", grade: "E", quote: "I’m just a guy with a bow.", image: "Images/e1.jpg", cost: 5 },
             { id: "ant_man", title: "Ant-Man", grade: "E", quote: "Sometimes, the smallest hero makes the biggest difference.", image: "Images/e2.jpg", cost: 6 },
             { id: "falcon", title: "Falcon", grade: "E", quote: "I do what he does, just slower.", image: "Images/e3.jpg", cost: 7 },
