@@ -391,18 +391,16 @@
   ============================ -->
 
     <script>
-        if ("serviceWorker" in navigator) {
-            window.addEventListener("load", () => {
-                navigator.serviceWorker
-                    .register("/service-worker.js")
-                    .then(reg => {
-                        console.log("✅ Service Worker registered", reg.scope);
-                    })
-                    .catch(err => {
-                        console.error("❌ Service Worker failed", err);
-                    });
-            });
-        }
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", async () => {
+    try {
+      const reg = await navigator.serviceWorker.register("./service-worker.js");
+      console.log("✅ SW registered with scope:", reg.scope);
+    } catch (err) {
+      console.error("❌ SW registration failed:", err);
+    }
+  });
+}
     </script>
 
     <script src="cards.js"></script>
@@ -2600,5 +2598,6 @@ function closeCheatModal() {
 </body>
 
 </html>
+
 
 
