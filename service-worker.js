@@ -48,7 +48,7 @@ self.addEventListener("fetch", event => {
   const request = event.request;
 
   // ✅ Runtime cache all images automatically
-  if (request.destination === "image" || request.destination === "audio") { {
+  if (request.destination === "image" || request.destination === "audio") { 
     event.respondWith(
       caches.open(CACHE_NAME).then(cache =>
         cache.match(request).then(cached => {
@@ -69,6 +69,7 @@ self.addEventListener("fetch", event => {
     caches.match(request).then(res => res || fetch(request))
   );
 });
+
 
 
 
