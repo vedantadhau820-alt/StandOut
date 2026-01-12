@@ -1,54 +1,79 @@
-const CACHE_NAME = "standout-cache-v7";
+const CACHE_NAME = "standout-v1";
 
-const urlsToCache = [
-  "/",
+const APP_SHELL = [
+  "/",                  // IMPORTANT
   "/index.html",
-  "/documentation.html",
   "/manifest.json",
+
+  // CSS
+  "/CSS/base.css",
+  "/CSS/buttons.css",
+  "/CSS/components.css",
+  "/CSS/features.css",
+  "/CSS/effects.css",
+  "/CSS/timer.css",
+  "/CSS/account.css",
+
+  // JS (order does not matter for caching)
+  "/JS/globals.js",
+  "/JS/modals.js",
+  "/JS/missions.js",
+  "/JS/skills.js",
+  "/JS/goals.js",
+  "/JS/countdown.js",
+  "/JS/marketplace.js",
+  "/JS/achievements.js",
+  "/JS/notifications.js",
+  "/JS/navigation.js",
+  "/JS/app.js",
+
+  // Assets
   "/icon.jpeg",
-  "/Complete.mp3",
+  "/Music/Complete.mp3",
   "/Achievements.mp3"
 ];
 
-
-
+/* ===========================
+   INSTALL → CACHE APP SHELL
+=========================== */
 self.addEventListener("install", event => {
-
   event.waitUntil(
-
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
-
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(APP_SHELL);
+    })
   );
-
   self.skipWaiting();
-
 });
 
-
-
+/* ===========================
+   ACTIVATE → CLEAN OLD CACHES
+=========================== */
 self.addEventListener("activate", event => {
-
   event.waitUntil(
-
     caches.keys().then(keys =>
-
-      Promise.all(keys.map(k => k !== CACHE_NAME && caches.delete(k)))
-
+      Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      )
     )
-
   );
-
   self.clients.claim();
-
 });
 
-
-
+/* ===========================
+   FETCH → CACHE STRATEGY
+=========================== */
 self.addEventListener("fetch", event => {
   const request = event.request;
 
-  // ✅ Runtime cache all images automatically
-  if (request.destination === "image" || request.destination === "audio") { 
+  // Cache images & audio dynamically
+  if (
+    request.destination === "image" ||
+    request.destination === "audio"
+  ) {
     event.respondWith(
       caches.open(CACHE_NAME).then(cache =>
         cache.match(request).then(cached => {
@@ -64,13 +89,10 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  // Default behavior for everything else
+  // App shell fallback
   event.respondWith(
-    caches.match(request).then(res => res || fetch(request))
+    caches.match(request).then(res => {
+      return res || fetch(request);
+    })
   );
 });
-
-
-
-
-
