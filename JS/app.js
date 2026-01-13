@@ -223,7 +223,7 @@ window.loadProgressFromFile = loadProgressFromFile;
     <h3>${card.title}</h3>
     <p class="card-quote">${card.quote}</p>
 
-    ${card.limited ? `<strong><h6>Will Expire On: ${card.expiresAt.slice(0,10)}</h6></strong>` : ""}
+    ${card.limited && !expired ? `<strong><h6>Will Expire On: ${card.expiresAt.slice(0,10)}</h6></strong>` : ""}
     
 
     ${
@@ -2209,6 +2209,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
