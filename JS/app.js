@@ -188,8 +188,8 @@ window.loadProgressFromFile = loadProgressFromFile;
     const bOwned = ownedCards[b.id] ? 1 : 0;
     if (aOwned !== bOwned) return bOwned - aOwned;
 
-    const aCanBuy = completedMissions == a.cost ? 1 : 0;
-    const bCanBuy = completedMissions == b.cost ? 1 : 0;
+    const aCanBuy = completedMissions-1 >= a.cost ? 1 : 0;
+    const bCanBuy = completedMissions-1 >= b.cost ? 1 : 0;
     if (aCanBuy !== bCanBuy) return bCanBuy - aCanBuy;
 
     return gradeRank(b.grade) - gradeRank(a.grade);
@@ -2222,6 +2222,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
