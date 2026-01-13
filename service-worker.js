@@ -4,8 +4,8 @@ const APP_SHELL = [
   "/",                  // IMPORTANT
   "/index.html",
   "/manifest.json",
-  "/cards.js",
-  "/app.js",
+  "/JS/cards.js",
+  "/JS/app.js",
 
   // CSS
   "/CSS/base.css",
@@ -98,4 +98,5 @@ self.addEventListener("fetch", event => {
     caches.match(event.request).then(res => res || fetch(event.request))
   );
 });
+
 
