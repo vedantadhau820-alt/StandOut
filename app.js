@@ -4,8 +4,16 @@
   window.cardCatalog = [];
         }
 
+function getISTDate() {
+  return new Date(
+    new Date().toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata"
+    })
+  );
+}
+
         function getTodayKey() {
-    return new Date().toISOString().slice(0, 10);
+    return getISTDate().toISOString().slice(0, 10);
         }
 
         function enforceDailyReset() {
@@ -31,7 +39,7 @@
 function getAppSnapshot() {
     return {
         version: "2.1.0",
-        exportedAt: new Date().toISOString(),
+        exportedAt: getISTDate().toISOString().slice(0, 10),
 
         completedMissions,
         dailyImprovementCount,
@@ -55,7 +63,7 @@ function getAppSnapshot() {
 
     completedMissions = Number(data.completedMissions) || 0;
     dailyImprovementCount = Number(data.dailyImprovementCount) || 0;
-    lastImprovementDate = data.lastImprovementDate || new Date().toDateString();
+    lastImprovementDate = data.lastImprovementDate || getISTDate().toISOString().slice(0, 10);
 
     localStorage.setItem("missions", data.missions || "");
     localStorage.setItem("skills", data.skills || "");
@@ -150,22 +158,7 @@ window.loadProgressFromFile = loadProgressFromFile;
         let dailyImprovementCount = parseInt(localStorage.getItem("dailyImprovementCount")) || 0;
         let lastImprovementDate = localStorage.getItem("lastImprovementDate") || new Date().toDateString();
 
-        function resetDailyImprovementIfNeeded() {
-    const today = new Date().toDateString();
-
-    if (lastImprovementDate !== today) {
-        localStorage.setItem("dailyImprovementCount", "0");
-        localStorage.setItem("lastImprovementDate", today);
-    }
-
-    // 🔐 Always sync from storage after reset
-    dailyImprovementCount =
-        parseInt(localStorage.getItem("dailyImprovementCount")) || 0;
-    lastImprovementDate =
-        localStorage.getItem("lastImprovementDate") || today;
-        }
-
-
+        
         let isMarketplaceOpen = false;
 
 
@@ -281,7 +274,7 @@ window.loadProgressFromFile = loadProgressFromFile;
       document.getElementById("missionCounter").textContent = completedMissions;
 
       ownedCards[card.id] = {
-        mintedAt: new Date().toISOString()   // ✅ ISO format
+        mintedAt: getISTDate().toISOString().slice(0, 10)   // ✅ ISO format
       };
 
       localStorage.setItem("ownedCards", JSON.stringify(ownedCards));
@@ -1459,7 +1452,7 @@ function checkMissedDeadlines() {
 
 
         function completeMission(btn) {
-    resetDailyImprovementIfNeeded();
+    enforceDailyReset();
 
     const li = btn.closest("li");
     const linkedSkill = li.dataset.skill;
@@ -2104,7 +2097,7 @@ document.getElementById("countdownCounter").textContent = "0";
            10. INITIALIZATION
         ========================================================= */
         window.addEventListener("load", () => {
-            resetDailyImprovementIfNeeded()
+            enforceDailyReset();
             renderAchievements();
             renderCountdowns();
             loadData();
@@ -2184,6 +2177,35 @@ function closeCheatModal() {
         "9999 Improvement Points granted."
     );
         }
+
+function skipDayCheat() {
+  // Get current logical day
+  const currentDay = lastImprovementDate
+    ? new Date(lastImprovementDate)
+    : new Date();
+
+  // Move +1 day
+  currentDay.setDate(currentDay.getDate() + 1);
+
+  const nextDayKey = currentDay.toISOString().slice(0, 10);
+
+  // Apply skip
+  lastImprovementDate = nextDayKey;
+  dailyImprovementCount = 0;
+
+  localStorage.setItem("lastImprovementDate", nextDayKey);
+  localStorage.setItem("dailyImprovementCount", "0");
+
+  closeCheatModal();
+
+  showSmartNotification(
+    "⏭ Day Skipped",
+    `New day activated (${nextDayKey})`
+  );
+
+  console.log("⏭ Day skipped to:", nextDayKey);
+};
+
 
 
 
