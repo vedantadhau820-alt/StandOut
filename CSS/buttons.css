@@ -189,7 +189,8 @@
   margin-top: 12px;
   padding: 5px;
   font-weight: bold;
-  background-color: #3B82F6;
+   border-radius: 6px;
+   background-color: #3B82F6;
    outline: none;
    border:none;
 }
