@@ -184,3 +184,10 @@
 #notificationDrawer button:hover {
   background: #dc2626;
 }
+
+.cheat-btn {
+  margin-top: 12px;
+  padding: 10px;
+  font-weight: bold;
+  background-color: #3B82F6;
+}
