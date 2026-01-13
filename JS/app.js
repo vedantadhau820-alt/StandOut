@@ -1459,6 +1459,7 @@ function checkMissedDeadlines() {
 
         function completeMission(btn) {
     enforceDailyReset();
+    renderMarketplace();
 
     const li = btn.closest("li");
     const linkedSkill = li.dataset.skill;
@@ -2216,6 +2217,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
