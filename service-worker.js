@@ -28,6 +28,7 @@ const APP_SHELL = [
   "/Music/m4.mp3",
   "/Music/m5.mp3",
   "/Music/m6.mp3",
+  
   "/Images/s1.jpg",
   "/Images/s2.jpg",
   "/Images/a1.jpg",
@@ -98,5 +99,6 @@ self.addEventListener("fetch", event => {
     caches.match(event.request).then(res => res || fetch(event.request))
   );
 });
+
 
 
