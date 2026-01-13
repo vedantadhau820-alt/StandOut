@@ -53,35 +53,12 @@ window.cardCatalog = [
             ====================== */
             { id: "one_above_all", title: "One Above All", grade: "S", quote: "All things return to one.", image: "Images/s1.jpg", cost: 160 },
             { id: "the_presence", title: "The Presence", grade: "S", quote: "I am what must be.", image: "Images/s2.jpg", cost: 200 },
-            {
-  id: "chainsaw_man",
-  title: "Chainsaw Man",
-  grade: "w",
-  cost: 11,
-  image: "Images/w2.jpg",
 
-  limited: true,
-  expiresAt: "2026-01-10T23:29:30Z"
-            },
-            {
-  id: "momo_ayase",
-  title: "Momo Ayase",
-  grade: "w",
-  cost: 48,
-  image: "Images/w1.jpg",
-
-  limited: true,
-  expiresAt: "2026-01-31T23:29:30Z"
-            },
-            {
-  id: "okarun",
-  title: "Okarun",
-  grade: "w",
-  cost: 11,
-  image: "Images/w3.jpg",
-
-  limited: true,
-  expiresAt: "2026-01-10T23:29:30Z"
-            },
+            /* ======================
+            w GRADE - LIMITED EDITIONS 
+            ========================*/
+            { id: "chainsaw_man", title: "Chainsaw Man", grade: "w", cost: 11, image: "Images/w2.jpg", limited: true, expiresAt: "2026-01-10T23:29:30Z" },
+            { id: "momo_ayase", title: "Momo Ayase", grade: "w", cost: 48, image: "Images/w1.jpg", limited: true, expiresAt: "2026-01-31T23:29:30Z" },
+            { id: "okarun", title: "Okarun", grade: "w", cost: 11,  image: "Images/w3.jpg", limited: true, expiresAt: "2026-01-10T23:29:30Z" },
 
         ];
