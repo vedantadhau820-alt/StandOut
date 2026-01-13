@@ -58,7 +58,7 @@ window.cardCatalog = [
             w GRADE - LIMITED EDITIONS 
             ========================*/
             { id: "chainsaw_man", title: "Chainsaw Man", grade: "w", cost: 11, image: "Images/w2.jpg", limited: true, expiresAt: "2026-01-10T23:29:30Z" },
-            { id: "momo_ayase", title: "Momo Ayase", grade: "w", quote: "Come On, Someone Comfort Me !", cost: 48, image: "Images/w1.jpg", limited: true, expiresAt: "2026-01-31T23:29:30Z" },
+            { id: "momo_ayase", title: "Momo Ayase", grade: "w", quote: "Come On, Someone Comfort Me !", cost: 48, image: "Images/w1.jpg", limited: true, expiresAt: "2026-01-15T23:29:30Z" },
             { id: "okarun", title: "Okarun", grade: "w", cost: 11,  image: "Images/w3.jpg", limited: true, expiresAt: "2026-01-10T23:29:30Z" },
 
         ];
