@@ -2189,7 +2189,7 @@ function skipDayCheat() {
     : new Date();
 
   // Move +1 day
-  currentDay.setDate(currentDay.getDate() + 5);
+  currentDay.setDate(currentDay.getDate() + 1);
 
   const nextDayKey = currentDay.toISOString().slice(0, 10);
 
@@ -2209,6 +2209,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
