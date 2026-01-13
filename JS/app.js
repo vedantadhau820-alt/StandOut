@@ -2149,9 +2149,11 @@ function startResetHold() {
 function cancelResetHold() {
     clearTimeout(resetHoldTimer);
 }
-        function openCheatModal() {
+function openCheatModal() {
     const modal = document.getElementById("cheatModal");
     modal.classList.add("active");
+
+    if (input) input.value;
 
     setTimeout(() => {
         document.getElementById("cheatInput").focus();
@@ -2176,6 +2178,8 @@ function closeCheatModal() {
 
     localStorage.setItem("completedMissions", completedMissions);
     document.getElementById("missionCounter").textContent = completedMissions;
+
+    document.getElementById("cheatInput").value = "";      
 
     closeCheatModal();
 
@@ -2212,6 +2216,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
