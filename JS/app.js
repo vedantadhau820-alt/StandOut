@@ -4,6 +4,8 @@
   window.cardCatalog = [];
         }
 
+const currentMarketplaceFilter = "ALL";
+
 function getISTDate() {
   return new Date(
     new Date().toLocaleString("en-US", {
@@ -286,7 +288,7 @@ window.loadProgressFromFile = loadProgressFromFile;
       localStorage.setItem("ownedCards", JSON.stringify(ownedCards));
       localStorage.setItem("completedMissions", completedMissions);
 
-      renderMarketplace();
+      renderMarketplace(currentMarketplaceFilter);
       renderMyCards();
 
       showSmartNotification(
@@ -374,6 +376,8 @@ function gradeRank(grade) {
                 const grade = btn.textContent === "All"
                     ? "ALL"
                     : btn.textContent;
+
+                currentMarketplaceFilter = grade;
 
                 renderMarketplace(grade);
             };
@@ -1459,7 +1463,7 @@ function checkMissedDeadlines() {
 
         function completeMission(btn) {
     enforceDailyReset();
-    renderMarketplace();
+    renderMarketplace(currentMarketplaceFilter);
 
     const li = btn.closest("li");
     const linkedSkill = li.dataset.skill;
@@ -2217,6 +2221,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
