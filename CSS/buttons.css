@@ -191,8 +191,11 @@
   font-weight: bold;
   background-color: #3B82F6;
    outline: none;
+   border:none;
 }
 
 .cheat-input {
    outline: none;
+   border: none;
+   focus: none;
 }
