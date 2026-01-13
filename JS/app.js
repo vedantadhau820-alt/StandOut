@@ -217,7 +217,7 @@ window.loadProgressFromFile = loadProgressFromFile;
   <img src="${card.image}">
   <span class="grade-badge">${card.grade}</span>
 
-  ${card.limited ? `<span class="limited-badge">LIMITED</span><h5>Will Expire: ${card.expiresAt.slice(0,10)}</h5>` : ""}
+  ${card.limited ? `<span class="limited-badge">LIMITED</span><strong><h6>Will Expire: ${card.expiresAt.slice(0,10)}</h6></strong>` : ""}
 
   <div class="card-body">
     <h3>${card.title}</h3>
@@ -2205,6 +2205,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
