@@ -188,8 +188,8 @@ window.loadProgressFromFile = loadProgressFromFile;
     const bOwned = ownedCards[b.id] ? 1 : 0;
     if (aOwned !== bOwned) return bOwned - aOwned;
 
-    const aCanBuy = completedMissions >= a.cost ? 1 : 0;
-    const bCanBuy = completedMissions >= b.cost ? 1 : 0;
+    const aCanBuy = completedMissions == a.cost ? 1 : 0;
+    const bCanBuy = completedMissions == b.cost ? 1 : 0;
     if (aCanBuy !== bCanBuy) return bCanBuy - aCanBuy;
 
     return gradeRank(b.grade) - gradeRank(a.grade);
@@ -260,7 +260,8 @@ window.loadProgressFromFile = loadProgressFromFile;
   const now = window.__timeTravelNow || Date.now();
   return new Date(card.expiresAt).getTime() < now;
 }
-            function buyCard(cardId) {
+
+function buyCard(cardId) {
   const card = window.cardCatalog.find(c => c.id === cardId);
   if (!card) return;
 
@@ -2221,6 +2222,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
