@@ -4,7 +4,7 @@
   window.cardCatalog = [];
         }
 
-const currentMarketplaceFilter = "ALL";
+let currentMarketplaceFilter = "ALL";
 
 function getISTDate() {
   return new Date(
@@ -2221,6 +2221,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
