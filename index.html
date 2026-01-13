@@ -384,6 +384,21 @@
             <button onclick="closeTimerSettingModal()">Close</button>
         </div>
     </div>
+
+    <script>
+        if ("serviceWorker" in navigator) {
+  window.addEventListener("load", async () => {
+    try {
+      const reg = await navigator.serviceWorker.register("./service-worker.js");
+      console.log("✅ SW registered with scope:", reg.scope);
+    } catch (err) {
+      console.error("❌ SW registration failed:", err);
+    }
+  });
+        }
+    </script>
+    <script src="cards.js"></script>
+    <script src="app.js"></script>
     </body>
 
 </html>
