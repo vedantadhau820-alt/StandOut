@@ -352,7 +352,7 @@ window.loadProgressFromFile = loadProgressFromFile;
             });
         }
 
-        const GRADE_ORDER = ["E", "D", "C", "B", "A", "X", "S", "SS"];
+        const GRADE_ORDER = ["E", "D", "C", "B", "A", "w", "S", "SS"];
 
 function gradeRank(grade) {
   return GRADE_ORDER.indexOf(grade) + 1;
@@ -2205,6 +2205,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
