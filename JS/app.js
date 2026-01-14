@@ -361,6 +361,7 @@ function buyCard(cardId) {
   );
             }
 
+
         function formatDate(isoDate) {
     if (!isoDate) return "";
     const d = new Date(isoDate);
@@ -2283,6 +2284,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
