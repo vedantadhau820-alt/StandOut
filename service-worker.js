@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v1";
+const CACHE_NAME = "standout-v2.1.0";
 
 const APP_SHELL = [
   "/",                  // IMPORTANT
@@ -73,6 +73,11 @@ self.addEventListener("install", event => {
   self.skipWaiting();
 });
 
+self.addEventListener("message", event => {
+  if (event.data === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
 /* ===========================
    ACTIVATE → CLEAN OLD CACHES
 =========================== */
@@ -99,6 +104,7 @@ self.addEventListener("fetch", event => {
     caches.match(event.request).then(res => res || fetch(event.request))
   );
 });
+
 
 
 
