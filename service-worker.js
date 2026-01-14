@@ -1,4 +1,5 @@
 const CACHE_NAME = "standout-v2.1.6";
+const MEDIA_CACHE = "standout-media";     // NEVER versioned
 
 const APP_SHELL = [
   "/",                  // IMPORTANT
@@ -61,53 +62,74 @@ const APP_SHELL = [
   "/Images/e8.jpg",
 ];
 
+
 /* ===========================
-   INSTALL → CACHE APP SHELL
+   MEDIA FILES (STABLE)
+   ➜ Add ONLY when NEW files appear
+=========================== */
+const MEDIA_FILES = [
+  "/Music/Complete.mp3",
+  "/Music/Achievements.mp3",
+  "/Music/m1.mp3",
+  "/Music/m2.mp3",
+  "/Music/m3.mp3",
+  "/Music/m4.mp3",
+  "/Music/m5.mp3",
+  "/Music/m6.mp3",
+
+        
+];
+
+/* ===========================
+   INSTALL
 =========================== */
 self.addEventListener("install", event => {
+  console.log("🟡 SW installing");
+
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(APP_SHELL);
-    })
+    Promise.all([
+      // Cache app shell (versioned)
+      caches.open(APP_CACHE).then(cache => {
+        console.log("📦 Caching app shell");
+        return cache.addAll(APP_SHELL);
+      }),
+
+      // Cache media ONCE (never deleted)
+      caches.open(MEDIA_CACHE).then(cache => {
+        console.log("🎵 Caching media files");
+        return cache.addAll(MEDIA_FILES);
+      })
+    ])
   );
+
   self.skipWaiting();
 });
 
-self.addEventListener("message", event => {
-  if (event.data === "SKIP_WAITING") {
-    self.skipWaiting();
-  }
-});
 /* ===========================
-   ACTIVATE → CLEAN OLD CACHES
+   ACTIVATE
 =========================== */
 self.addEventListener("activate", event => {
-  console.log("🟢 SW activating");
-
   event.waitUntil(
     (async () => {
-      // clean old caches
       const keys = await caches.keys();
       await Promise.all(
         keys.map(k => k !== CACHE_NAME && caches.delete(k))
       );
 
-      // notify ALL clients
       const clients = await self.clients.matchAll({
         includeUncontrolled: true
       });
 
       clients.forEach(client => {
-        client.postMessage({ type: "SW_UPDATED" });
+        client.postMessage({ type: "SW_ACTIVATED" });
       });
     })()
   );
 
   self.clients.claim();
 });
-
 /* ===========================
-   FETCH → CACHE STRATEGY
+   FETCH (CACHE FIRST)
 =========================== */
 self.addEventListener("fetch", event => {
   event.respondWith(
@@ -120,15 +142,3 @@ self.addEventListener("fetch", event => {
     })
   );
 });
-
-
-
-
-
-
-
-
-
-
-
-
