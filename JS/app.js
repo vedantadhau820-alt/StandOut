@@ -4,59 +4,89 @@
   window.cardCatalog = [];
         }
 
-navigator.serviceWorker.register("/service-worker.js").then(reg => {
-  reg.onupdatefound = () => {
-    const newWorker = reg.installing;
-    newWorker.onstatechange = () => {
-      if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-        showUpdateBanner(newWorker);
-        newWorker.postMessage("SKIP_WAITING");
-      }
-    };
-  };
-});
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service-worker.js").then(reg => {
 
+    // 🔥 Update found → downloading started
+    reg.addEventListener("updatefound", () => {
+      const newWorker = reg.installing;
+      if (!newWorker) return;
 
-function showUpdateBanner() {
-  if (document.getElementById("update-banner")) return;
+      showUpdatingIndicator(); // 👈 IMMEDIATE feedback
 
-  const banner = document.createElement("div");
-  banner.id = "update-banner";
+      newWorker.addEventListener("statechange", () => {
+        if (newWorker.state === "installed") {
+          if (navigator.serviceWorker.controller) {
+            showUpdateReadyIndicator();
+          }
+        }
+      });
+    });
 
-  banner.innerHTML = `
-    <span>🚀 App updated successfully</span>
-    <button>Reload</button>
-  `;
+    // 🔥 New SW takes control
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      hideUpdatingIndicator();
+            location.reload();
+    });
+  });
+}
 
-  banner.style.cssText = `
+function showUpdatingIndicator() {
+  if (document.getElementById("sw-updating")) return;
+
+  const bar = document.createElement("div");
+  bar.id = "sw-updating";
+
+  bar.style.cssText = `
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     background: #f59e0b;
-    color: white;
-    padding: 10px 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 100000;
-    font-size: 14px;
+    color: #000;
+    padding: 6px;
+    text-align: center;
+    font-size: 13px;
+    z-index: 99999;
   `;
 
-  banner.querySelector("button").style.cssText = `
-    background: white;
-    color: #2563eb;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-  `;
-
-  banner.querySelector("button").onclick = () => location.reload();
-
-  document.body.appendChild(banner);
+  bar.textContent = "⬇️ Updating app...";
+  document.body.appendChild(bar);
 }
+
+function hideUpdatingIndicator() {
+  document.getElementById("sw-updating")?.remove();
+}
+
+function showUpdateReadyIndicator() {
+  showSmartNotification(
+    "Update Ready",
+    "New version downloaded."
+  );
+}
+
+let dots = 0;
+setInterval(() => {
+  const el = document.getElementById("sw-updating");
+  if (!el) return;
+  dots = (dots + 1) % 4;
+  el.textContent = "⬇️ Updating app" + ".".repeat(dots);
+}, 500);
+
+navigator.serviceWorker.register("/service-worker.js").then(reg => {
+  reg.onupdatefound = () => {
+    const newWorker = reg.installing;
+    newWorker.onstatechange = () => {
+      if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+        showSmartNotification(
+          "New version installed.",
+          "App Updated."
+        );
+        newWorker.postMessage("SKIP_WAITING");
+      }
+    };
+  };
+});
 
 let currentMarketplaceFilter = "ALL";
 
@@ -2277,6 +2307,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
