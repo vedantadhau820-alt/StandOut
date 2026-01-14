@@ -4,6 +4,27 @@
   window.cardCatalog = [];
         }
 
+if (navigator.serviceWorker) {
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    window.location.reload(); // 🔥 reload with new code
+  });
+}
+
+navigator.serviceWorker.register("/service-worker.js").then(reg => {
+  reg.onupdatefound = () => {
+    const newWorker = reg.installing;
+    newWorker.onstatechange = () => {
+      if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+        showSmartNotification(
+          "Update Available",
+          "New version installed. App refreshed."
+        );
+        newWorker.postMessage("SKIP_WAITING");
+      }
+    };
+  };
+});
+
 let currentMarketplaceFilter = "ALL";
 
 function getISTDate() {
@@ -2222,6 +2243,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
