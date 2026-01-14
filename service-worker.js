@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.1.8";
+const APP_CACHE = "standout-v2.1.8";
 const MEDIA_CACHE = "standout-media";     // NEVER versioned
 
 const APP_SHELL = [
@@ -73,67 +73,84 @@ const MEDIA_FILES = [
 ];
 
 /* ===========================
-   INSTALL
+   INSTALL → CACHE CORE FILES
 =========================== */
 self.addEventListener("install", event => {
   console.log("🟡 SW installing");
 
   event.waitUntil(
-    Promise.all([
-      // Cache app shell (versioned)
-      caches.open(CACHE_NAME).then(cache => {
-        console.log("📦 Caching app shell");
-        return cache.addAll(APP_SHELL);
-      }),
-
-      // Cache media ONCE (never deleted)
-      caches.open(MEDIA_CACHE).then(cache => {
-        console.log("🎵 Caching media files");
-        return cache.addAll(MEDIA_FILES);
-      })
-    ])
+    caches.open(APP_CACHE).then(async cache => {
+      for (const file of APP_SHELL) {
+        try {
+          await cache.add(file);
+        } catch (e) {
+          console.warn("⚠️ Skipped:", file);
+        }
+      }
+    })
   );
 
   self.skipWaiting();
 });
 
 /* ===========================
-   ACTIVATE
+   ACTIVATE → CLEAN OLD APP CACHES
 =========================== */
 self.addEventListener("activate", event => {
+  console.log("🟢 SW activating");
+
   event.waitUntil(
     (async () => {
       const keys = await caches.keys();
+
       await Promise.all(
-        keys.map(k => k !== APP_CATCHE && caches.delete(k))
+        keys.map(k => {
+          if (k !== APP_CACHE && k !== MEDIA_CACHE) {
+            return caches.delete(k);
+          }
+        })
       );
 
       const clients = await self.clients.matchAll({
         includeUncontrolled: true
       });
 
-      clients.forEach(client => {
-        client.postMessage({ type: "SW_ACTIVATED" });
-      });
+      clients.forEach(client =>
+        client.postMessage({ type: "SW_UPDATED" })
+      );
     })()
   );
 
   self.clients.claim();
 });
+
 /* ===========================
-   FETCH (CACHE FIRST)
+   FETCH STRATEGY
 =========================== */
 self.addEventListener("fetch", event => {
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
+  const req = event.request;
 
-      return fetch(event.request).catch(() =>
-        caches.match("/index.html")
-      );
-    })
+  // 🎵 Images & Music → runtime cache
+  if (req.destination === "image" || req.destination === "audio") {
+    event.respondWith(
+      caches.open(MEDIA_CACHE).then(cache =>
+        cache.match(req).then(cached => {
+          if (cached) return cached;
+
+          return fetch(req).then(res => {
+            cache.put(req, res.clone());
+            return res;
+          });
+        })
+      )
+    );
+    return;
+  }
+
+  // 📦 App shell → cache first
+  event.respondWith(
+    caches.match(req).then(res =>
+      res || fetch(req).catch(() => caches.match("/index.html"))
+    )
   );
 });
-
-
-
