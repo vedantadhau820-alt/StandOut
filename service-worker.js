@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.1.4";
+const CACHE_NAME = "standout-v2.1.5";
 
 const APP_SHELL = [
   "/",                  // IMPORTANT
@@ -82,28 +82,27 @@ self.addEventListener("message", event => {
    ACTIVATE → CLEAN OLD CACHES
 =========================== */
 self.addEventListener("activate", event => {
+  console.log("🟢 SW activating");
+
   event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.map(key => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      )
-      (async () => {
+    (async () => {
+      // clean old caches
+      const keys = await caches.keys();
+      await Promise.all(
+        keys.map(k => k !== CACHE_NAME && caches.delete(k))
+      );
+
+      // notify ALL clients
       const clients = await self.clients.matchAll({
         includeUncontrolled: true
       });
 
       clients.forEach(client => {
-        client.postMessage({
-          type: "SW_UPDATED"
-        });
+        client.postMessage({ type: "SW_UPDATED" });
       });
     })()
-    )
   );
+
   self.clients.claim();
 });
 
@@ -121,6 +120,7 @@ self.addEventListener("fetch", event => {
     })
   );
 });
+
 
 
 
