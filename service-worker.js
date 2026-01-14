@@ -1,5 +1,5 @@
-const APP_CACHE = "standout-v2.1.8";
-const MEDIA_CACHE = "standout-media";     // NEVER versioned
+const APP_CACHE = "standout-v2.1.9";
+//const MEDIA_CACHE = "standout-media";     // NEVER versioned
 
 const APP_SHELL = [
   "/",                  // IMPORTANT
@@ -52,14 +52,7 @@ const APP_SHELL = [
   "/Images/e6.jpg",
   "/Images/e7.jpg",
   "/Images/e8.jpg",
-];
 
-
-/* ===========================
-   MEDIA FILES (STABLE)
-   ➜ Add ONLY when NEW files appear
-=========================== */
-const MEDIA_FILES = [
   "/Music/Complete.mp3",
   "/Music/Achievements.mp3",
   "/Music/m1.mp3",
@@ -68,24 +61,33 @@ const MEDIA_FILES = [
   "/Music/m4.mp3",
   "/Music/m5.mp3",
   "/Music/m6.mp3",
-
-        
 ];
 
+
 /* ===========================
-   INSTALL → CACHE CORE FILES
+   MEDIA FILES (STABLE)
+   ➜ Add ONLY when NEW files appear
+=========================== */
+//const MEDIA_FILES = [
+  
+
+        
+//];
+
+/* ===========================
+   INSTALL → CACHE APP SHELL
 =========================== */
 self.addEventListener("install", event => {
-  console.log("🟡 SW installing");
+  console.log("🟡 SW installing...");
 
   event.waitUntil(
-    caches.open(APP_CACHE).then(async cache => {
-      for (const file of APP_SHELL) {
-        try {
-          await cache.add(file);
-        } catch (e) {
-          console.warn("⚠️ Skipped:", file);
-        }
+    caches.open(CACHE_NAME).then(async cache => {
+      try {
+        await cache.addAll(APP_SHELL);
+        console.log("✅ App shell cached");
+      } catch (err) {
+        console.error("❌ Cache failed:", err);
+        throw err; // VERY IMPORTANT
       }
     })
   );
@@ -93,31 +95,33 @@ self.addEventListener("install", event => {
   self.skipWaiting();
 });
 
+self.addEventListener("message", event => {
+  if (event.data === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
 /* ===========================
-   ACTIVATE → CLEAN OLD APP CACHES
+   ACTIVATE → CLEAN OLD CACHES
 =========================== */
 self.addEventListener("activate", event => {
   console.log("🟢 SW activating");
 
   event.waitUntil(
     (async () => {
+      // clean old caches
       const keys = await caches.keys();
-
       await Promise.all(
-        keys.map(k => {
-          if (k !== APP_CACHE && k !== MEDIA_CACHE) {
-            return caches.delete(k);
-          }
-        })
+        keys.map(k => k !== CACHE_NAME && caches.delete(k))
       );
 
+      // notify ALL clients
       const clients = await self.clients.matchAll({
         includeUncontrolled: true
       });
 
-      clients.forEach(client =>
-        client.postMessage({ type: "SW_UPDATED" })
-      );
+      clients.forEach(client => {
+        client.postMessage({ type: "SW_UPDATED" });
+      });
     })()
   );
 
@@ -125,32 +129,16 @@ self.addEventListener("activate", event => {
 });
 
 /* ===========================
-   FETCH STRATEGY
+   FETCH → CACHE STRATEGY
 =========================== */
 self.addEventListener("fetch", event => {
-  const req = event.request;
-
-  // 🎵 Images & Music → runtime cache
-  if (req.destination === "image" || req.destination === "audio") {
-    event.respondWith(
-      caches.open(MEDIA_CACHE).then(cache =>
-        cache.match(req).then(cached => {
-          if (cached) return cached;
-
-          return fetch(req).then(res => {
-            cache.put(req, res.clone());
-            return res;
-          });
-        })
-      )
-    );
-    return;
-  }
-
-  // 📦 App shell → cache first
   event.respondWith(
-    caches.match(req).then(res =>
-      res || fetch(req).catch(() => caches.match("/index.html"))
-    )
+    caches.match(event.request).then(cached => {
+      if (cached) return cached;
+
+      return fetch(event.request).catch(() =>
+        caches.match("/index.html")
+      );
+    })
   );
 });
