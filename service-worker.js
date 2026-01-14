@@ -21,14 +21,6 @@ const APP_SHELL = [
 
   // Assets
   "/icon.jpeg",
-  "/Music/Complete.mp3",
-  "/Music/Achievements.mp3",
-  "/Music/m1.mp3",
-  "/Music/m2.mp3",
-  "/Music/m3.mp3",
-  "/Music/m4.mp3",
-  "/Music/m5.mp3",
-  "/Music/m6.mp3",
   
   "/Images/s1.jpg",
   "/Images/s2.jpg",
@@ -142,3 +134,4 @@ self.addEventListener("fetch", event => {
     })
   );
 });
+
