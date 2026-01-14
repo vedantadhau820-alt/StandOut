@@ -4,65 +4,58 @@
   window.cardCatalog = [];
         }
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.addEventListener("message", event => {
-    if (event.data?.type === "SW_UPDATED") {
-      showUpdateNotification();
-    }
-  });
-}
-
 navigator.serviceWorker.register("/service-worker.js").then(reg => {
   reg.onupdatefound = () => {
     const newWorker = reg.installing;
     newWorker.onstatechange = () => {
       if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-        showSmartNotification(
-          "Update Available",
-          "New version installed. App refreshed."
-        );
+        showUpdateBanner(newWorker);
         newWorker.postMessage("SKIP_WAITING");
       }
     };
   };
 });
 
-function showUpdateNotification() {
-  const bar = document.createElement("div");
 
-  bar.style.cssText = `
+function showUpdateBanner() {
+  if (document.getElementById("update-banner")) return;
+
+  const banner = document.createElement("div");
+  banner.id = "update-banner";
+
+  banner.innerHTML = `
+    <span>🚀 App updated successfully</span>
+    <button>Reload</button>
+  `;
+
+  banner.style.cssText = `
     position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #111827;
-    color: #fff;
-    padding: 12px 18px;
-    border-radius: 10px;
-    z-index: 99999;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #f59e0b;
+    color: white;
+    padding: 10px 14px;
     display: flex;
-    gap: 12px;
+    justify-content: space-between;
     align-items: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,.4);
+    z-index: 100000;
+    font-size: 14px;
   `;
 
-  bar.innerHTML = `
-    <span>🚀 New update available</span>
-    <button style="
-      background:#3B82F6;
-      border:none;
-      color:white;
-      padding:6px 12px;
-      border-radius:6px;
-      cursor:pointer;
-    ">Update</button>
+  banner.querySelector("button").style.cssText = `
+    background: white;
+    color: #2563eb;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
   `;
 
-  bar.querySelector("button").onclick = () => {
-    location.reload();
-  };
+  banner.querySelector("button").onclick = () => location.reload();
 
-  document.body.appendChild(bar);
+  document.body.appendChild(banner);
 }
 
 let currentMarketplaceFilter = "ALL";
@@ -2284,6 +2277,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
