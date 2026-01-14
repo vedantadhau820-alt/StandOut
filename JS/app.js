@@ -676,7 +676,7 @@ function gradeRank(grade) {
                 badge.style.display = "none";
                 badge.textContent = "";
 
-                // Mark all as read (but keep them in list)
+                // Mark all as read  (but keep them in list)
                 // Reset unread count
                 localStorage.setItem("lastNotifCount", appNotifications.length);
                 updateNotificationBadge();
@@ -2283,6 +2283,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
