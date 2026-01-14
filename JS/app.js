@@ -55,7 +55,7 @@ function showUpdateNotification() {
       padding:6px 12px;
       border-radius:6px;
       cursor:pointer;
-    ">Reload</button>
+    ">Update</button>
   `;
 
   bar.querySelector("button").onclick = () => {
@@ -2283,6 +2283,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
