@@ -91,6 +91,17 @@ self.addEventListener("activate", event => {
           }
         })
       )
+      (async () => {
+      const clients = await self.clients.matchAll({
+        includeUncontrolled: true
+      });
+
+      clients.forEach(client => {
+        client.postMessage({
+          type: "SW_UPDATED"
+        });
+      });
+    })()
     )
   );
   self.clients.claim();
@@ -110,6 +121,7 @@ self.addEventListener("fetch", event => {
     })
   );
 });
+
 
 
 
