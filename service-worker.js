@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.1.7";
+const CACHE_NAME = "standout-v2.1.8";
 const MEDIA_CACHE = "standout-media";     // NEVER versioned
 
 const APP_SHELL = [
@@ -81,7 +81,7 @@ self.addEventListener("install", event => {
   event.waitUntil(
     Promise.all([
       // Cache app shell (versioned)
-      caches.open(APP_CACHE).then(cache => {
+      caches.open(CACHE_NAME).then(cache => {
         console.log("📦 Caching app shell");
         return cache.addAll(APP_SHELL);
       }),
@@ -105,7 +105,7 @@ self.addEventListener("activate", event => {
     (async () => {
       const keys = await caches.keys();
       await Promise.all(
-        keys.map(k => k !== CACHE_NAME && caches.delete(k))
+        keys.map(k => k !== APP_CATCHE && caches.delete(k))
       );
 
       const clients = await self.clients.matchAll({
@@ -134,5 +134,6 @@ self.addEventListener("fetch", event => {
     })
   );
 });
+
 
 
