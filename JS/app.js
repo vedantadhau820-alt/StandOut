@@ -7,7 +7,7 @@
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/service-worker.js").then(reg => {
 
-    // 🔥 Update found → downloading started
+    // 🔥 Update found → downloading started.
     reg.addEventListener("updatefound", () => {
       const newWorker = reg.installing;
       if (!newWorker) return;
@@ -2307,6 +2307,7 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
+
 
 
 
