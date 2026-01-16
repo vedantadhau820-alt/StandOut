@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.1.10";
+const CACHE_NAME = "standout-v2.1.11";
 //const MEDIA_CACHE = "standout-media";     // NEVER versioned
 
 const APP_SHELL = [
@@ -142,5 +142,6 @@ self.addEventListener("fetch", event => {
     })
   );
 });
+
 
 
