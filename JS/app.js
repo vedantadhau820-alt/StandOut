@@ -2196,6 +2196,7 @@ document.getElementById("countdownCounter").textContent = "0";
         window.addEventListener("load", () => {
             enforceDailyReset();
             renderMarketplace();
+            checkMissedDeadlines();
             renderAchievements();
             renderCountdowns();
             loadData();
@@ -2307,36 +2308,6 @@ function skipDayCheat() {
 
   console.log("⏭ Day skipped to:", nextDayKey);
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
