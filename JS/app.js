@@ -793,7 +793,7 @@ async function saveProgressToFile() {
 
 
         link.download =
-            `standout-backup-${getBackupDate()}.json`;
+    `standout-backup-${getBackupDate()}-${Date.now()}.json`;
 
 
         document.body.appendChild(
