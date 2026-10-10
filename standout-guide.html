@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>StandOut — How to Use</title>
+
+  <link rel="stylesheet" href="base.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+
+    /* =========================================================
+       STANDOUT — GUIDE PAGE
+    ========================================================= */
+
+    :root {
+      --guide-bg: #07090d;
+      --guide-card: #0d1118;
+      --guide-card-hover: #101620;
+
+      --guide-border: rgba(255, 255, 255, 0.07);
+      --guide-border-blue: rgba(59, 130, 246, 0.25);
+
+      --guide-blue: #3b82f6;
+      --guide-blue-light: #60a5fa;
+
+      --guide-text: #f4f7fb;
+      --guide-text-soft: #c5ccd7;
+      --guide-muted: #8993a3;
+
+      --guide-radius: 18px;
+    }
+
+
+    /* =========================================================
+       BASE
+    ========================================================= */
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+
+      background:
+        radial-gradient(
+          circle at 50% -10%,
+          rgba(59, 130, 246, 0.14),
+          transparent 35%
+        ),
+        linear-gradient(
+          180deg,
+          #080b10 0%,
+          #07090d 45%,
+          #05070a 100%
+        );
+
+      color: var(--guide-text);
+
+      font-family: "Inter", -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+
+      -webkit-font-smoothing: antialiased;
+
+      padding-bottom: 100px;
+    }
+
+
+    /* =========================================================
+       TOP NAVBAR
+    ========================================================= */
+
+    .top-navbar {
+      position: fixed;
+
+      top: 0;
+      left: 0;
+      right: 0;
+
+      height: 58px;
+
+      display: flex;
+      align-items: center;
+
+      padding: 0 24px;
+
+      background: rgba(7, 9, 13, 0.78);
+
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+
+      z-index: 100;
+    }
+
+    .nav-left span {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+
+    /* =========================================================
+       PAGE
+    ========================================================= */
+
+    .guide-page {
+      width: min(100% - 40px, 820px);
+
+      margin: 0 auto;
+
+      padding-top: 110px;
+    }
+
+
+    /* =========================================================
+       HEADER
+    ========================================================= */
+
+    .guide-header {
+      position: relative;
+
+      margin-bottom: 42px;
+    }
+
+    .guide-eyebrow {
+      display: inline-flex;
+      align-items: center;
+
+      margin-bottom: 14px;
+
+      color: var(--guide-blue-light);
+
+      font-size: 11px;
+      font-weight: 700;
+
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .guide-eyebrow::before {
+      content: "";
+
+      width: 22px;
+      height: 1px;
+
+      margin-right: 9px;
+
+      background: var(--guide-blue);
+    }
+
+    .guide-header h1 {
+      margin: 0;
+
+      max-width: 700px;
+
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+
+      line-height: 1.04;
+
+      letter-spacing: -0.055em;
+
+      font-weight: 800;
+    }
+
+    .guide-header h1 span {
+      color: var(--guide-blue);
+    }
+
+    .guide-header > p {
+      margin: 16px 0 0;
+
+      max-width: 620px;
+
+      color: var(--guide-muted);
+
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+
+    /* =========================================================
+       GUIDE CARD
+    ========================================================= */
+
+    .guide-card {
+      position: relative;
+
+      margin-bottom: 18px;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.018),
+          transparent
+        ),
+        var(--guide-card);
+
+      border: 1px solid var(--guide-border);
+
+      border-radius: var(--guide-radius);
+
+      overflow: hidden;
+
+      transition:
+        border-color 180ms ease,
+        background 180ms ease,
+        transform 180ms ease;
+    }
+
+    .guide-card:hover {
+      background: var(--guide-card-hover);
+
+      border-color: rgba(255, 255, 255, 0.1);
+
+      transform: translateY(-1px);
+    }
+
+
+    /* =========================================================
+       CARD TOP
+    ========================================================= */
+
+    .guide-card-header {
+      display: flex;
+      align-items: flex-start;
+
+      gap: 15px;
+
+      padding: 23px 24px 16px;
+    }
+
+    .guide-number {
+      flex-shrink: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 34px;
+      height: 34px;
+
+      border-radius: 10px;
+
+      background: rgba(59, 130, 246, 0.10);
+
+      border: 1px solid rgba(59, 130, 246, 0.18);
+
+      color: var(--guide-blue-light);
+
+      font-size: 11px;
+      font-weight: 700;
+
+      letter-spacing: 0.02em;
+    }
+
+    .guide-card h2 {
+      margin: 5px 0 0;
+
+      color: var(--guide-text);
+
+      font-size: 17px;
+
+      line-height: 1.35;
+
+      letter-spacing: -0.025em;
+
+      font-weight: 700;
+    }
+
+
+    /* =========================================================
+       CARD CONTENT
+    ========================================================= */
+
+    .guide-content {
+      padding: 0 24px 25px 73px;
+    }
+
+    .guide-content p {
+      margin: 0 0 16px;
+
+      color: var(--guide-text-soft);
+
+      font-size: 13.5px;
+
+      line-height: 1.75;
+    }
+
+    .guide-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    .guide-content strong {
+      color: #f1f5f9;
+
+      font-weight: 600;
+    }
+
+
+    /* =========================================================
+       SUB SECTIONS
+    ========================================================= */
+
+    .guide-step {
+      margin-top: 28px;
+      padding-top: 23px;
+
+      border-top: 1px solid rgba(255, 255, 255, 0.055);
+    }
+
+    .guide-step:first-child {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .guide-step h3 {
+      margin: 0 0 9px;
+
+      color: #e8edf5;
+
+      font-size: 14px;
+
+      line-height: 1.4;
+
+      font-weight: 700;
+
+      letter-spacing: -0.015em;
+    }
+
+    .guide-step h3::before {
+      content: "";
+
+      display: inline-block;
+
+      width: 5px;
+      height: 5px;
+
+      margin-right: 9px;
+
+      margin-bottom: 2px;
+
+      border-radius: 50%;
+
+      background: var(--guide-blue);
+    }
+
+
+    /* =========================================================
+       TASK TYPES
+    ========================================================= */
+
+    .task-type {
+      margin: 14px 0;
+
+      padding: 13px 15px;
+
+      background: rgba(255, 255, 255, 0.025);
+
+      border: 1px solid rgba(255, 255, 255, 0.055);
+
+      border-radius: 12px;
+    }
+
+    .task-type strong {
+      display: block;
+
+      margin-bottom: 4px;
+
+      color: var(--guide-blue-light);
+
+      font-size: 12px;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.05em;
+    }
+
+    .task-type span {
+      color: var(--guide-text-soft);
+
+      font-size: 13px;
+
+      line-height: 1.65;
+    }
+
+
+    /* =========================================================
+       TERMINOLOGY BOX
+    ========================================================= */
+
+    .terminology {
+      margin-top: 18px;
+
+      padding: 17px 18px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(59, 130, 246, 0.07),
+          rgba(59, 130, 246, 0.015)
+        );
+
+      border: 1px solid var(--guide-border-blue);
+
+      border-radius: 13px;
+    }
+
+    .terminology-title {
+      margin-bottom: 8px;
+
+      color: var(--guide-blue-light);
+
+      font-size: 12px;
+
+      font-weight: 700;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.08em;
+    }
+
+    .terminology p {
+      margin: 0;
+    }
+
+
+    /* =========================================================
+       FINAL NOTE
+    ========================================================= */
+
+    .guide-note {
+      position: relative;
+
+      margin-top: 30px;
+
+      padding: 22px 23px 22px 25px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(59, 130, 246, 0.12),
+          rgba(59, 130, 246, 0.035)
+        );
+
+      border: 1px solid rgba(59, 130, 246, 0.22);
+
+      border-radius: 16px;
+
+      color: var(--guide-text-soft);
+
+      font-size: 13px;
+
+      line-height: 1.7;
+    }
+
+    .guide-note::before {
+      content: "";
+
+      position: absolute;
+
+      left: 0;
+      top: 18px;
+      bottom: 18px;
+
+      width: 3px;
+
+      border-radius: 3px;
+
+      background: var(--guide-blue);
+    }
+
+    .guide-note strong {
+      display: block;
+
+      margin-bottom: 5px;
+
+      color: #fff;
+
+      font-size: 13px;
+    }
+
+
+
+    /* =========================================================
+       BACK BUTTON
+    ========================================================= */
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 32px;
+      padding: 0 11px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.035);
+      color: var(--guide-text-soft);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    .back-btn span:first-child {
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .back-btn:hover {
+      background: rgba(59, 130, 246, 0.10);
+      border-color: rgba(59, 130, 246, 0.25);
+      color: #fff;
+    }
+
+    .nav-brand {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* =========================================================
+       MOBILE
+    ========================================================= */
+
+    @media (max-width: 600px) {
+
+      .top-navbar {
+        padding: 0 16px;
+      }
+
+      .nav-left {
+        gap: 10px;
+      }
+
+      .back-btn {
+        height: 30px;
+        padding: 0 9px;
+      }
+
+      .guide-page {
+        width: min(100% - 24px, 820px);
+
+        padding-top: 88px;
+      }
+
+      .guide-header {
+        margin-bottom: 30px;
+      }
+
+      .guide-header h1 {
+        font-size: 2.15rem;
+      }
+
+      .guide-card-header {
+        padding: 20px 18px 14px;
+
+        gap: 12px;
+      }
+
+      .guide-card h2 {
+        font-size: 15px;
+      }
+
+      .guide-number {
+        width: 31px;
+        height: 31px;
+
+        border-radius: 9px;
+
+        font-size: 10px;
+      }
+
+      .guide-content {
+        padding: 0 18px 21px 61px;
+      }
+
+      .guide-content p {
+        font-size: 13px;
+
+        line-height: 1.7;
+      }
+    }
+
+
+    @media (max-width: 430px) {
+
+      .guide-content {
+        padding-left: 18px;
+      }
+
+      .guide-card-header {
+        padding-bottom: 10px;
+      }
+
+      .guide-number {
+        display: none;
+      }
+
+      .guide-header h1 {
+        font-size: 1.95rem;
+      }
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+  <!-- =========================================================
+       NAVBAR
+  ========================================================== -->
+
+  <div class="top-navbar">
+    <div class="nav-left">
+      <button class="back-btn" type="button" onclick="history.back()" aria-label="Go back">
+        <span aria-hidden="true">←</span>
+        <span>Back</span>
+      </button>
+      <span class="nav-brand">StandOut</span>
+    </div>
+  </div>
+
+
+  <!-- =========================================================
+       MAIN
+  ========================================================== -->
+
+  <main class="guide-page">
+
+
+    <!-- HEADER -->
+
+    <header class="guide-header">
+
+      <div class="guide-eyebrow">
+        Getting Started
+      </div>
+
+      <h1>
+        How to use <span>StandOut</span>
+      </h1>
+
+      <p>
+        A simple guide to help you understand the system,
+        track your progress, and make the most out of your goals.
+      </p>
+
+    </header>
+
+
+    <!-- =======================================================
+         01
+    ======================================================== -->
+
+    <section class="guide-card">
+
+      <div class="guide-card-header">
+
+        <div class="guide-number">
+          01
+        </div>
+
+        <h2>
+          Why Use StandOut?
+        </h2>
+
+      </div>
+
+
+      <div class="guide-content">
+
+        <p>
+          Every human has goals in life. We all want to achieve
+          something, but achieving those goals requires consistent
+          hard work.
+        </p>
+
+        <p>
+          The problem is, our brain struggles to stay motivated
+          when it cannot track progress. Think about your goal —
+          can you actually measure how close you are to achieving it?
+          Most probably, the answer is no.
+        </p>
+
+        <p>
+          When the brain sees no visible progress, it starts to
+          feel stuck. And when it feels stuck, it naturally looks
+          for a way to escape from the task.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         02
+    ======================================================== -->
+
+    <section class="guide-card">
+
+      <div class="guide-card-header">
+
+        <div class="guide-number">
+          02
+        </div>
+
+        <h2>
+          How StandOut Works For Your Brain
+        </h2>
+
+      </div>
+
+
+      <div class="guide-content">
+
+        <p>
+          The app is designed to help you work towards your goals
+          and stay consistent.
+        </p>
+
+        <p>
+          It tracks your progress and hard work, such as how many
+          tasks you have completed. You also get rewarded for
+          completing tasks with Improvement Points that can be used
+          to buy Cards.
+        </p>
+
+        <p>
+          Music plays when you achieve something, while
+          <strong>Momentum</strong> helps you stay consistent and
+          <strong>Seasons</strong> encourage you to complete tasks
+          every day.
+        </p>
+
+        <p>
+          Every feature is designed to help you stay motivated
+          and reach your goals.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         03
+    ======================================================== -->
+
+    <section class="guide-card">
+
+      <div class="guide-card-header">
+
+        <div class="guide-number">
+          03
+        </div>
+
+        <h2>
+          The First Rule of StandOut
+        </h2>
+
+      </div>
+
+
+      <div class="guide-content">
+
+        <p>
+          This app is designed to show your progress, motivate you,
+          and keep your eyes on your goals.
+        </p>
+
+        <p>
+          But none of this will work if you are not honest with
+          yourself.
+        </p>
+
+        <p>
+          Don’t complete tasks just for the sake of earning
+          Improvement Points or buying Cards. The real goal is to
+          improve yourself and move closer to your goals.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         04
+    ======================================================== -->
+
+    <section class="guide-card">
+
+      <div class="guide-card-header">
+
+        <div class="guide-number">
+          04
+        </div>
+
+        <h2>
+          How To Set Up The App
+        </h2>
+
+      </div>
+
+
+      <div class="guide-content">
+
+
+        <!-- STEP 1 -->
+
+        <div class="guide-step">
+
+          <h3>
+            Step 1 — Goals
+          </h3>
+
+          <p>
+            One of the most important things is
+            <strong>Goals</strong>.
+          </p>
+
+          <p>
+            Set at least one high-priority, one medium-priority,
+            and one low-priority goal.
+          </p>
+
+          <p>
+            Your low-priority goals should help you achieve your
+            medium-priority goals, and your medium-priority goals
+            should help you achieve your high-priority goal.
+          </p>
+
+          <p>
+            Goals give you direction — they show you where you
+            need to go.
+          </p>
+
+        </div>
+
+
+        <!-- STEP 2 -->
+
+        <div class="guide-step">
+
+          <h3>
+            Step 2 — Skillset
+          </h3>
+
+          <p>
+            Once you have your goals set up, add the skills you
+            need to achieve them to your <strong>Skillset</strong>.
+          </p>
+
+          <p>
+            Your skills show how much experience you have in each
+            one. These skills will help you decide what daily tasks
+            you should work on.
+          </p>
+
+        </div>
+
+
+        <!-- STEP 3 -->
+
+        <div class="guide-step">
+
+          <h3>
+            Step 3 — Tasks
+          </h3>
+
+          <p>
+            Every day, you can complete as many tasks as you want,
+            but for quality productivity, you will earn Improvement
+            Points for only <strong>10 tasks per day</strong>.
+          </p>
+
+          <p>
+            There are three main ways to create tasks:
+          </p>
+
+
+          <div class="task-type">
+
+            <strong>
+              Goal-Oriented
+            </strong>
+
+            <span>
+              Add a task for each skill you have. For example,
+              if your goal is to get a job and your skills are
+              Python, English, and Aptitude, you can add tasks like
+              Learn OOPs in Python or Practice English.
+            </span>
+
+          </div>
+
+
+          <div class="task-type">
+
+            <strong>
+              Health-Oriented
+            </strong>
+
+            <span>
+              Add tasks that improve your health, such as walking
+              1,000 steps, drinking 2L of water, or avoiding junk food.
+            </span>
+
+          </div>
+
+
+          <div class="task-type">
+
+            <strong>
+              Character-Oriented
+            </strong>
+
+            <span>
+              Add tasks that help you grow as a person, such as
+              reading a book or watching a podcast.
+            </span>
+
+          </div>
+
+
+          <div class="terminology">
+
+            <div class="terminology-title">
+              Task Terminology
+            </div>
+
+            <p>
+              A task can be linked to a <strong>Skill</strong>,
+              which helps you track your experience in that particular
+              skill. This means every task you complete helps you
+              get better.
+            </p>
+
+            <p>
+              You can also add a <strong>deadline</strong>.
+              If you miss the deadline, your Improvement Points can
+              be reduced, encouraging you to complete tasks on time.
+            </p>
+
+            <p>
+              You can set tasks to <strong>repeat</strong>.
+              For example, a “Read 10 Pages” task can repeat daily
+              instead of being added manually every day.
+            </p>
+
+            <p>
+              There is also <strong>Hardcore Mode</strong>.
+              When enabled, missing that task will reduce your
+              Improvement Points to <strong>0</strong>.
+              Use it for important, non-negotiable tasks.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- STEP 4 -->
+
+        <div class="guide-step">
+
+          <h3>
+            Step 4 — Time & Timer
+          </h3>
+
+          <p>
+            In the <strong>Time</strong> page, you can track how
+            much time is left until a particular date and time.
+          </p>
+
+          <p>
+            The clock icon in the navigation bar opens the Timer.
+            You can use it while writing an essay, cleaning,
+            studying, or working on any other activity.
+          </p>
+
+          <p>
+            You can also play music from your saved music or
+            your own music folder.
+          </p>
+
+        </div>
+
+
+        <!-- STEP 5 -->
+
+        <div class="guide-step">
+
+          <h3>
+            Step 5 — Customize Your App
+          </h3>
+
+          <p>
+            In the <strong>Account</strong> page, you can change
+            the music that plays when you complete a mission,
+            unlock achievements, and more.
+          </p>
+
+          <p>
+            You can also add custom <strong>Cards</strong> and
+            set your own app background to customize the experience.
+          </p>
+
+        </div>
+
+
+        <!-- STEP 6 -->
+
+        <div class="guide-step">
+
+          <h3>
+            Step 6 — Improvement Points
+          </h3>
+
+          <p>
+            For every task you complete, you earn
+            <strong>1 Improvement Point</strong>.
+          </p>
+
+          <p>
+            These points can be used to buy
+            <strong>Cards</strong> from the
+            <strong>Marketplace</strong>, the first icon in the
+            navigation bar.
+          </p>
+
+          <p>
+            The Cards you purchase can serve as rewards for your
+            hard work and progress.
+          </p>
+
+        </div>
+
+
+        <!-- STEP 7 -->
+
+        <div class="guide-step">
+
+          <h3>
+            Step 7 — Track Your Progress
+          </h3>
+
+          <p>
+            In the <strong>Skillset</strong> page, you can see your
+            experience in each skill.
+          </p>
+
+          <p>
+            In the <strong>Account</strong> page, you can view
+            your achievements.
+          </p>
+
+          <p>
+            In the <strong>Marketplace</strong>, you can see the
+            Cards you have purchased.
+          </p>
+
+          <p>
+            Through the <strong>Graph</strong> icon in the
+            navigation bar, you can view your monthly summary
+            and track your overall progress.
+          </p>
+
+        </div>
+
+
+        <!-- STEP 8 -->
+
+        <div class="guide-step">
+
+          <h3>
+            Step 8 — Explore
+          </h3>
+
+          <p>
+            We also have <strong>Daily Challenges</strong> that
+            give you Improvement Points, <strong>Mastery</strong>
+            to track your personal progress in any topic, and
+            <strong>Seasons</strong> to motivate you to complete
+            tasks every day.
+          </p>
+
+          <p>
+            Your <strong>Streak</strong>, also known as
+            <strong>Momentum</strong>, helps you stay consistent.
+          </p>
+
+          <p>
+            There are also <strong>Monthly Resolutions</strong>
+            and <strong>Monthly Badges</strong>, which you can
+            find by clicking the app icon.
+          </p>
+
+          <p>
+            Explore the app to discover more.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         FINAL NOTE
+    ======================================================== -->
+
+    <div class="guide-note">
+
+      <strong>
+        One last thing.
+      </strong>
+
+      Be honest with yourself and use the app for your own growth.
+      Don’t take things for granted or complete tasks just for the
+      sake of it. Do them because they will help you improve and
+      achieve your goals.
+
+    </div>
+
+
+  </main>
+
+</body>
+
+</html>
