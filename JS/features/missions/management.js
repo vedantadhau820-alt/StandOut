@@ -84,11 +84,6 @@ function addMission() {
 
     li.dataset.repeat = repeat;
 
-    // A Hardcore mission created as non-repeatable is permanently protected
-    // from deletion. This flag is intentionally not cleared by later edits.
-    li.dataset.hardcoreNonDeletable =
-        isHardcore && repeat === "none" ? "true" : "false";
-
     li.dataset.repeatKey = getRepeatKey(new Date(), repeat);
 
 
@@ -278,24 +273,6 @@ function updateMission() {
        UPDATE REPEAT
     ===================================================== */
 
-    // Preserve the original Hardcore deletion policy. A Hardcore mission
-    // created with Repeat: None remains non-deletable even if edited later.
-    // For older saved missions without this marker, infer the original policy
-    // from the current value before changing it.
-    if (li.dataset.hardcore === "true") {
-        if (
-            li.dataset.hardcoreNonDeletable === "true" ||
-            (!li.hasAttribute("data-hardcore-non-deletable") &&
-                (li.dataset.repeat || "none") === "none")
-        ) {
-            li.dataset.hardcoreNonDeletable = "true";
-        } else if (!li.hasAttribute("data-hardcore-non-deletable")) {
-            li.dataset.hardcoreNonDeletable = "false";
-        }
-    } else {
-        li.dataset.hardcoreNonDeletable = "false";
-    }
-
     li.dataset.repeat = newRepeat;
 
     const repeatBadge =
@@ -392,17 +369,6 @@ function deleteMission() {
     if (!li || !li.isConnected) return;
 
     const isHardcore = li.dataset.hardcore === "true";
-    const isHardcoreNonDeletable = isHardcore && (
-        li.dataset.hardcoreNonDeletable === "true" ||
-        (!li.hasAttribute("data-hardcore-non-deletable") &&
-            (li.dataset.repeat || "none") === "none")
-    );
-
-    if (isHardcoreNonDeletable) {
-        customAlert("🔥 This Hardcore mission was created as non-repeatable and cannot be deleted.");
-        return;
-    }
-
     const removeMission = () => {
         li.remove();
         window.missionBeingEdited = null;

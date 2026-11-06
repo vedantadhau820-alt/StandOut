@@ -117,24 +117,31 @@ function createPinButton(card, cardElement) {
     button.setAttribute("aria-pressed", String(pinned));
     button.setAttribute("aria-label", pinned ? `Unpin ${card.title}` : `Pin ${card.title} for 2 Improvement Points`);
     button.addEventListener("click", event => {
+        event.preventDefault();
         event.stopPropagation();
         togglePinnedCard(card.id);
     });
     button.addEventListener("pointerdown", event => event.stopPropagation());
+
     cardElement.classList.add("has-pin-control");
     cardElement.tabIndex = 0;
-    cardElement.setAttribute("aria-label", `${card.title}. Press and hold for pin options.`);
+    cardElement.setAttribute("aria-label", `${card.title}. Press and hold for 0.5 seconds to show pin options.`);
     cardElement.appendChild(button);
     bindPinLongPress(cardElement);
     return button;
 }
 
-// Reveal pin controls only after a deliberate 500 ms press/hold on a card.
+// A stationary 500 ms press reveals the control. Pointer capture prevents
+// small browser hit-target changes from dropping the gesture; movement,
+// release, or cancellation safely cancels an unfinished hold.
 function bindPinLongPress(cardElement) {
     if (cardElement.dataset.pinLongPressBound === "true") return;
     cardElement.dataset.pinLongPressBound = "true";
 
+    const HOLD_DURATION_MS = 500;
+    const MOVE_TOLERANCE_PX = 12;
     let holdTimer = null;
+    let activePointerId = null;
     let startX = 0;
     let startY = 0;
 
@@ -143,34 +150,55 @@ function bindPinLongPress(cardElement) {
             window.clearTimeout(holdTimer);
             holdTimer = null;
         }
+        activePointerId = null;
     };
 
     cardElement.addEventListener("pointerdown", event => {
         if (event.target.closest(".card-pin-button")) return;
         if (event.pointerType === "mouse" && event.button !== 0) return;
+
         clearHold();
+        activePointerId = event.pointerId;
         startX = event.clientX;
         startY = event.clientY;
+
+        // Keep subsequent pointer events associated with this card while held.
+        try {
+            cardElement.setPointerCapture(event.pointerId);
+        } catch (_) {
+            // Pointer capture is an enhancement; the timer still works without it.
+        }
+
         holdTimer = window.setTimeout(() => {
             cardElement.classList.add("pin-actions-visible");
+            cardElement.dataset.pinActionsVisible = "true";
             holdTimer = null;
-        }, 500);
+        }, HOLD_DURATION_MS);
     });
 
     cardElement.addEventListener("pointermove", event => {
-        if (holdTimer === null) return;
-        if (Math.abs(event.clientX - startX) > 10 || Math.abs(event.clientY - startY) > 10) {
+        if (holdTimer === null || event.pointerId !== activePointerId) return;
+        const movedX = Math.abs(event.clientX - startX);
+        const movedY = Math.abs(event.clientY - startY);
+        if (movedX > MOVE_TOLERANCE_PX || movedY > MOVE_TOLERANCE_PX) {
             clearHold();
         }
     });
 
-    ["pointerup", "pointercancel", "pointerleave"].forEach(type => {
-        cardElement.addEventListener(type, clearHold);
+    ["pointerup", "pointercancel", "lostpointercapture"].forEach(type => {
+        cardElement.addEventListener(type, event => {
+            if (activePointerId === null || event.pointerId === activePointerId) {
+                clearHold();
+            }
+        });
     });
 
+    // Suppress the native long-press context menu on touch devices; the app's
+    // own pin action is revealed by the same 500 ms hold.
     cardElement.addEventListener("contextmenu", event => {
         event.preventDefault();
         cardElement.classList.add("pin-actions-visible");
+        cardElement.dataset.pinActionsVisible = "true";
     });
 }
 

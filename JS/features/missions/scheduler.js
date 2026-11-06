@@ -149,109 +149,82 @@ function shiftRecurringDeadline(li, repeat) {
     }
 }
 
+function processMissionDeadline(li, now = Date.now()) {
+    if (!li) return false;
+    const deadline = li.dataset.deadline;
+    if (!deadline || li.dataset.completed === "true") return false;
+
+    const deadlineTime = new Date(deadline).getTime();
+    if (Number.isNaN(deadlineTime)) return false;
+
+    const timeLeft = deadlineTime - now;
+    const overdueSpan = li.querySelector(".overdueMark");
+    const missionName = li.querySelector(".mission-text")?.textContent?.trim() || "Mission";
+
+    if (timeLeft > 0 && timeLeft <= 2 * 60 * 60 * 1000 && !li.dataset.warned) {
+        li.dataset.warned = "true";
+        window.pushNotification(
+            "Mission Deadline",
+            `"${missionName}" is due soon (within 2 hours!)`
+        );
+    }
+
+    if (timeLeft > 0) return false;
+
+    if (overdueSpan) {
+        const overdueBadge = document.createElement("span");
+        overdueBadge.className = "overdue-badge";
+        overdueBadge.textContent = "Overdue";
+        overdueSpan.replaceChildren(overdueBadge);
+    }
+
+    if (!li.dataset.overdueNotified) {
+        li.dataset.overdueNotified = "true";
+        window.pushNotification("⚠ Mission Overdue", `"${missionName}" is overdue!`);
+    }
+
+    if (li.dataset.hardcore === "true") {
+        if (li.dataset.hardcorePunished === "true") return true;
+
+        li.dataset.hardcorePunished = "true";
+        li.dataset.deducted = "true";
+
+        const pointsBefore = Number(window.completedMissions) || 0;
+        const hardcorePenalty = 5;
+        window.completedMissions = Math.max(0, pointsBefore - hardcorePenalty);
+        const pointsLost = pointsBefore - window.completedMissions;
+
+        window.localStorage.setItem("completedMissions", window.completedMissions);
+        const counter = document.getElementById("missionCounter");
+        if (counter) counter.textContent = window.completedMissions;
+
+        window.renderMarketplace?.(window.currentMarketplaceFilter);
+        window.renderMyCards?.();
+        window.showSmartNotification?.("🔥 Hardcore Failed", `-${pointsLost} Improvement Points`);
+        window.saveData?.();
+        return true;
+    }
+
+    if (!li.dataset.deducted) {
+        const pointsBefore = Number(window.completedMissions) || 0;
+        window.completedMissions = Math.max(0, pointsBefore - 1);
+        li.dataset.deducted = "true";
+
+        const pointsDelta = window.completedMissions - pointsBefore;
+        window.recordMissionPerformance(li, "missed", pointsDelta);
+
+        const counter = document.getElementById("missionCounter");
+        if (counter) counter.textContent = window.completedMissions;
+        window.localStorage.setItem("completedMissions", window.completedMissions);
+        window.saveData();
+    }
+
+    return true;
+}
+
 function checkMissedDeadlines() {
-    const missions = document.querySelectorAll("#mission-list li");
-    const now = Date.now();
-
-    missions.forEach(li => {
-        const deadline = li.dataset.deadline;
-        if (!deadline) return;
-        if (li.dataset.completed === "true") return;
-
-        const deadlineTime = new Date(deadline).getTime();
-        if (Number.isNaN(deadlineTime)) return;
-
-        const timeLeft = deadlineTime - now;
-        const overdueSpan = li.querySelector(".overdueMark");
-        if (!overdueSpan) return;
-
-        const missionName =
-            li.querySelector(".mission-text")?.textContent?.trim() || "Mission";
-
-        // Due-soon warning: once per occurrence.
-        if (
-            timeLeft > 0 &&
-            timeLeft <= 2 * 60 * 60 * 1000 &&
-            !li.dataset.warned
-        ) {
-            li.dataset.warned = "true";
-            window.pushNotification(
-                "Mission Deadline",
-                `"${missionName}" is due soon (within 2 hours!)`
-            );
-        }
-
-        // Deadline passed.
-        if (timeLeft <= 0) {
-            const overdueBadge = document.createElement("span");
-            overdueBadge.className = "overdue-badge";
-            overdueBadge.textContent = "Overdue";
-            overdueSpan.replaceChildren(overdueBadge);
-
-            // Overdue notification: once per occurrence.
-            if (!li.dataset.overdueNotified) {
-                li.dataset.overdueNotified = "true";
-                window.pushNotification(
-                    "⚠ Mission Overdue",
-                    `"${missionName}" is overdue!`
-                );
-            }
-
-            // Hardcore mode: deduct up to 5 points once.
-            if (
-                li.dataset.hardcore === "true" &&
-                !li.dataset.hardcorePunished
-            ) {
-                li.dataset.hardcorePunished = "true";
-                li.dataset.deducted = "true";
-
-                const pointsBefore = Number(window.completedMissions) || 0;
-                const hardcorePenalty = 5;
-                window.completedMissions = Math.max(
-                    0,
-                    pointsBefore - hardcorePenalty
-                );
-                const pointsLost = pointsBefore - window.completedMissions;
-
-                window.localStorage.setItem(
-                    "completedMissions",
-                    window.completedMissions
-                );
-
-                const counter = document.getElementById("missionCounter");
-                if (counter) counter.textContent = window.completedMissions;
-
-                window.renderMarketplace(window.currentMarketplaceFilter);
-                window.renderMyCards();
-                window.showSmartNotification(
-                    "🔥 Hardcore Failed",
-                    `-${pointsLost} Improvement Points`
-                );
-
-                window.saveData();
-                return;
-            }
-
-            // Normal mode: deduct one point once and record the missed event.
-            if (!li.dataset.deducted) {
-                const pointsBefore = Number(window.completedMissions) || 0;
-                window.completedMissions = Math.max(0, pointsBefore - 1);
-                li.dataset.deducted = "true";
-
-                const pointsDelta = window.completedMissions - pointsBefore;
-                window.recordMissionPerformance(li, "missed", pointsDelta);
-
-                const counter = document.getElementById("missionCounter");
-                if (counter) counter.textContent = window.completedMissions;
-
-                window.localStorage.setItem(
-                    "completedMissions",
-                    window.completedMissions
-                );
-
-                window.saveData();
-            }
-        }
+    document.querySelectorAll("#mission-list li").forEach(li => {
+        processMissionDeadline(li);
     });
 }
 
@@ -264,5 +237,6 @@ export const missionScheduler = Object.freeze({
     resetRecurringMission,
     shiftRecurringDeadline,
     checkMissedDeadlines,
+    processMissionDeadline,
     deadlineCheckInterval
 });

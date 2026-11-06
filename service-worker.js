@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.73-card-pinning-and-hardcore-delete";
+const CACHE_NAME = "standout-v2.73-card-pinning-and-hardcore-delete-again";
 
 // Resolve app assets against the service worker's registration scope. This
 // supports both a domain-root deployment and a project subfolder deployment.
