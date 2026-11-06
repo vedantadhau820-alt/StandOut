@@ -1,0 +1,2090 @@
+/* =========================================================
+   MOMENTUM SYSTEM
+========================================================= */
+
+
+/* =========================================================
+   MISSION HEADER
+========================================================= */
+
+#momentumMissionHeader {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    box-sizing: border-box;
+
+    margin: 0 0 14px;
+
+}
+
+
+.momentum-title-group {
+
+    min-width: 0;
+}
+
+
+.momentum-title-group h2 {
+
+    margin: 0 0 4px;
+
+}
+
+
+.momentum-title-group p {
+
+    margin: 0;
+
+}
+
+
+/* =========================================================
+   CORE SLOT
+========================================================= */
+
+#momentumCoreSlot {
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    margin-left: auto;
+
+}
+
+
+/* =========================================================
+   CORE
+========================================================= */
+
+#momentumCore {
+
+    appearance: none;
+
+    -webkit-appearance: none;
+
+    border: 0;
+
+    outline: none;
+
+    background: transparent;
+
+    padding: 0;
+
+    margin: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    cursor: pointer;
+
+    color: inherit;
+
+}
+
+
+.momentum-core-symbol {
+
+    width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    border: 1px solid #374151;
+
+    background: #111827;
+
+    font-size: 21px;
+
+    line-height: 1;
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease;
+
+}
+
+
+#momentumCore:hover
+.momentum-core-symbol {
+
+    transform: scale(1.04);
+
+}
+
+
+#momentumCore.open
+.momentum-core-symbol {
+
+    border-color: #60a5fa;
+
+}
+
+
+.momentum-core-symbol.strong {
+
+    border-color: #3b82f6;
+
+}
+
+
+.momentum-core-symbol.healthy {
+
+    border-color: #60a5fa;
+
+}
+
+
+.momentum-core-symbol.risk {
+
+    border-color: #f59e0b;
+
+}
+
+
+.momentum-core-symbol.critical {
+
+    border-color: #ef4444;
+
+}
+
+
+.momentum-core-text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 2px;
+
+}
+
+
+.momentum-core-text strong {
+
+    font-size: 13px;
+
+    line-height: 1;
+
+}
+
+
+.momentum-core-text small {
+
+    font-size: 9px;
+
+    line-height: 1;
+
+    color: #9ca3af;
+
+    text-transform: uppercase;
+
+    letter-spacing: .7px;
+
+}
+
+
+/* =========================================================
+   PANEL SLOT
+========================================================= */
+
+.momentum-panel-slot {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+}
+
+
+/* =========================================================
+   PANEL
+========================================================= */
+
+#momentumPanel {
+
+    /* display: none; */
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    margin: 0 0 16px;
+
+    padding: 18px;
+
+    background: #111827;
+
+    border: 1px solid #1f2937;
+
+    border-radius: 16px;
+
+}
+
+
+#momentumPanel.open {
+
+    display: block;
+
+}
+
+
+/* =========================================================
+   PANEL HEADER
+========================================================= */
+
+.momentum-panel-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+}
+
+
+.momentum-panel-label {
+
+    display: block;
+
+    color: #9ca3af;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+}
+
+
+.momentum-panel-header h3 {
+
+    margin: 4px 0 0;
+
+    font-size: 21px;
+
+}
+
+
+.momentum-close {
+
+    width: 32px;
+
+    height: 32px;
+
+    padding: 0;
+
+    border: 0;
+
+    background: #1f2937;
+
+    color: #9ca3af;
+
+    border-radius: 50%;
+
+    font-size: 20px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+}
+
+
+/* =========================================================
+   BIG CORE
+========================================================= */
+
+.momentum-big-core {
+
+    width: 72px;
+
+    height: 72px;
+
+    margin: 20px auto 10px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #1f2937;
+
+    border: 1px solid #374151;
+
+}
+
+
+.momentum-big-core span {
+
+    font-size: 38px;
+
+}
+
+
+.momentum-big-core.strong {
+
+    border-color: #3b82f6;
+
+}
+
+
+.momentum-big-core.healthy {
+
+    border-color: #60a5fa;
+
+}
+
+
+.momentum-big-core.risk {
+
+    border-color: #f59e0b;
+
+}
+
+
+.momentum-big-core.critical {
+
+    border-color: #ef4444;
+
+}
+
+
+/* =========================================================
+   DAYS
+========================================================= */
+
+.momentum-days {
+
+    text-align: center;
+
+}
+
+
+.momentum-days strong {
+
+    display: block;
+
+    font-size: 36px;
+
+    line-height: 1;
+
+}
+
+
+.momentum-days span {
+
+    display: block;
+
+    margin-top: 4px;
+
+    color: #9ca3af;
+
+    font-size: 10px;
+
+    letter-spacing: 1.5px;
+
+}
+
+
+/* =========================================================
+   ENERGY
+========================================================= */
+
+.momentum-energy-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-top: 22px;
+
+    color: #9ca3af;
+
+    font-size: 12px;
+
+}
+
+
+.momentum-energy-row strong {
+
+    color: #f9fafb;
+
+}
+
+
+.momentum-energy-bar {
+
+    width: 100%;
+
+    height: 7px;
+
+    margin-top: 7px;
+
+    background: #1f2937;
+
+    border-radius: 999px;
+
+    overflow: hidden;
+
+}
+
+
+.momentum-energy-fill {
+
+    height: 100%;
+
+    border-radius: inherit;
+
+    transition:
+        width .3s ease;
+
+}
+
+
+.momentum-energy-fill.strong {
+
+    background: #3b82f6;
+
+}
+
+
+.momentum-energy-fill.healthy {
+
+    background: #60a5fa;
+
+}
+
+
+.momentum-energy-fill.risk {
+
+    background: #f59e0b;
+
+}
+
+
+.momentum-energy-fill.critical {
+
+    background: #ef4444;
+
+}
+
+
+/* =========================================================
+   TODAY
+========================================================= */
+
+.momentum-today {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 14px;
+
+    margin-top: 18px;
+
+    padding-top: 16px;
+
+    border-top: 1px solid #1f2937;
+
+}
+
+
+.momentum-today > div {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+}
+
+
+.momentum-today strong {
+
+    font-size: 13px;
+
+}
+
+
+.momentum-today span {
+
+    color: #9ca3af;
+
+    font-size: 11px;
+
+    line-height: 1.4;
+
+}
+
+
+.momentum-proof-complete {
+
+    color: #22c55e;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+
+}
+
+
+.momentum-proof-waiting {
+
+    color: #9ca3af;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+
+}
+
+
+/* =========================================================
+   NEXT EVOLUTION
+========================================================= */
+
+.momentum-next {
+
+    margin-top: 18px;
+
+}
+
+
+.momentum-next-top {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+}
+
+
+.momentum-next-top span {
+
+    color: #6b7280;
+
+    font-size: 10px;
+
+    letter-spacing: 1px;
+
+}
+
+
+.momentum-next-top strong {
+
+    font-size: 12px;
+
+}
+
+
+.momentum-progress {
+
+    height: 5px;
+
+    margin-top: 8px;
+
+    background: #1f2937;
+
+    border-radius: 999px;
+
+    overflow: hidden;
+
+}
+
+
+.momentum-progress div {
+
+    height: 100%;
+
+    background: #3b82f6;
+
+    border-radius: inherit;
+
+}
+
+
+.momentum-next small {
+
+    display: block;
+
+    margin-top: 5px;
+
+    color: #6b7280;
+
+    font-size: 10px;
+
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.momentum-stats {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 8px;
+
+    margin-top: 16px;
+
+    padding-top: 13px;
+
+    border-top: 1px solid #1f2937;
+
+    color: #6b7280;
+
+    font-size: 10px;
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+#momentumToast {
+
+    position: fixed;
+
+    left: 50%;
+
+    bottom: 78px;
+
+    transform:
+        translate(-50%, 12px);
+
+    width:
+        min(
+            340px,
+            calc(100vw - 32px)
+        );
+
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    background: #111827;
+
+    border: 1px solid #374151;
+
+    border-radius: 12px;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    z-index: 99999;
+
+    transition:
+        opacity .2s ease,
+        transform .2s ease;
+
+}
+
+
+#momentumToast.show {
+
+    opacity: 1;
+
+    transform:
+        translate(-50%, 0);
+
+}
+
+
+#momentumToast strong {
+
+    display: block;
+
+    font-size: 13px;
+
+}
+
+
+#momentumToast span {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #9ca3af;
+
+    font-size: 11px;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (
+    max-width: 600px
+) {
+
+    #momentumCoreText {
+
+        display: none;
+
+    }
+
+
+    .momentum-core-text {
+
+        display: none;
+
+    }
+
+
+    .momentum-core-symbol {
+
+        width: 40px;
+
+        height: 40px;
+
+        font-size: 20px;
+
+    }
+
+
+    #momentumPanel {
+
+        padding: 15px;
+
+        border-radius: 14px;
+
+    }
+
+
+    .momentum-stats {
+
+        flex-wrap: wrap;
+
+    }
+
+}
+
+/* =========================================================
+   MOMENTUM PANEL — SMOOTH OPEN/CLOSE
+========================================================= */
+
+.momentum-panel-slot {
+    width: 100%;
+    display: grid;
+    grid-template-rows: 0fr;
+
+    opacity: 0;
+
+    transition:
+        grid-template-rows 320ms cubic-bezier(.22, 1, .36, 1),
+        opacity 220ms ease;
+}
+
+.momentum-panel-slot > #momentumPanel {
+    min-height: 0;
+    overflow: hidden;
+}
+
+
+/* OPEN */
+
+.momentum-panel-slot:has(#momentumPanel.open) {
+    grid-template-rows: 1fr;
+    opacity: 1;
+}
+
+
+/* PANEL */
+
+#momentumPanel {
+    width: 100%;
+    box-sizing: border-box;
+
+    margin: 0 0 16px;
+    padding: 18px;
+
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 16px;
+
+    transform: translateY(-8px);
+
+    transition:
+        transform 320ms cubic-bezier(.22, 1, .36, 1);
+}
+
+
+/* OPEN PANEL */
+
+.momentum-panel-slot:has(#momentumPanel.open)
+#momentumPanel {
+    transform: translateY(0);
+}
+
+/* =========================================================
+   MOMENTUM — SMOOTH OPEN + CLOSE
+========================================================= */
+
+.momentum-panel-slot {
+    display: grid;
+
+    grid-template-rows: 0fr;
+
+    opacity: 0;
+
+    transition:
+        grid-template-rows 360ms cubic-bezier(.22, 1, .36, 1),
+        opacity 220ms ease;
+}
+
+
+/* The panel itself must be allowed to shrink */
+.momentum-panel-slot > #momentumPanel {
+    min-height: 0;
+
+    overflow: hidden;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    margin: 0;
+
+    padding: 18px;
+
+    background: #111827;
+
+    border: 1px solid #1f2937;
+
+    border-radius: 16px;
+
+    transform: translateY(-8px);
+
+    transition:
+        transform 360ms cubic-bezier(.22, 1, .36, 1);
+}
+
+
+/* =========================================================
+   OPEN
+========================================================= */
+
+.momentum-panel-slot.open {
+    grid-template-rows: 1fr;
+
+    opacity: 1;
+}
+
+
+.momentum-panel-slot.open
+#momentumPanel {
+    transform: translateY(0);
+
+    margin-bottom: 16px;
+}
+
+/* =========================================================
+   LAST LIGHT
+   CSS-BUILT MOMENTUM CORE
+========================================================= */
+
+
+/* =========================================================
+   CORE BUTTON
+========================================================= */
+
+#momentumCore {
+
+    width: auto;
+
+    min-width: 52px;
+
+    height: 52px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 0;
+
+    margin: 0;
+
+    border: 0;
+
+    outline: 0;
+
+    background: transparent;
+
+    color: inherit;
+
+    cursor: pointer;
+
+}
+
+
+/* =========================================================
+   LIGHT CONTAINER
+========================================================= */
+
+.last-light {
+
+    position: relative;
+
+    width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+/* =========================================================
+   AURA
+========================================================= */
+
+.light-aura {
+
+    position: absolute;
+
+    inset: 4px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(251,191,36,.18),
+            transparent 65%
+        );
+
+    opacity: .7;
+
+    transition:
+        transform .4s ease,
+        opacity .4s ease;
+
+}
+
+
+/* =========================================================
+   FLAME
+========================================================= */
+
+.light-flame {
+
+    position: relative;
+
+    width: 18px;
+
+    height: 25px;
+
+    transform:
+        rotate(45deg);
+
+    border-radius:
+        60% 40% 55% 45%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff7c2 0%,
+            #fbbf24 45%,
+            #f97316 75%,
+            #dc2626 100%
+        );
+
+    box-shadow:
+        0 0 8px rgba(251,191,36,.55),
+        0 0 18px rgba(249,115,22,.25);
+
+    transition:
+        transform .4s ease,
+        width .4s ease,
+        height .4s ease,
+        filter .4s ease;
+
+}
+
+
+/* Inner flame */
+
+.flame-inner {
+
+    position: absolute;
+
+    width: 9px;
+
+    height: 15px;
+
+    left: 4px;
+
+    top: 5px;
+
+    border-radius:
+        60% 40% 55% 45%;
+
+    background:
+        #fff7ed;
+
+    opacity: .9;
+
+}
+
+
+/* Tiny nucleus */
+
+.flame-core {
+
+    position: absolute;
+
+    width: 4px;
+
+    height: 4px;
+
+    left: 7px;
+
+    top: 10px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    box-shadow:
+        0 0 6px white;
+
+}
+
+
+/* =========================================================
+   ORBITS
+========================================================= */
+
+.light-orbit {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    border: 1px solid
+        rgba(251,191,36,.22);
+
+    opacity: 0;
+
+    transition:
+        opacity .5s ease,
+        transform .5s ease,
+        inset .5s ease;
+
+}
+
+
+/* =========================================================
+   EMBER
+========================================================= */
+
+.last-light-ember
+.light-flame {
+
+    width: 7px;
+
+    height: 7px;
+
+    transform: none;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            #fff7c2,
+            #f97316 60%,
+            #7c2d12
+        );
+
+    box-shadow:
+        0 0 7px rgba(249,115,22,.6);
+
+}
+
+
+.last-light-ember
+.flame-inner,
+
+.last-light-ember
+.flame-core {
+
+    display: none;
+
+}
+
+
+/* =========================================================
+   FLAME
+========================================================= */
+
+.last-light-flame
+.light-flame {
+
+    width: 13px;
+
+    height: 20px;
+
+}
+
+
+/* =========================================================
+   BURNING
+========================================================= */
+
+.last-light-burning
+.light-flame {
+
+    width: 18px;
+
+    height: 26px;
+
+    animation:
+        flameBreath
+        2.2s
+        ease-in-out
+        infinite;
+
+}
+
+
+.last-light-burning
+.light-aura {
+
+    transform: scale(1.25);
+
+    opacity: .9;
+
+}
+
+
+/* =========================================================
+   BEACON
+========================================================= */
+
+.last-light-beacon
+.light-flame {
+
+    width: 20px;
+
+    height: 28px;
+
+}
+
+
+.last-light-beacon
+.orbit-one {
+
+    inset: -3px;
+
+    opacity: 1;
+
+    animation:
+        orbitPulse
+        3s
+        ease-in-out
+        infinite;
+
+}
+
+
+.last-light-beacon
+.light-aura {
+
+    transform: scale(1.35);
+
+}
+
+
+/* =========================================================
+   GUARDIAN
+========================================================= */
+
+.last-light-guardian
+.light-flame {
+
+    width: 21px;
+
+    height: 30px;
+
+}
+
+
+.last-light-guardian
+.orbit-one {
+
+    inset: -5px;
+
+    opacity: 1;
+
+}
+
+
+.last-light-guardian
+.orbit-two {
+
+    inset: -9px;
+
+    opacity: 1;
+
+    transform:
+        rotate(60deg);
+
+}
+
+
+/* =========================================================
+   RADIANT
+========================================================= */
+
+.last-light-radiant
+.light-flame {
+
+    width: 22px;
+
+    height: 31px;
+
+    filter:
+        brightness(1.12);
+
+}
+
+
+.last-light-radiant
+.orbit-one {
+
+    inset: -5px;
+
+    opacity: 1;
+
+    animation:
+        orbitRotate
+        6s
+        linear
+        infinite;
+
+}
+
+
+.last-light-radiant
+.orbit-two {
+
+    inset: -10px;
+
+    opacity: 1;
+
+    transform:
+        rotate(60deg);
+
+    animation:
+        orbitRotateReverse
+        8s
+        linear
+        infinite;
+
+}
+
+
+.last-light-radiant
+.orbit-three {
+
+    inset: -14px;
+
+    opacity: .7;
+
+}
+
+
+/* =========================================================
+   ETERNAL
+========================================================= */
+
+.last-light-eternal
+.light-flame {
+
+    width: 23px;
+
+    height: 32px;
+
+    filter:
+        brightness(1.2);
+
+}
+
+
+.last-light-eternal
+.light-aura {
+
+    transform:
+        scale(1.65);
+
+    opacity: 1;
+
+}
+
+
+.last-light-eternal
+.orbit-one {
+
+    inset: -5px;
+
+    opacity: 1;
+
+    animation:
+        orbitRotate
+        7s
+        linear
+        infinite;
+
+}
+
+
+.last-light-eternal
+.orbit-two {
+
+    inset: -10px;
+
+    opacity: 1;
+
+    transform:
+        rotate(60deg);
+
+    animation:
+        orbitRotateReverse
+        9s
+        linear
+        infinite;
+
+}
+
+
+.last-light-eternal
+.orbit-three {
+
+    inset: -15px;
+
+    opacity: 1;
+
+    transform:
+        rotate(120deg);
+
+    animation:
+        orbitRotate
+        11s
+        linear
+        infinite;
+
+}
+
+
+/* =========================================================
+   FADING — ONE MISSED DAY
+========================================================= */
+
+.last-light.fading
+.light-flame {
+
+    filter:
+        brightness(.55)
+        saturate(.65);
+
+    animation:
+        weakFlame
+        1.8s
+        ease-in-out
+        infinite;
+
+}
+
+
+.last-light.fading
+.light-aura {
+
+    opacity: .25;
+
+}
+
+
+.last-light.fading
+.light-orbit {
+
+    opacity: .12;
+
+}
+
+
+/* =========================================================
+   EXTINGUISHED — TWO MISSED DAYS
+========================================================= */
+
+.last-light.extinguished
+.light-flame {
+
+    width: 5px;
+
+    height: 5px;
+
+    transform: none;
+
+    border-radius: 50%;
+
+    background:
+        #27272a;
+
+    box-shadow:
+        none;
+
+}
+
+
+.last-light.extinguished
+.flame-inner,
+
+.last-light.extinguished
+.flame-core {
+
+    display: none;
+
+}
+
+
+.last-light.extinguished
+.light-aura {
+
+    opacity: .05;
+
+}
+
+
+.last-light.extinguished
+.light-orbit {
+
+    opacity: .05;
+
+}
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes flameBreath {
+
+    0%,
+    100% {
+
+        transform:
+            rotate(45deg)
+            scale(1);
+
+    }
+
+    50% {
+
+        transform:
+            rotate(42deg)
+            scale(1.08);
+
+    }
+
+}
+
+
+@keyframes weakFlame {
+
+    0%,
+    100% {
+
+        transform:
+            rotate(45deg)
+            scale(.9);
+
+        opacity: .65;
+
+    }
+
+    50% {
+
+        transform:
+            rotate(49deg)
+            scale(.75);
+
+        opacity: .35;
+
+    }
+
+}
+
+
+@keyframes orbitPulse {
+
+    0%,
+    100% {
+
+        transform:
+            scale(1);
+
+        opacity: .45;
+
+    }
+
+    50% {
+
+        transform:
+            scale(1.08);
+
+        opacity: 1;
+
+    }
+
+}
+
+
+@keyframes orbitRotate {
+
+    from {
+
+        transform:
+            rotate(0deg);
+
+    }
+
+    to {
+
+        transform:
+            rotate(360deg);
+
+    }
+
+}
+
+
+@keyframes orbitRotateReverse {
+
+    from {
+
+        transform:
+            rotate(360deg);
+
+    }
+
+    to {
+
+        transform:
+            rotate(0deg);
+
+    }
+
+}
+
+
+/* =========================================================
+   OPEN STATE
+========================================================= */
+
+#momentumCore.open
+.last-light {
+
+    transform:
+        scale(1.08);
+
+}
+
+
+#momentumCore.open
+.last-light .light-aura {
+
+    opacity: 1;
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    #momentumCore {
+
+        min-width: 44px;
+
+        height: 44px;
+
+    }
+
+
+    .last-light {
+
+        width: 38px;
+
+        height: 38px;
+
+    }
+
+
+    .momentum-core-text {
+
+        display: none;
+
+    }
+
+}
+
+/* =========================================================
+   LAST LIGHT — LARGE PANEL CORE
+========================================================= */
+
+.momentum-big-core {
+    width: 110px;
+    height: 110px;
+
+    margin: 20px auto 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+
+    background: transparent;
+    border: 0;
+}
+
+
+.momentum-big-core
+.last-light {
+    width: 92px;
+    height: 92px;
+
+    transform: scale(1.35);
+}
+
+
+/* Make the flame more visible in the panel */
+
+.momentum-big-core
+.light-flame {
+    filter: brightness(1.15);
+
+    transform:
+        rotate(45deg)
+        scale(1.15);
+}
+
+
+.momentum-big-core
+.light-aura {
+    transform: scale(1.5);
+}
+
+
+/* Bigger nucleus */
+
+.momentum-big-core
+.flame-core {
+    width: 5px;
+    height: 5px;
+
+    box-shadow:
+        0 0 9px white;
+}
+
+
+/* =========================================================
+   PANEL STAGE-SPECIFIC SIZES
+========================================================= */
+
+.momentum-big-core
+.last-light-ember
+.light-flame {
+    width: 12px;
+    height: 12px;
+
+    transform: none;
+}
+
+
+.momentum-big-core
+.last-light-flame
+.light-flame {
+    width: 18px;
+    height: 27px;
+}
+
+
+.momentum-big-core
+.last-light-burning
+.light-flame {
+    width: 25px;
+    height: 36px;
+}
+
+
+.momentum-big-core
+.last-light-beacon
+.light-flame {
+    width: 27px;
+    height: 39px;
+}
+
+
+.momentum-big-core
+.last-light-guardian
+.light-flame {
+    width: 29px;
+    height: 41px;
+}
+
+
+.momentum-big-core
+.last-light-radiant
+.light-flame {
+    width: 31px;
+    height: 44px;
+}
+
+
+.momentum-big-core
+.last-light-eternal
+.light-flame {
+    width: 33px;
+    height: 46px;
+}
+
+/* =========================================================
+   MOMENTUM CORE — LARGER MISSION HEADER VERSION
+========================================================= */
+
+#momentumCore {
+    min-width: 105px;
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding: 0;
+    margin: 0;
+
+    background: transparent;
+    border: 0;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   FLAME
+========================================================= */
+
+#momentumCore .last-light {
+    width: 52px;
+    height: 52px;
+
+    flex-shrink: 0;
+}
+
+
+#momentumCore .light-flame {
+    transform:
+        rotate(45deg)
+        scale(1.15);
+
+    filter:
+        brightness(1.45)
+        saturate(1.15);
+
+    box-shadow:
+        0 0 10px rgba(251,191,36,.8),
+        0 0 22px rgba(249,115,22,.5),
+        0 0 35px rgba(249,115,22,.2);
+}
+
+
+#momentumCore .light-aura {
+    opacity: 1;
+
+    transform: scale(1.5);
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(251,191,36,.32),
+            rgba(249,115,22,.10) 45%,
+            transparent 72%
+        );
+}
+
+
+/* =========================================================
+   STREAK + STAGE
+========================================================= */
+
+#momentumCore .momentum-core-text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    justify-content: center;
+
+    gap: 4px;
+
+    min-width: 40px;
+}
+
+
+#momentumCore .momentum-core-text strong {
+
+    font-size: 19px;
+
+    line-height: 1;
+
+    font-weight: 750;
+
+    color: #ffffff;
+}
+
+
+#momentumCore .momentum-core-text small {
+
+    font-size: 10px;
+
+    line-height: 1;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
+    color: #fbbf24;
+}
+
+
+/* =========================================================
+   STAGE BRIGHTNESS
+========================================================= */
+
+#momentumCore
+.last-light-ember
+.light-flame {
+
+    filter: brightness(1.3);
+
+}
+
+
+#momentumCore
+.last-light-flame
+.light-flame {
+
+    filter:
+        brightness(1.45)
+        saturate(1.15);
+
+}
+
+
+#momentumCore
+.last-light-burning
+.light-flame {
+
+    filter:
+        brightness(1.55)
+        saturate(1.2);
+
+}
+
+
+#momentumCore
+.last-light-beacon
+.light-flame {
+
+    filter:
+        brightness(1.65)
+        saturate(1.25);
+
+}
+
+
+#momentumCore
+.last-light-guardian
+.light-flame {
+
+    filter:
+        brightness(1.75)
+        saturate(1.3);
+
+}
+
+
+#momentumCore
+.last-light-radiant
+.light-flame {
+
+    filter:
+        brightness(1.85)
+        saturate(1.35);
+
+}
+
+
+#momentumCore
+.last-light-eternal
+.light-flame {
+
+    filter:
+        brightness(2)
+        saturate(1.4);
+
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+#momentumCore:hover
+.last-light {
+
+    transform: scale(1.08);
+
+}
+
+
+#momentumCore:hover
+.light-aura {
+
+    transform: scale(1.7);
+
+}
+
+
+/* =========================================================
+   OPEN
+========================================================= */
+
+#momentumCore.open
+.last-light {
+
+    transform: scale(1.1);
+
+}
+
+
+#momentumCore.open
+.light-aura {
+
+    transform: scale(1.8);
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    #momentumCore {
+
+        min-width: 90px;
+
+        height: 58px;
+
+        gap: 7px;
+
+    }
+
+
+    #momentumCore .last-light {
+
+        width: 46px;
+        height: 46px;
+
+    }
+
+
+    #momentumCore .momentum-core-text strong {
+
+        font-size: 17px;
+
+    }
+
+
+    #momentumCore .momentum-core-text small {
+
+        font-size: 9px;
+
+        letter-spacing: .8px;
+
+    }
+
+}
+
+#momentumToast {
+    z-index: 1000000 !important;
+}

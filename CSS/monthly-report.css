@@ -1,0 +1,2181 @@
+/* =========================================================
+   MONTHLY REPORT
+   Dark + Blue App Theme
+   Mobile-first
+========================================================= */
+
+:root {
+    --report-bg: #0b0f15;
+    --report-card: #111720;
+    --report-card-soft: #151c27;
+
+    --report-blue: #4f8cff;
+    --report-blue-soft: rgba(79, 140, 255, 0.12);
+    --report-blue-border: rgba(79, 140, 255, 0.20);
+
+    --report-text: #f5f7fb;
+    --report-muted: rgba(245, 247, 251, 0.60);
+    --report-faint: rgba(245, 247, 251, 0.38);
+
+    --report-border: rgba(255, 255, 255, 0.075);
+    --report-divider: rgba(255, 255, 255, 0.065);
+
+    --report-warning: #f59e0b;
+    --report-danger: #ef6464;
+}
+
+
+/* =========================================================
+   BASE
+========================================================= */
+
+.monthly-report-page {
+    width: 100%;
+    min-height: calc(100vh - 120px);
+
+    box-sizing: border-box;
+
+    padding: 20px 16px 96px;
+
+    overflow-x: hidden;
+
+    color: var(--report-text);
+}
+
+
+.monthly-report-shell {
+    width: min(760px, 100%);
+
+    margin: 0 auto;
+
+    box-sizing: border-box;
+}
+
+
+/* Prevent anything from creating horizontal overflow */
+
+.monthly-report-page *,
+.monthly-report-page *::before,
+.monthly-report-page *::after {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.monthly-report-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 24px;
+}
+
+
+.monthly-report-eyebrow {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: var(--report-blue);
+
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.2;
+
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+
+.monthly-report-header h2 {
+    margin: 0;
+
+    color: var(--report-text);
+
+    font-size: clamp(24px, 7vw, 30px);
+    font-weight: 700;
+    line-height: 1.05;
+
+    letter-spacing: -.035em;
+}
+
+
+.monthly-report-header p {
+    margin: 7px 0 0;
+
+    color: var(--report-muted);
+
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+
+.monthly-report-close {
+    flex: 0 0 auto;
+
+    width: 38px;
+    height: 38px;
+
+    padding: 0;
+
+    border: 1px solid var(--report-border);
+    border-radius: 12px;
+
+    background: var(--report-card);
+
+    color: var(--report-muted);
+
+    font-size: 22px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        color .2s ease,
+        background .2s ease,
+        border-color .2s ease;
+}
+
+
+@media (hover: hover) {
+
+    .monthly-report-close:hover {
+        color: var(--report-text);
+
+        background: var(--report-card-soft);
+
+        border-color: var(--report-blue-border);
+    }
+
+}
+
+
+/* =========================================================
+   EMPTY REPORT
+========================================================= */
+
+.monthly-report-empty {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 40px 20px;
+
+    background: var(--report-card);
+
+    border: 1px solid var(--report-border);
+    border-radius: 16px;
+
+    text-align: center;
+}
+
+
+.monthly-report-empty span {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--report-text);
+
+    font-weight: 700;
+}
+
+
+.monthly-report-empty p {
+    margin: 0;
+
+    color: var(--report-muted);
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   SHARED SECTIONS
+========================================================= */
+
+.monthly-report-section {
+    width: 100%;
+    min-width: 0;
+
+    margin-top: 22px;
+}
+
+
+.monthly-section-header {
+    margin-bottom: 12px;
+}
+
+
+.monthly-section-header h3 {
+    margin: 0;
+
+    color: var(--report-text);
+
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.2;
+
+    letter-spacing: -.02em;
+}
+
+
+.monthly-section-header p {
+    margin: 5px 0 0;
+
+    color: var(--report-muted);
+
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   MONTH OVERVIEW
+========================================================= */
+
+.monthly-overview {
+    width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 20px;
+
+    padding: 20px;
+
+    background: var(--report-card);
+
+    border: 1px solid var(--report-border);
+    border-radius: 16px;
+}
+
+
+.monthly-consistency {
+    display: flex;
+    align-items: baseline;
+
+    gap: 9px;
+
+    min-width: 0;
+}
+
+
+.monthly-consistency-value {
+    color: var(--report-blue);
+
+    font-size: clamp(44px, 14vw, 58px);
+    font-weight: 700;
+    line-height: .9;
+
+    letter-spacing: -.06em;
+}
+
+
+.monthly-consistency-label {
+    color: var(--report-muted);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: .1em;
+}
+
+
+/* =========================================================
+   OVERVIEW STATS
+========================================================= */
+
+.monthly-overview-stats {
+    width: 100%;
+    min-width: 0;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 0;
+
+    border-top: 1px solid var(--report-divider);
+}
+
+
+.monthly-stat {
+    min-width: 0;
+
+    padding: 14px 12px 0 0;
+}
+
+
+.monthly-stat:nth-child(2n) {
+    padding-left: 12px;
+    padding-right: 0;
+
+    border-left: 1px solid var(--report-divider);
+}
+
+
+.monthly-stat:nth-child(n + 3) {
+    margin-top: 12px;
+
+    padding-top: 12px;
+
+    border-top: 1px solid var(--report-divider);
+}
+
+
+.monthly-stat strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--report-text);
+
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+
+.monthly-stat span {
+    display: block;
+
+    color: var(--report-muted);
+
+    font-size: 11px;
+    line-height: 1.35;
+}
+
+
+/* =========================================================
+   ACTIVITY CALENDAR
+========================================================= */
+
+.monthly-activity-calendar {
+    width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, minmax(0, 1fr));
+
+    gap: 5px;
+
+    padding: 12px;
+
+    background: var(--report-card);
+
+    border: 1px solid var(--report-border);
+    border-radius: 16px;
+}
+
+
+.calendar-weekday {
+    min-width: 0;
+
+    padding-bottom: 4px;
+
+    color: var(--report-faint);
+
+    text-align: center;
+
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 1.2;
+
+    letter-spacing: .04em;
+}
+
+
+.calendar-day {
+    min-width: 0;
+
+    aspect-ratio: 1 / 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+
+    background: rgba(255, 255, 255, .018);
+
+    border: 1px solid rgba(255, 255, 255, .055);
+    border-radius: 9px;
+
+    color: var(--report-faint);
+
+    font-size: 11px;
+}
+
+
+.calendar-day-number {
+    font-weight: 600;
+}
+
+
+.calendar-active {
+    background: var(--report-blue-soft);
+
+    border-color: rgba(79, 140, 255, .30);
+
+    color: var(--report-blue);
+}
+
+
+.calendar-missed {
+    border-color: rgba(239, 100, 100, .45);
+
+    color: var(--report-danger);
+}
+
+#monthlyReport .calendar-partial {
+    border-color: var(--report-warning);
+    color: var(--report-warning);
+}
+
+.calendar-no-activity {
+    opacity: .32;
+}
+
+
+.calendar-today {
+    box-shadow:
+        inset 0 0 0 1px var(--report-blue);
+}
+
+
+.calendar-empty {
+    border: 0;
+
+    opacity: 0;
+}
+
+
+.monthly-calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 10px 16px;
+
+    margin-top: 10px;
+
+    color: var(--report-muted);
+
+    font-size: 10px;
+    line-height: 1.2;
+}
+
+
+.monthly-calendar-legend span {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+}
+
+
+.calendar-dot {
+    width: 6px;
+    height: 6px;
+
+    display: inline-block;
+    flex: 0 0 6px;
+
+    border-radius: 50%;
+}
+
+
+.calendar-dot.active {
+    background: var(--report-blue);
+}
+
+.calendar-dot.partial {
+    background: var(--report-warning);
+}
+
+.calendar-dot.missed {
+    border: 1px solid var(--report-danger);
+}
+
+
+.calendar-dot.empty {
+    border: 1px solid var(--report-faint);
+
+    opacity: .45;
+}
+
+
+/* =========================================================
+   CONSISTENCY GRAPH
+========================================================= */
+
+.monthly-consistency-chart {
+    width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    padding: 14px 10px 10px;
+
+    background: var(--report-card);
+
+    border: 1px solid var(--report-border);
+    border-radius: 16px;
+
+    overflow: hidden;
+}
+
+
+.consistency-chart-inner {
+    width: 100%;
+    min-width: 0;
+
+    height: 190px;
+
+    display: flex;
+}
+
+
+.consistency-y-axis {
+    width: 28px;
+    flex: 0 0 28px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    padding: 0 6px 22px 0;
+
+    color: var(--report-faint);
+
+    font-size: 8px;
+    line-height: 1;
+}
+
+
+.consistency-y-axis span {
+    text-align: right;
+}
+
+
+.consistency-graph-area {
+    position: relative;
+
+    flex: 1;
+
+    min-width: 0;
+
+    height: 100%;
+}
+
+
+.consistency-grid-line {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    height: 1px;
+
+    border-top:
+        1px dashed
+        rgba(255, 255, 255, .075);
+}
+
+
+.consistency-svg {
+    position: absolute;
+
+    inset: 0 0 22px;
+
+    width: 100%;
+    height: calc(100% - 22px);
+
+    overflow: visible;
+}
+
+
+.consistency-line {
+    fill: none;
+
+    stroke: var(--report-blue);
+
+    stroke-width: 1.8;
+
+    vector-effect: non-scaling-stroke;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+.consistency-point {
+    fill: var(--report-blue);
+}
+
+
+.consistency-x-axis {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 18px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    color: var(--report-faint);
+
+    font-size: 8px;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   MISSION PERFORMANCE
+========================================================= */
+
+.mission-performance-card {
+    width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px;
+
+    background: var(--report-card);
+
+    border: 1px solid var(--report-border);
+    border-radius: 16px;
+}
+
+
+.mission-performance-main {
+    display: flex;
+    align-items: baseline;
+
+    gap: 8px;
+
+    padding-bottom: 18px;
+
+    border-bottom:
+        1px solid var(--report-divider);
+}
+
+
+.mission-completion-rate {
+    color: var(--report-blue);
+
+    font-size: clamp(38px, 12vw, 48px);
+    font-weight: 700;
+    line-height: .95;
+
+    letter-spacing: -.05em;
+}
+
+
+.mission-completion-label {
+    color: var(--report-muted);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: .08em;
+}
+
+
+.mission-performance-stats,
+.mission-type-stats {
+    width: 100%;
+    min-width: 0;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 0;
+}
+
+
+.mission-performance-stats {
+    margin-top: 18px;
+}
+
+
+.mission-performance-stat,
+.mission-type-stat {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    padding: 0 12px;
+}
+
+
+.mission-performance-stat:first-child,
+.mission-type-stat:first-child {
+    padding-left: 0;
+}
+
+
+.mission-performance-stat:not(:first-child),
+.mission-type-stat:not(:first-child) {
+    border-left:
+        1px solid var(--report-divider);
+}
+
+
+.mission-performance-stat strong {
+    color: var(--report-text);
+
+    font-size: 22px;
+    line-height: 1.1;
+}
+
+
+.mission-performance-stat span,
+.mission-type-stat span {
+    color: var(--report-muted);
+
+    font-size: 10px;
+    line-height: 1.3;
+}
+
+
+.mission-type-stats {
+    margin-top: 18px;
+
+    padding-top: 18px;
+
+    border-top:
+        1px solid var(--report-divider);
+}
+
+
+.mission-type-stat strong {
+    color: var(--report-blue);
+
+    font-size: 19px;
+    line-height: 1.1;
+}
+
+
+/* =========================================================
+   MOMENTUM JOURNEY
+========================================================= */
+
+.momentum-journey-card {
+    width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px;
+
+    background: var(--report-card);
+
+    border: 1px solid var(--report-border);
+    border-radius: 16px;
+
+    overflow: hidden;
+}
+
+
+.momentum-journey-main {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding-bottom: 18px;
+
+    border-bottom:
+        1px solid var(--report-divider);
+}
+
+
+.momentum-journey-value {
+    min-width: 0;
+
+    color: var(--report-blue);
+
+    font-size: clamp(46px, 16vw, 64px);
+    font-weight: 700;
+    line-height: .85;
+
+    letter-spacing: -.06em;
+}
+
+
+.momentum-journey-label {
+    max-width: 120px;
+
+    padding-bottom: 2px;
+
+    color: var(--report-muted);
+
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1.3;
+
+    letter-spacing: .08em;
+
+    text-align: right;
+}
+
+
+.momentum-journey-stats {
+    width: 100%;
+    min-width: 0;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    margin-top: 18px;
+}
+
+
+.momentum-journey-stat {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    padding: 0 10px;
+}
+
+
+.momentum-journey-stat:first-child {
+    padding-left: 0;
+}
+
+
+.momentum-journey-stat:not(:first-child) {
+    border-left:
+        1px solid var(--report-divider);
+}
+
+
+.momentum-journey-stat strong {
+    color: var(--report-text);
+
+    font-size: 21px;
+    line-height: 1.1;
+}
+
+
+.momentum-journey-stat span {
+    color: var(--report-muted);
+
+    font-size: 10px;
+    line-height: 1.3;
+}
+
+
+.momentum-longest {
+    width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-top: 18px;
+
+    padding-top: 16px;
+
+    border-top:
+        1px solid var(--report-divider);
+}
+
+
+.momentum-longest span {
+    min-width: 0;
+
+    color: var(--report-muted);
+
+    font-size: 11px;
+    line-height: 1.35;
+}
+
+
+.momentum-longest strong {
+    flex: 0 0 auto;
+
+    color: var(--report-blue);
+
+    font-size: 13px;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   MOMENTUM GRAPH
+========================================================= */
+
+#monthlyReport .momentum-graph {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    margin-top: 12px;
+
+    padding: 18px;
+
+    background: var(--report-card);
+
+    border:
+        1px solid var(--report-border);
+
+    border-radius: 18px;
+
+    overflow: hidden;
+}
+
+
+#monthlyReport .momentum-graph-header {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+}
+
+
+#monthlyReport .momentum-graph-header h4 {
+    margin: 0;
+
+    color: var(--report-text);
+
+    font-size: 16px;
+    font-weight: 650;
+    line-height: 1.2;
+}
+
+
+#monthlyReport .momentum-graph-peak {
+    flex-shrink: 0;
+
+    padding: 6px 9px;
+
+    border-radius: 8px;
+
+    background: var(--report-blue-soft);
+
+    color: var(--report-blue);
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+#monthlyReport .momentum-graph-body {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+
+    height: 190px;
+}
+
+
+#monthlyReport .momentum-graph-y-axis {
+    width: 28px;
+    flex: 0 0 28px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    padding: 3px 7px 20px 0;
+
+    color: var(--report-faint);
+
+    font-size: 8px;
+    line-height: 1;
+
+    text-align: right;
+}
+
+
+#monthlyReport .momentum-graph-area {
+    position: relative;
+
+    flex: 1;
+
+    min-width: 0;
+
+    height: 100%;
+}
+
+
+#monthlyReport .momentum-chart {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 20px;
+
+    width: auto;
+    height: auto;
+
+    min-width: 0;
+    min-height: 0;
+
+    color: var(--report-blue);
+}
+
+
+#monthlyReport .momentum-chart svg {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: visible;
+}
+
+
+#monthlyReport .momentum-grid-line {
+    stroke:
+        rgba(255, 255, 255, .075);
+
+    stroke-width: 1;
+
+    stroke-dasharray: 3 5;
+
+    vector-effect: non-scaling-stroke;
+}
+
+
+#monthlyReport .momentum-chart-area-fill {
+    fill: var(--report-blue);
+
+    opacity: .08;
+}
+
+
+#monthlyReport .momentum-chart-line {
+    fill: none;
+
+    stroke: var(--report-blue);
+
+    stroke-width: 2.5;
+
+    vector-effect: non-scaling-stroke;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+#monthlyReport .momentum-chart-point {
+    fill: var(--report-card);
+
+    stroke: var(--report-blue);
+
+    stroke-width: 2;
+
+    vector-effect: non-scaling-stroke;
+}
+
+
+#monthlyReport .momentum-graph-x-axis {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 17px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    color: var(--report-faint);
+
+    font-size: 8px;
+    line-height: 1;
+}
+
+
+#monthlyReport .momentum-graph-empty {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--report-muted);
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   GOALS
+========================================================= */
+
+#monthlyReport .monthly-goals-progress {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    margin-top: 16px;
+
+    padding: 18px;
+
+    background: var(--report-card);
+
+    border:
+        1px solid var(--report-border);
+
+    border-radius: 18px;
+
+    overflow: hidden;
+}
+
+
+#monthlyReport .monthly-goals-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+}
+
+
+#monthlyReport .monthly-goals-header h4 {
+    margin: 0;
+
+    color: var(--report-text);
+
+    font-size: 16px;
+    font-weight: 650;
+}
+
+
+#monthlyReport #monthlyGoalsProgressValue {
+    flex-shrink: 0;
+
+    color: var(--report-blue);
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+
+#monthlyReport .monthly-goals-summary {
+    display: flex;
+    align-items: baseline;
+
+    gap: 6px;
+
+    margin-bottom: 12px;
+}
+
+
+#monthlyReport #monthlyGoalsCompletedText {
+    color: var(--report-text);
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+
+#monthlyReport .monthly-goals-summary span {
+    color: var(--report-muted);
+
+    font-size: 11px;
+}
+
+
+#monthlyReport .monthly-goals-progress-track {
+    width: 100%;
+    height: 7px;
+
+    margin-bottom: 18px;
+
+    background: rgba(255, 255, 255, .07);
+
+    border-radius: 999px;
+
+    overflow: hidden;
+}
+
+
+#monthlyReport .monthly-goals-progress-fill {
+    width: 0%;
+    height: 100%;
+
+    background: var(--report-blue);
+
+    border-radius: inherit;
+
+    transition:
+        width .45s cubic-bezier(.22, 1, .36, 1);
+}
+
+
+#monthlyReport .monthly-goals-stats {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+
+#monthlyReport .monthly-goal-stat {
+    min-width: 0;
+
+    padding-top: 12px;
+
+    border-top:
+        1px solid var(--report-divider);
+}
+
+
+#monthlyReport .monthly-goal-stat strong {
+    display: block;
+
+    color: var(--report-text);
+
+    font-size: 20px;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+
+#monthlyReport .monthly-goal-stat span {
+    display: block;
+
+    margin-top: 6px;
+
+    color: var(--report-muted);
+
+    font-size: 9px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+
+/* =========================================================
+   INSIGHTS
+========================================================= */
+
+#monthlyReport .monthly-insights {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+
+    margin-top: 16px;
+}
+
+
+#monthlyReport .monthly-insight {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 12px;
+
+    padding: 14px 16px;
+
+    background: var(--report-card);
+
+    border:
+        1px solid var(--report-border);
+
+    border-radius: 14px;
+
+    transition:
+        border-color .2s ease,
+        transform .2s ease;
+}
+
+
+#monthlyReport .monthly-insight-indicator {
+    width: 7px;
+    height: 7px;
+
+    flex: 0 0 7px;
+
+    margin-top: 6px;
+
+    border-radius: 50%;
+
+    background: var(--report-blue);
+}
+
+
+#monthlyReport .monthly-insight-content {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+#monthlyReport .monthly-insight-content strong {
+    color: var(--report-text);
+
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.3;
+}
+
+
+#monthlyReport .monthly-insight-content span {
+    color: var(--report-muted);
+
+    font-size: 11px;
+    line-height: 1.5;
+
+    overflow-wrap: anywhere;
+}
+
+
+#monthlyReport .monthly-insight-positive
+.monthly-insight-indicator {
+    background: var(--report-blue);
+}
+
+
+#monthlyReport .monthly-insight-neutral
+.monthly-insight-indicator {
+    background: rgba(245, 247, 251, .42);
+}
+
+
+#monthlyReport .monthly-insight-warning
+.monthly-insight-indicator {
+    background: var(--report-warning);
+}
+
+
+#monthlyReport .monthly-insight-empty {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 18px;
+
+    background: var(--report-card);
+
+    border:
+        1px solid var(--report-border);
+
+    border-radius: 14px;
+
+    color: var(--report-muted);
+
+    font-size: 11px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   MONTHLY SUMMARY
+========================================================= */
+
+#monthlyReport .monthly-summary-card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    margin-top: 84px;
+    margin-bottom: 20px;
+
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(79, 140, 255, .13),
+            var(--report-card) 58%
+        );
+
+    border:
+        1px solid var(--report-blue-border);
+
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+
+
+#monthlyReport .monthly-summary-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    margin-bottom: 14px;
+}
+
+
+#monthlyReport .monthly-summary-header h3 {
+    margin: 4px 0 0;
+
+    color: var(--report-text);
+
+    font-size: 24px;
+    font-weight: 700;
+
+    line-height: 1.15;
+}
+
+
+#monthlyReport .monthly-summary-text {
+    max-width: 680px;
+
+    margin: 0;
+
+    color: var(--report-muted);
+
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+
+#monthlyReport .monthly-summary-metrics {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+
+#monthlyReport .monthly-summary-metric {
+    min-width: 0;
+
+    padding: 12px;
+
+    background:
+        rgba(255, 255, 255, .035);
+
+    border:
+        1px solid rgba(255, 255, 255, .055);
+
+    border-radius: 12px;
+}
+
+
+#monthlyReport .monthly-summary-metric strong {
+    display: block;
+
+    color: var(--report-blue);
+
+    font-size: 21px;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+
+#monthlyReport .monthly-summary-metric span {
+    display: block;
+
+    margin-top: 7px;
+
+    color: var(--report-faint);
+
+    font-size: 8px;
+    font-weight: 650;
+
+    line-height: 1.3;
+
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media (min-width: 601px) {
+
+    .monthly-report-page {
+        padding-left: 20px;
+        padding-right: 20px;
+
+        margin-top: 40px;
+    }
+
+
+    .monthly-overview {
+        display: grid;
+
+        grid-template-columns:
+            minmax(150px, .7fr)
+            minmax(0, 1.3fr);
+
+        align-items: center;
+
+        gap: 28px;
+
+        padding: 24px;
+    }
+
+
+    .monthly-overview-stats {
+        border-top: 0;
+    }
+
+
+    .monthly-stat {
+        padding-top: 0;
+
+        margin-top: 0;
+    }
+
+
+    .monthly-stat:nth-child(n + 3) {
+        margin-top: 12px;
+        padding-top: 12px;
+    }
+
+
+    .mission-performance-card {
+        display: grid;
+
+        grid-template-columns:
+            minmax(140px, .7fr)
+            minmax(0, 1.3fr);
+
+        column-gap: 28px;
+
+        align-items: center;
+    }
+
+
+    .mission-performance-main {
+        padding-bottom: 0;
+
+        border-bottom: 0;
+    }
+
+
+    .mission-performance-stats {
+        margin-top: 0;
+    }
+
+
+    .mission-type-stats {
+        grid-column: 1 / -1;
+    }
+
+
+    .momentum-journey-card {
+        padding: 24px;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .monthly-report-page {
+        padding:
+            16px
+            14px
+            88px;
+    }
+
+
+    .monthly-report-header {
+        margin-bottom: 20px;
+    }
+
+
+    .monthly-report-header h2 {
+        font-size: 24px;
+    }
+
+
+    .monthly-report-section {
+        margin-top: 18px;
+    }
+
+
+    .monthly-overview,
+    .mission-performance-card,
+    .momentum-journey-card {
+        padding: 17px;
+
+        border-radius: 16px;
+    }
+
+
+    .monthly-activity-calendar {
+        gap: 4px;
+
+        padding: 10px;
+
+        border-radius: 15px;
+    }
+
+
+    .calendar-day {
+        border-radius: 8px;
+
+        font-size: 10px;
+    }
+
+
+    .monthly-consistency-value {
+        font-size: 46px;
+    }
+
+
+    .monthly-stat strong,
+    .mission-performance-stat strong {
+        font-size: 19px;
+    }
+
+
+    .mission-type-stat strong,
+    .momentum-journey-stat strong {
+        font-size: 17px;
+    }
+
+
+    .momentum-journey-main {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+
+    .momentum-journey-label {
+        max-width: none;
+
+        padding-bottom: 0;
+
+        text-align: left;
+    }
+
+
+    .momentum-journey-stat {
+        padding-left: 7px;
+        padding-right: 7px;
+    }
+
+
+    .momentum-longest {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 5px;
+    }
+
+
+    #monthlyReport .momentum-graph {
+        margin-top: 10px;
+
+        padding: 16px;
+
+        border-radius: 16px;
+    }
+
+
+    #monthlyReport .momentum-graph-header {
+        margin-bottom: 16px;
+    }
+
+
+    #monthlyReport .momentum-graph-header h4 {
+        font-size: 15px;
+    }
+
+
+    #monthlyReport .momentum-graph-body {
+        height: 170px;
+    }
+
+
+    #monthlyReport .momentum-graph-y-axis {
+        width: 23px;
+        flex-basis: 23px;
+
+        padding-right: 6px;
+
+        font-size: 7px;
+    }
+
+
+    #monthlyReport .momentum-graph-x-axis {
+        font-size: 7px;
+    }
+
+
+    #monthlyReport .monthly-goals-progress {
+        margin-top: 12px;
+
+        padding: 16px;
+
+        border-radius: 16px;
+    }
+
+
+    #monthlyReport .monthly-goals-header {
+        margin-bottom: 16px;
+    }
+
+
+    #monthlyReport .monthly-goals-header h4 {
+        font-size: 15px;
+    }
+
+
+    #monthlyReport #monthlyGoalsProgressValue {
+        font-size: 18px;
+    }
+
+
+    #monthlyReport #monthlyGoalsCompletedText {
+        font-size: 17px;
+    }
+
+
+    #monthlyReport .monthly-goal-stat strong {
+        font-size: 18px;
+    }
+
+
+    #monthlyReport .monthly-insight {
+        padding: 13px 14px;
+
+        gap: 10px;
+
+        border-radius: 13px;
+    }
+
+
+    #monthlyReport .monthly-insight-content strong {
+        font-size: 12px;
+    }
+
+
+    #monthlyReport .monthly-insight-content span {
+        font-size: 10px;
+    }
+
+
+    #monthlyReport .monthly-summary-card {
+        margin-top: 50px;
+        margin-bottom: 16px;
+
+        padding: 17px;
+
+        border-radius: 17px;
+    }
+
+
+    #monthlyReport .monthly-summary-header {
+        margin-bottom: 12px;
+    }
+
+
+    #monthlyReport .monthly-summary-header h3 {
+        font-size: 21px;
+    }
+
+
+    #monthlyReport .monthly-summary-text {
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+
+    #monthlyReport .monthly-summary-metrics {
+        gap: 7px;
+
+        margin-top: 16px;
+    }
+
+
+    #monthlyReport .monthly-summary-metric {
+        padding: 10px;
+    }
+
+
+    #monthlyReport .monthly-summary-metric strong {
+        font-size: 18px;
+    }
+
+
+    #monthlyReport .monthly-summary-metric span {
+        font-size: 7px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 380px) {
+
+    .monthly-report-page {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+
+    .monthly-overview,
+    .mission-performance-card,
+    .momentum-journey-card {
+        padding: 15px;
+
+        border-radius: 14px;
+    }
+
+
+    .monthly-activity-calendar {
+        gap: 4px;
+
+        padding: 9px;
+
+        border-radius: 14px;
+    }
+
+
+    .calendar-day {
+        border-radius: 7px;
+
+        font-size: 10px;
+    }
+
+
+    .monthly-consistency-value {
+        font-size: 44px;
+    }
+
+
+    .monthly-stat strong,
+    .mission-performance-stat strong {
+        font-size: 19px;
+    }
+
+
+    .mission-type-stat strong,
+    .momentum-journey-stat strong {
+        font-size: 17px;
+    }
+
+
+    .momentum-journey-stat {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+
+    #monthlyReport .momentum-graph {
+        padding: 14px;
+    }
+
+
+    #monthlyReport .momentum-graph-body {
+        height: 155px;
+    }
+
+
+    #monthlyReport .momentum-graph-peak {
+        padding: 5px 7px;
+
+        font-size: 9px;
+    }
+
+
+    #monthlyReport .monthly-goals-progress {
+        padding: 14px;
+    }
+
+
+    #monthlyReport .monthly-goals-stats {
+        gap: 7px;
+    }
+
+
+    #monthlyReport .monthly-goal-stat span {
+        font-size: 8px;
+    }
+
+
+    #monthlyReport .monthly-summary-card {
+        padding: 15px;
+    }
+
+
+    #monthlyReport .monthly-summary-metrics {
+        gap: 5px;
+    }
+
+
+    #monthlyReport .monthly-summary-metric {
+        padding: 9px 7px;
+    }
+
+
+    #monthlyReport .monthly-summary-metric strong {
+        font-size: 17px;
+    }
+
+}
+
+
+/* =========================================================
+   INTERACTION
+========================================================= */
+
+@media (hover: hover) {
+
+    #monthlyReport .monthly-insight:hover {
+        border-color:
+            var(--report-blue-border);
+
+        transform: translateY(-1px);
+    }
+
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    #monthlyReport * {
+        transition: none !important;
+        animation: none !important;
+    }
+
+}
+
+/* =========================================================
+   MOMENTUM JOURNEY — SECTION SPACING
+========================================================= */
+
+.monthly-report-section:has(.momentum-summary-card) {
+    margin-top: 84px;
+}
+
+/* =========================================================
+   MONTHLY — DAILY CHALLENGE
+========================================================= */
+
+.monthly-daily-challenge {
+    position: relative;
+    overflow: hidden;
+}
+
+.monthly-card-eyebrow {
+    display: block;
+    margin-bottom: 5px;
+    color: rgba(80, 150, 255, .75);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .16em;
+}
+
+.monthly-daily-challenge h3 {
+    margin: 0;
+    color: rgba(255,255,255,.92);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.monthly-daily-count {
+    color: rgba(120,175,255,.95);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.monthly-daily-progress {
+    width: 100%;
+    height: 5px;
+    margin: 20px 0 12px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255,255,255,.06);
+}
+
+.monthly-daily-progress-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: rgba(70,140,255,.85);
+    box-shadow: 0 0 12px rgba(70,140,255,.35);
+    transition: width .5s ease;
+}
+
+.monthly-daily-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.monthly-daily-footer span {
+    color: rgba(255,255,255,.48);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.monthly-daily-footer span:last-child {
+    color: rgba(110,165,255,.85);
+}
+
+.monthly-daily-message {
+    margin: 12px 0 0;
+    color: rgba(255,255,255,.42);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   DAILY CHALLENGE
+========================================================= */
+
+.monthly-daily-challenge {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+
+    background: var(--report-card);
+    border: 1px solid var(--report-border);
+    border-radius: 16px;
+}
+
+.monthly-daily-count {
+    color: var(--report-blue);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.monthly-daily-progress {
+    width: 100%;
+    height: 5px;
+    margin-top: 18px;
+
+    overflow: hidden;
+    border-radius: 999px;
+
+    background: var(--report-divider);
+}
+
+.monthly-daily-progress-fill {
+    width: 0%;
+    height: 100%;
+
+    border-radius: inherit;
+    background: var(--report-blue);
+
+    transition: width .5s ease;
+}
+
+.monthly-daily-meta {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 12px;
+
+    color: var(--report-muted);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.monthly-daily-meta span:last-child {
+    color: var(--report-blue);
+}
+
+.monthly-daily-message {
+    margin: 12px 0 0;
+
+    color: var(--report-muted);
+    font-size: 11px;
+    line-height: 1.5;
+}

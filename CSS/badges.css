@@ -1,0 +1,689 @@
+/* =========================================================
+   MONTHLY BADGE PAGE
+========================================================= */
+
+#monthlyBadgePage {
+    padding: 24px 16px 120px;
+    margin-top: 60px;
+
+    background: transparent;
+}
+
+.monthly-badge-page {
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.monthly-badge-page-header {
+    margin-bottom: 24px;
+}
+
+.monthly-badge-page-eyebrow {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #3b82f6;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.14em;
+}
+
+.monthly-badge-page-header h2 {
+    margin: 0;
+
+    color: #f8fafc;
+
+    font-size: 24px;
+    font-weight: 650;
+
+    letter-spacing: -0.025em;
+}
+
+
+/* =========================================================
+   BADGE HERO
+========================================================= */
+
+.monthly-badge-hero {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    text-align: center;
+
+    padding: 10px 16px 32px;
+}
+
+
+/* =========================================================
+   BADGE IMAGE
+========================================================= */
+
+.monthly-badge-artwork {
+    width: 180px;
+    height: 180px;
+
+    margin-bottom: 20px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+
+    background: transparent;
+
+    border:
+        1px solid
+        rgba(59, 130, 246, 0.14);
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 20px 50px
+        rgba(0, 0, 0, 0.35),
+        0 0 45px
+        rgba(37, 99, 235, 0.08);
+
+    transition:
+        opacity 0.25s ease,
+        filter 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.monthly-badge-artwork-inner {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+
+    border: none;
+}
+
+
+/* =========================================================
+   BADGE IMAGE
+========================================================= */
+
+.monthly-badge-image {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0 14px 24px
+            rgba(0, 0, 0, 0.55)
+        );
+
+    transition:
+        filter 0.3s ease,
+        transform 0.3s ease;
+}
+
+
+/* =========================================================
+   LOCKED STATE
+========================================================= */
+
+.monthly-badge-artwork.locked {
+    opacity: 0.48;
+
+    filter:
+        grayscale(1)
+        brightness(0.48);
+
+    box-shadow:
+        0 15px 35px
+        rgba(0, 0, 0, 0.35);
+}
+
+.monthly-badge-artwork.locked
+.monthly-badge-image {
+    filter:
+        grayscale(1)
+        brightness(0.55)
+        drop-shadow(
+            0 8px 14px
+            rgba(0, 0, 0, 0.45)
+        );
+}
+
+
+/* =========================================================
+   EARNED STATE
+========================================================= */
+
+.monthly-badge-artwork.earned {
+    opacity: 1;
+
+    filter: none;
+
+    transform: translateY(-3px);
+
+    border-color:
+        rgba(59, 130, 246, 0.38);
+
+    box-shadow:
+        0 20px 55px
+        rgba(0, 0, 0, 0.45),
+        0 0 55px
+        rgba(37, 99, 235, 0.14);
+}
+
+.monthly-badge-artwork.earned
+.monthly-badge-image {
+    filter:
+        drop-shadow(
+            0 16px 28px
+            rgba(0, 0, 0, 0.55)
+        );
+
+    transform: scale(1.03);
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.monthly-badge-status {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-height: 24px;
+
+    padding: 0 11px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(255, 255, 255, 0.035);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    color: #7d8797;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.12em;
+}
+
+.monthly-badge-status.earned {
+    background:
+        rgba(59, 130, 246, 0.08);
+
+    border-color:
+        rgba(59, 130, 246, 0.28);
+
+    color: #60a5fa;
+
+    box-shadow:
+        0 0 18px
+        rgba(59, 130, 246, 0.07);
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.monthly-badge-hero h1 {
+    margin: 13px 0 7px;
+
+    color: #f8fafc;
+
+    font-size: 28px;
+
+    font-weight: 650;
+
+    letter-spacing: -0.03em;
+}
+
+.monthly-badge-hero p {
+    max-width: 330px;
+
+    margin: 0;
+
+    color: #7f8999;
+
+    font-size: 12px;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   REQUIREMENTS
+========================================================= */
+
+.monthly-badge-section {
+    margin-top: 8px;
+
+    padding: 18px;
+
+    background: transparent;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.065);
+
+    border-radius: 16px;
+
+    box-shadow: none;
+}
+
+.monthly-badge-section-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 17px;
+}
+
+.monthly-badge-section-header h3 {
+    margin: 0;
+
+    color: #eef2f7;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+.monthly-badge-section-header span {
+    color: #626d7d;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   REQUIREMENT ROW
+========================================================= */
+
+.monthly-badge-requirement {
+    padding: 13px 0;
+
+    border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.055);
+}
+
+.monthly-badge-requirement:first-child {
+    padding-top: 0;
+}
+
+.monthly-badge-requirement:last-child {
+    padding-bottom: 0;
+
+    border-bottom: none;
+}
+
+.monthly-badge-requirement-top {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 9px;
+}
+
+.monthly-badge-requirement-name {
+    color: #cbd5e1;
+
+    font-size: 12px;
+
+    font-weight: 500;
+}
+
+.monthly-badge-requirement-value {
+    color: #697486;
+
+    font-size: 11px;
+
+    font-weight: 600;
+}
+
+.monthly-badge-requirement-value.complete {
+    color: #60a5fa;
+}
+
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.monthly-badge-progress {
+    width: 100%;
+
+    height: 6px;
+
+    overflow: hidden;
+
+    background:
+        rgba(255, 255, 255, 0.065);
+
+    border-radius: 999px;
+}
+
+.monthly-badge-progress-fill {
+    width: 0;
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #2563eb,
+            #3b82f6
+        );
+
+    border-radius: inherit;
+
+    box-shadow:
+        0 0 12px
+        rgba(59, 130, 246, 0.28);
+
+    transition:
+        width 0.4s ease;
+}
+
+
+/* =========================================================
+   EARNED MESSAGE
+========================================================= */
+
+.monthly-badge-earned-message {
+    display: none;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 12px;
+
+    padding: 14px 16px;
+
+    background:
+        rgba(37, 99, 235, 0.055);
+
+    border:
+        1px solid
+        rgba(59, 130, 246, 0.18);
+
+    border-radius: 14px;
+
+    box-shadow: none;
+}
+
+.monthly-badge-earned-message.active {
+    display: flex;
+}
+
+.monthly-badge-earned-icon {
+    width: 32px;
+    height: 32px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background:
+        rgba(59, 130, 246, 0.12);
+
+    border:
+        1px solid
+        rgba(59, 130, 246, 0.2);
+
+    color: #60a5fa;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 0 15px
+        rgba(59, 130, 246, 0.08);
+}
+
+.monthly-badge-earned-message strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #e8eef7;
+
+    font-size: 12px;
+}
+
+.monthly-badge-earned-message span {
+    color: #7c8798;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   BADGE COLLECTION
+========================================================= */
+
+.monthly-badge-collection-section {
+    margin-top: 20px;
+}
+
+.badge-collection-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 13px 0;
+
+    border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.055);
+}
+
+.badge-collection-item:last-child {
+    border-bottom: none;
+}
+
+.badge-collection-art {
+    width: 68px;
+    height: 68px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px;
+
+    background: transparent;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.06);
+
+    border-radius: 14px;
+}
+
+.badge-collection-image {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0 7px 12px
+            rgba(0, 0, 0, 0.5)
+        );
+}
+
+.badge-collection-info {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.badge-collection-info strong {
+    color: #e8edf5;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+.badge-collection-info span {
+    color: #687385;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   EMPTY COLLECTION
+========================================================= */
+
+.badge-collection-empty {
+    padding: 28px 16px;
+
+    text-align: center;
+
+    background: transparent;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.06);
+
+    border-radius: 16px;
+}
+
+.badge-collection-empty span {
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 24px;
+
+    opacity: 0.7;
+}
+
+.badge-collection-empty p {
+    margin: 0;
+
+    color: #697486;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   ARTWORK MICRO INTERACTION
+========================================================= */
+
+.monthly-badge-artwork.earned:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 24px 60px
+        rgba(0, 0, 0, 0.55),
+        0 0 65px
+        rgba(37, 99, 235, 0.17);
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    #monthlyBadgePage {
+        padding:
+            20px
+            14px
+            110px;
+
+        background: transparent;
+    }
+
+    .monthly-badge-page-header h2 {
+        font-size: 22px;
+    }
+
+    .monthly-badge-artwork {
+        width: 155px;
+        height: 155px;
+    }
+
+    .monthly-badge-hero h1 {
+        font-size: 25px;
+    }
+
+    .monthly-badge-section {
+        padding: 16px;
+    }
+
+    .badge-collection-art {
+        width: 62px;
+        height: 62px;
+    }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .monthly-badge-artwork,
+    .monthly-badge-image,
+    .monthly-badge-progress-fill {
+        transition: none;
+    }
+}

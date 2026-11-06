@@ -1,0 +1,7 @@
+SPRINT 90 — VERCEL DEPLOYMENT PREPARATION
+
+Added vercel.json with baseline security headers, a non-blocking CSP Report-Only header, and revalidation headers for the service worker and manifest. Added VERCEL-DEPLOYMENT.md with dashboard deployment and post-deploy verification steps. No application logic, storage schema, or service-worker cache version changed.
+
+Deploy with Vercel Framework Preset: Other; no build/install command; Output Directory: . (if required). Ensure the project root contains index.html and vercel.json.
+
+After deployment, follow VERCEL-DEPLOYMENT.md and share the Vercel URL plus any CSP violations or failed requests. This sprint does not certify the live Vercel deployment.

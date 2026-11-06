@@ -1,0 +1,267 @@
+/* =========================================================
+   GLOBAL EFFECT FIXES
+========================================================= */
+
+/* Remove blue focus outline */
+*:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Disable blue tap highlight on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+}
+
+/* =========================================================
+   LIMITED EDITION EFFECTS
+========================================================= */
+
+.limited-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+
+  color: #0f172a;
+  background: linear-gradient(135deg, #facc15, #fde047);
+
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.6);
+  z-index: 3;
+}
+
+/* Limited card visual boost */
+.flex-card.limited {
+  border: 2px solid #facc15;
+  box-shadow:
+    0 0 18px rgba(250, 204, 21, 0.35),
+    0 0 40px rgba(250, 204, 21, 0.15);
+  transform: scale(1.02);
+}
+
+/* Pulsing glow for unowned limited cards */
+@keyframes limitedGlow {
+  0% {
+    box-shadow: 0 0 10px rgba(250,204,21,.4);
+  }
+  50% {
+    box-shadow: 0 0 26px rgba(250,204,21,.8);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(250,204,21,.4);
+  }
+}
+
+.flex-card.limited:not(.owned) {
+  animation: limitedGlow 2.5s infinite ease-in-out;
+}
+
+/* =========================================================
+   EXPIRED STATE
+========================================================= */
+
+.expired-overlay {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(2px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #ef4444;
+
+  z-index: 4;
+}
+
+/* =========================================================
+   HOVER / INTERACTION EFFECTS
+========================================================= */
+
+.flex-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.bottom-nav button:hover {
+  color: #3b82f6;
+  transform: scale(1.05);
+}
+
+.complete-btn:hover {
+  transform: scale(1.2);
+  color: #2563EB;
+}
+
+.remove-btn:hover,
+.remove-btn2:hover {
+  transform: scale(1.2);
+  color: #f87171;
+}
+
+/* =========================================================
+   POPUP / MODAL ANIMATION HOOKS
+========================================================= */
+
+.popup-content {
+  animation: popIn 0.4s ease forwards;
+}
+
+.modal-content,
+.alert-content,
+.confirm-content,
+.cheat-box {
+  animation: fadeIn 0.3s ease;
+}
+
+/* =========================================================
+   TIMER FLIP EFFECTS
+========================================================= */
+
+.flip-box {
+  transform-origin: top;
+  transition: transform .6s ease;
+}
+
+.flip-box.flip {
+  transform: rotateX(-90deg);
+}
+
+.flip-animate .top {
+  animation: flipTop 0.5s linear forwards;
+}
+
+.flip-animate .bottom {
+  animation: flipBottom 0.5s linear forwards;
+}
+
+@keyframes flipTop {
+  0% {
+    transform: rotateX(0deg);
+  }
+  100% {
+    transform: rotateX(-90deg);
+  }
+}
+
+@keyframes flipBottom {
+  0% {
+    transform: rotateX(90deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+/* =========================================================
+   SLIDE-IN NOTIFICATION DRAWER
+========================================================= */
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+#notificationDrawer {
+  animation: slideIn 0.25s ease forwards;
+}
+
+/* =========================================================
+   MOBILE / RESPONSIVE EFFECT FIXES
+========================================================= */
+
+@media (max-width: 600px) {
+  #mission-list li {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 6px 8px;
+    gap: 4px;
+  }
+
+  .complete-btn {
+    font-size: 18px !important;
+    padding: 2px 6px !important;
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  #timerScreen {
+    transform: rotate(90deg) translateX(25%) translateY(50%);
+    transform-origin: center center;
+  }
+
+  #musicModal,
+  #musicModal *,
+  #timerSettingModal,
+  #timerSettingModal * {
+    transition: none !important;
+    animation: none !important;
+  }
+  }
+
+/* =========================================================
+   ACHIEVEMENT POPUP — FORCE VISIBILITY
+========================================================= */
+
+.achievement-popup {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000001 !important; /* ABOVE modals & timer */
+    pointer-events: none;
+}

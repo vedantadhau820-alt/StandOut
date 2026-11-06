@@ -1,0 +1,1193 @@
+/* =========================================================
+   SEASON — THE ASCENSION
+========================================================= */
+
+.season-card {
+    margin: 1rem 0 1.4rem;
+    padding: 1.15rem;
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20, 22, 30, .96),
+            rgba(8, 10, 15, .96)
+        );
+
+    border: 1px solid rgba(59, 130, 246, .16);
+
+    box-shadow:
+        0 16px 45px rgba(0, 0, 0, .28);
+
+    overflow: hidden;
+}
+
+
+.season-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+
+.season-eyebrow {
+    display: block;
+
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+
+    color: #3B82F6;
+
+    margin-bottom: .3rem;
+}
+
+
+.season-header h3 {
+    margin: 0;
+
+    font-size: 1.25rem;
+    font-weight: 700;
+
+    letter-spacing: -.02em;
+}
+
+
+.season-status {
+    padding: .35rem .55rem;
+
+    border-radius: 999px;
+
+    font-size: .58rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+
+    background: rgba(59, 130, 246, .08);
+    color: rgba(255, 255, 255, .55);
+
+    white-space: nowrap;
+}
+
+
+.season-countdown {
+    margin-top: 1rem;
+
+    font-size: .78rem;
+
+    color: rgba(255, 255, 255, .42);
+}
+
+
+.season-level-row {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 1rem;
+}
+
+
+.season-level-row strong {
+    font-size: .9rem;
+}
+
+
+.season-level-row span {
+    font-size: .72rem;
+
+    color: rgba(255, 255, 255, .48);
+}
+
+
+.season-progress {
+    width: 100%;
+    height: 7px;
+
+    margin-top: .65rem;
+
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, .07);
+
+    overflow: hidden;
+}
+
+
+.season-progress-fill {
+    width: 0;
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: #3B82F6;
+
+    transition:
+        width .5s ease;
+}
+
+
+.season-footer {
+    margin-top: .8rem;
+
+    font-size: .68rem;
+
+    color: rgba(255, 255, 255, .32);
+}
+
+/* =====================================================
+   SEASON REWARDS
+===================================================== */
+
+.season-rewards {
+    margin-top: 1rem;
+}
+
+
+.season-rewards-title {
+    margin-bottom: .65rem;
+
+    font-size: .65rem;
+    font-weight: 700;
+
+    letter-spacing: .14em;
+
+    color: rgba(255, 255, 255, .35);
+}
+
+
+.season-reward {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: .75rem .8rem;
+
+    margin-top: .45rem;
+
+    border-radius: 14px;
+
+    background:
+        rgba(255, 255, 255, .035);
+
+    border:
+        1px solid rgba(255, 255, 255, .055);
+
+    transition:
+        .25s ease;
+}
+
+
+.season-reward-info {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: .2rem;
+}
+
+
+.season-reward-level {
+    font-size: .58rem;
+
+    font-weight: 700;
+
+    letter-spacing: .1em;
+
+    color: rgba(255, 255, 255, .32);
+}
+
+
+.season-reward-info strong {
+    font-size: .78rem;
+
+    font-weight: 600;
+}
+
+
+.season-claim-btn {
+    border: 0;
+
+    padding: .42rem .7rem;
+
+    border-radius: 999px;
+
+    background: #3B82F6;
+
+    color: white;
+
+    font-size: .6rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+.season-claim-btn:active {
+    transform: scale(.94);
+}
+
+
+.season-reward.locked {
+    opacity: .42;
+}
+
+
+.season-reward.claimed {
+    opacity: .55;
+}
+
+
+.season-reward.claimed
+.season-claim-btn {
+    background:
+        rgba(255, 255, 255, .08);
+
+    color:
+        rgba(255, 255, 255, .4);
+}
+
+
+.season-reward-lock {
+    font-size: .7rem;
+}
+
+/* =========================================================
+   CARDS PAGE
+========================================================= */
+
+.cards-page-header {
+    margin-bottom: 20px;
+}
+
+.cards-eyebrow {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 6px;
+}
+
+.cards-page-header h2 {
+    margin: 0;
+}
+
+.cards-page-header p {
+    margin-top: 6px;
+}
+
+
+/* =========================================================
+   CARD TABS
+========================================================= */
+
+.cards-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+
+    padding: 5px;
+    margin-bottom: 20px;
+
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.cards-tab {
+    border: 0;
+    border-radius: 10px;
+
+    padding: 10px 14px;
+
+    background: transparent;
+    color: inherit;
+
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    opacity: 0.55;
+}
+
+.cards-tab.active {
+    background: rgba(255, 255, 255, 0.09);
+    opacity: 1;
+}
+
+
+/* =========================================================
+   CARD VIEWS
+========================================================= */
+
+.cards-tab-view {
+    display: none;
+}
+
+.cards-tab-view.active {
+    display: block;
+}
+
+
+/* =========================================================
+   MY CARDS
+========================================================= */
+
+.my-cards-header {
+    margin-bottom: 18px;
+}
+
+.my-cards-header h3 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.my-cards-header p {
+    margin: 5px 0 0;
+    opacity: 0.55;
+    font-size: 13px;
+}
+
+#ownedCards {
+    display: grid;
+    width: 100%;
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(220px, 1fr)
+        );
+    gap: 1rem;
+}
+
+/* =========================================================
+   COMPACT CARD GRID
+========================================================= */
+
+#cardShop,
+#ownedCards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+}
+
+
+
+
+
+/* =========================================================
+   MONTHLY RESOLUTION
+========================================================= */
+
+.monthly-resolution {
+    margin-bottom: 1.4rem;
+    padding: 1.15rem;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20, 22, 30, .96),
+            rgba(8, 10, 15, .96)
+        );
+
+    border: 1px solid rgba(59, 130, 246, .14);
+
+    box-shadow:
+        0 14px 40px rgba(0, 0, 0, .24);
+
+    transition:
+        border-color .35s ease,
+        box-shadow .35s ease,
+        transform .35s ease;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.monthly-resolution-header {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 1rem;
+}
+
+
+.monthly-resolution-eyebrow {
+    display: block;
+
+    margin-bottom: .3rem;
+
+    font-size: .62rem;
+    font-weight: 700;
+
+    letter-spacing: .15em;
+
+    color: #3B82F6;
+}
+
+
+.monthly-resolution-header h3 {
+    margin: 0;
+
+    font-size: 1.08rem;
+    font-weight: 700;
+
+    letter-spacing: -.02em;
+}
+
+
+.monthly-resolution-status {
+    flex-shrink: 0;
+
+    padding: .32rem .55rem;
+
+    border-radius: 999px;
+
+    font-size: .56rem;
+    font-weight: 700;
+
+    letter-spacing: .07em;
+
+    background:
+        rgba(255, 255, 255, .06);
+
+    color:
+        rgba(255, 255, 255, .48);
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   PROMPT
+========================================================= */
+
+.monthly-resolution-prompt {
+    margin: .9rem 0 .55rem;
+
+    font-size: .72rem;
+
+    color:
+        rgba(255, 255, 255, .48);
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.monthly-resolution-input {
+    display: block;
+
+    width: 100%;
+    min-height: 82px;
+
+    box-sizing: border-box;
+
+    padding: .8rem .85rem;
+
+    resize: none;
+
+    border: 1px solid
+        rgba(255, 255, 255, .07);
+
+    border-radius: 13px;
+
+    background:
+        rgba(255, 255, 255, .035);
+
+    color: white;
+
+    font-family: inherit;
+    font-size: .78rem;
+    line-height: 1.45;
+
+    outline: none;
+
+    transition:
+        border-color .25s ease,
+        background .25s ease;
+}
+
+
+.monthly-resolution-input::placeholder {
+    color:
+        rgba(255, 255, 255, .25);
+}
+
+
+.monthly-resolution-input:focus {
+    border-color:
+        rgba(59, 130, 246, .45);
+
+    background:
+        rgba(59, 130, 246, .035);
+}
+
+
+.monthly-resolution-input:disabled {
+    opacity: .72;
+
+    cursor: default;
+
+    border-color:
+        rgba(255, 255, 255, .045);
+
+    background:
+        rgba(255, 255, 255, .025);
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.monthly-resolution-footer {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: .7rem;
+
+    margin-top: .65rem;
+}
+
+
+#monthlyResolutionHint {
+    font-size: .62rem;
+
+    color:
+        rgba(255, 255, 255, .32);
+}
+
+
+.monthly-resolution-save {
+    border: 0;
+
+    padding: .42rem .75rem;
+
+    border-radius: 999px;
+
+    background: #3B82F6;
+
+    color: white;
+
+    font-family: inherit;
+    font-size: .6rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        opacity .2s ease;
+}
+
+
+.monthly-resolution-save:active {
+    transform: scale(.94);
+}
+
+
+.monthly-resolution-save:disabled {
+    opacity: .35;
+    cursor: default;
+}
+
+
+/* =========================================================
+   LOCKED STATE
+========================================================= */
+
+.monthly-resolution.locked {
+    border-color:
+        rgba(255, 255, 255, .06);
+}
+
+
+.monthly-resolution.locked
+.monthly-resolution-save {
+    display: none;
+}
+
+
+/* =========================================================
+   FINAL FIVE DAYS — REFLECTION GLOW
+========================================================= */
+
+.monthly-resolution.reflection-period {
+    border-color:
+        rgba(59, 130, 246, .35);
+
+    box-shadow:
+        0 0 0 1px rgba(59, 130, 246, .08),
+        0 0 28px rgba(59, 130, 246, .12),
+        0 16px 45px rgba(0, 0, 0, .28);
+
+    animation:
+        resolutionGlow 3s ease-in-out infinite;
+}
+
+
+@keyframes resolutionGlow {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 0 1px rgba(59, 130, 246, .06),
+            0 0 22px rgba(59, 130, 246, .08),
+            0 16px 45px rgba(0, 0, 0, .28);
+    }
+
+    50% {
+        box-shadow:
+            0 0 0 1px rgba(59, 130, 246, .12),
+            0 0 34px rgba(59, 130, 246, .18),
+            0 16px 45px rgba(0, 0, 0, .28);
+    }
+}
+
+
+/* =========================================================
+   REVIEW
+========================================================= */
+
+.monthly-resolution-review {
+    margin-top: 1rem;
+
+    padding-top: .9rem;
+
+    border-top:
+        1px solid rgba(255, 255, 255, .06);
+}
+
+
+.monthly-resolution-review-label {
+    display: block;
+
+    margin-bottom: .3rem;
+
+    font-size: .58rem;
+    font-weight: 700;
+
+    letter-spacing: .12em;
+
+    color: #3B82F6;
+}
+
+
+.monthly-resolution-review strong {
+    display: block;
+
+    font-size: .82rem;
+    font-weight: 600;
+}
+
+
+.monthly-resolution-review-buttons {
+    display: flex;
+
+    gap: .5rem;
+
+    margin-top: .7rem;
+}
+
+
+.monthly-resolution-review-buttons button {
+    flex: 1;
+
+    min-height: 34px;
+
+    padding: .45rem .65rem;
+
+    border: 1px solid
+        rgba(255, 255, 255, .07);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255, 255, 255, .035);
+
+    color: white;
+
+    font-family: inherit;
+    font-size: .6rem;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.monthly-resolution-review-buttons button:first-child {
+    border-color:
+        rgba(59, 130, 246, .3);
+
+    background:
+        rgba(59, 130, 246, .1);
+}
+
+.monthly-resolution-review[hidden] {
+    display: none !important;
+}
+
+/* =========================================================
+   SEASON EDITION EFFECTS
+========================================================= */
+
+.season-badge {
+
+    position: absolute;
+
+    top: 10px;
+    left: 10px;
+
+    padding: 4px 10px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8b5cf6,
+            #a78bfa
+        );
+
+    border-radius: 999px;
+
+    box-shadow:
+        0 0 12px rgba(139, 92, 246, 0.55);
+
+    z-index: 3;
+}
+
+
+/* =========================================================
+   SEASON CARD VISUAL BOOST
+========================================================= */
+
+.flex-card.season-card {
+
+    border:
+        2px solid #8b5cf6;
+    /* height: 220px !important; */
+
+    box-shadow:
+        0 0 18px rgba(139, 92, 246, 0.32),
+        0 0 40px rgba(139, 92, 246, 0.14);
+
+    transform:
+        none;
+}
+
+
+/* =========================================================
+   SEASON CARD GLOW
+========================================================= */
+
+@keyframes seasonGlow {
+
+    0% {
+
+        box-shadow:
+            0 0 10px rgba(139, 92, 246, 0.35);
+
+    }
+
+    50% {
+
+        box-shadow:
+            0 0 26px rgba(139, 92, 246, 0.70);
+
+    }
+
+    100% {
+
+        box-shadow:
+            0 0 10px rgba(139, 92, 246, 0.35);
+
+    }
+
+}
+
+
+/* Only unowned Season rewards glow */
+
+.flex-card.season-card:not(.owned) {
+
+    animation:
+        seasonGlow 2.5s infinite ease-in-out;
+
+}
+
+
+/* =========================================================
+   SEASON CARD — SAME SIZE AS OTHER CARDS
+   ========================================================= */
+
+#cardShop .flex-card.season-card > img,
+#ownedCards .flex-card.season-card > img {
+    width: 100%;
+    height: 220px !important;
+    object-fit: cover;
+    display: block;
+}
+
+/* =========================================================
+   SEASON COLLECTION
+========================================================= */
+
+.season-cards-section {
+    width: 100%;
+    margin-top: 28px;
+    padding-top: 0;
+}
+
+.season-cards-header {
+    margin-bottom: 14px;
+}
+
+.season-cards-eyebrow {
+    display: block;
+    margin-bottom: 6px;
+
+    color: #ffffff;
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+}
+
+.season-cards-header h2 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.season-cards-header p {
+    margin: 5px 0 0;
+
+    color: rgba(255,255,255,.65);
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   SEASON CARD GRID
+========================================================= */
+
+.season-cards-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+
+    align-items: start;
+}
+
+
+/* =========================================================
+   SEASON CARD
+   SAME 2:3 PROPORTION AS NORMAL CARDS
+========================================================= */
+
+.season-owned-card {
+
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 187 / 280;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    background: #111;
+
+    border:
+        1px solid
+        rgba(255,255,255,.18);
+
+    box-shadow:
+        0 5px 18px
+        rgba(0,0,0,.35);
+}
+
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+.season-owned-card-art {
+
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+}
+
+.season-owned-card-art img {
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    object-position: center;
+
+    transform: scale(1.01);
+
+    filter:
+        saturate(1.05)
+        contrast(1.04)
+        brightness(.92);
+}
+
+
+/* =========================================================
+   CINEMATIC DARK GRADIENT
+   Same idea as Captain America card
+========================================================= */
+
+.season-owned-card-art::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 2;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,0) 35%,
+            rgba(0,0,0,.08) 45%,
+            rgba(0,0,0,.55) 72%,
+            rgba(0,0,0,.92) 100%
+        );
+}
+
+
+/* =========================================================
+   SEASON BADGE
+========================================================= */
+
+.season-owned-card-badge {
+
+    position: absolute;
+
+    top: 10px;
+    left: 10px;
+
+    z-index: 5;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    background: #8b5cf6;
+
+    color: #fff;
+
+    font-size: 9px;
+
+    font-weight: 900;
+
+    letter-spacing: .04em;
+}
+
+
+/* =========================================================
+   CARD INFORMATION
+   EVERYTHING IS ON THE IMAGE
+========================================================= */
+
+.season-owned-card-body {
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    z-index: 4;
+
+    padding: 0 12px 10px;
+
+    background: transparent;
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.season-owned-card-body h3 {
+
+    margin: 0;
+
+    color: #fff;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    line-height: 1.1;
+
+    text-shadow:
+        0 2px 5px rgba(0,0,0,.8);
+}
+
+
+/* =========================================================
+   QUOTE
+========================================================= */
+
+.season-owned-card-body p {
+
+    margin: 5px 0 0;
+
+    color:
+        rgba(255,255,255,.72);
+
+    font-size: 10px;
+
+    line-height: 1.25;
+
+    text-shadow:
+        0 2px 5px rgba(0,0,0,.9);
+}
+
+
+/* =========================================================
+   MINT DATE
+========================================================= */
+
+.season-owned-card-meta {
+
+    margin-top: 7px;
+
+    color:
+        rgba(255,255,255,.55);
+
+    font-size: 9px;
+
+    text-shadow:
+        0 2px 5px rgba(0,0,0,.9);
+}
+
+
+/* =========================================================
+   OWNED BUTTON
+========================================================= */
+
+.season-owned-card-body::after {
+
+    content: "OWNED";
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+
+    height: 30px;
+
+    margin-top: 8px;
+
+    border-radius: 8px;
+
+    background: rgba(255,255,255,.95);
+
+    color: #111;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: .02em;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 500px) {
+
+    .season-cards-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 10px;
+    }
+
+    .season-owned-card-body {
+
+        padding:
+            0 9px 8px;
+    }
+
+    .season-owned-card-body h3 {
+
+        font-size: 13px;
+    }
+
+    .season-owned-card-body p {
+
+        font-size: 9px;
+    }
+
+    .season-owned-card-meta {
+
+        font-size: 8px;
+    }
+
+    .season-owned-card-body::after {
+
+        height: 27px;
+
+        margin-top: 6px;
+
+        font-size: 9px;
+    }
+}

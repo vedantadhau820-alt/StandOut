@@ -1,0 +1,604 @@
+/* =========================================================
+   iOS-STYLE TIMER
+   Clean • Minimal • Native-feeling
+   Existing IDs/classes preserved
+========================================================= */
+
+:root {
+  --timer-bg: #000000;
+  --timer-surface: #1c1c1e;
+  --timer-surface-2: #2c2c2e;
+  --timer-text: #ffffff;
+  --timer-secondary: #98989f;
+  --timer-separator: #38383a;
+  --timer-accent: #0a84ff;
+  --timer-danger: #ff453a;
+}
+
+/* =========================================================
+   FULLSCREEN TIMER
+========================================================= */
+
+#timerScreen {
+  position: fixed;
+  inset: 0;
+  background: var(--timer-bg);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden !important;
+  z-index: 900000 !important;
+  box-sizing: border-box;
+  color: var(--timer-text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+               "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* =========================================================
+   TIMER TOP CONTROLS
+========================================================= */
+
+#timerScreen .top-right-btns {
+  position: absolute;
+  top: max(20px, env(safe-area-inset-top));
+  right: max(20px, env(safe-area-inset-right));
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  font-size: 20px;
+  color: var(--timer-secondary);
+
+  cursor: pointer;
+  z-index: 2000000;
+}
+
+#timerScreen .top-right-btns > * {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+#timerScreen .top-right-btns > *:hover {
+  background: var(--timer-surface);
+  color: var(--timer-text);
+}
+
+#timerScreen .top-right-btns > *:active {
+  transform: scale(0.94);
+}
+
+/* =========================================================
+   FLIP TIMER CORE
+========================================================= */
+
+.flip-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+               "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Colon */
+
+.colon {
+  font-size: 64px;
+  line-height: 1;
+  font-weight: 500;
+  color: var(--timer-text);
+  opacity: 0.9;
+}
+
+/* =========================================================
+   FLIP TIMER UNIT
+========================================================= */
+
+.flip-unit {
+  position: relative;
+  width: 82px;
+  height: 112px;
+  perspective: 500px;
+}
+
+/* =========================================================
+   FLIP CARDS
+========================================================= */
+
+.flip-card {
+  position: absolute;
+
+  width: 100%;
+  height: 50%;
+
+  overflow: hidden;
+
+  line-height: 56px;
+  font-size: 58px;
+  font-weight: 500;
+  letter-spacing: -2px;
+
+  color: var(--timer-text);
+  background: var(--timer-surface);
+
+  border-radius: 14px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* No neon / glow */
+  box-shadow: none;
+
+  border: 1px solid rgba(255, 255, 255, 0.04);
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.flip-card.top {
+  z-index: 2;
+}
+
+.flip-card.bottom {
+  top: 56px;
+}
+
+/* =========================================================
+   FLIP ANIMATIONS
+========================================================= */
+
+.flip-animate .top {
+  animation: flipTop 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.flip-animate .bottom {
+  animation: flipBottom 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes flipTop {
+  0% {
+    transform: rotateX(0deg);
+  }
+
+  100% {
+    transform: rotateX(-90deg);
+  }
+}
+
+@keyframes flipBottom {
+  0% {
+    transform: rotateX(90deg);
+  }
+
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+/* =========================================================
+   STATIC DIGITS
+========================================================= */
+
+.static-digit {
+  width: 82px;
+
+  font-size: 82px;
+  line-height: 1;
+
+  font-weight: 500;
+  letter-spacing: -3px;
+
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+               "Helvetica Neue", Arial, sans-serif;
+
+  color: var(--timer-text);
+
+  text-align: center;
+}
+
+/* =========================================================
+   TIMER MODALS
+   iOS SHEET-STYLE
+========================================================= */
+
+.timer-modal .modal-content {
+  width: min(420px, calc(100vw - 32px)) !important;
+  height: auto !important;
+
+  max-width: 420px !important;
+  max-height: calc(100vh - 48px) !important;
+
+  background: var(--timer-surface) !important;
+
+  border-radius: 22px !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+
+  padding: 28px !important;
+
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+
+  box-sizing: border-box;
+
+  animation: iosModalIn 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes iosModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================================================
+   MODAL INPUTS
+========================================================= */
+
+.timer-modal input,
+.timer-modal select {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 13px 14px !important;
+
+  font-family: inherit;
+  font-size: 16px !important;
+  line-height: 1.2;
+
+  color: var(--timer-text);
+  background: var(--timer-surface-2) !important;
+
+  border: 1px solid transparent !important;
+  border-radius: 12px;
+
+  outline: none;
+
+  margin-bottom: 12px !important;
+
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.timer-modal input:focus,
+.timer-modal select:focus {
+  border-color: var(--timer-accent) !important;
+}
+
+/* =========================================================
+   MODAL BUTTONS
+========================================================= */
+
+.timer-modal button {
+  width: 100%;
+
+  min-height: 46px;
+
+  padding: 11px 16px !important;
+
+  margin-top: 8px;
+
+  border: none;
+  border-radius: 12px !important;
+
+  font-family: inherit;
+  font-size: 16px !important;
+  font-weight: 600;
+
+  color: #ffffff;
+
+  background: var(--timer-accent);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.timer-modal button:hover {
+  opacity: 0.9;
+}
+
+.timer-modal button:active {
+  transform: scale(0.98);
+}
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.timer-modal h3 {
+  font-family: inherit;
+
+  font-size: 22px !important;
+  line-height: 1.2;
+
+  font-weight: 650;
+
+  color: var(--timer-text);
+
+  margin: 0 0 22px !important;
+}
+
+/* =========================================================
+   PRESET CONTROLS
+========================================================= */
+
+#presetControls {
+  padding-left: 0;
+  margin-bottom: 10px;
+}
+
+/* =========================================================
+   OTHER MODALS ABOVE TIMER
+========================================================= */
+
+.timer-modal,
+.modal,
+.alert-modal,
+.confirm-modal,
+.cheat-modal {
+  z-index: 999999 !important;
+}
+
+#timerScreen {
+  z-index: 99999;
+}
+
+/* Desktop timer geometry formerly supplied by the HTML style attribute. */
+#flipTimer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  font-size: 70px;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+/* =========================================================
+   MOBILE TIMER
+========================================================= */
+
+@media (max-width: 768px) {
+
+  #timerScreen {
+    position: fixed !important;
+    inset: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    transform: none !important;
+    transform-origin: center center;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden !important;
+
+    z-index: 900000 !important;
+
+    box-sizing: border-box;
+
+    padding-top: env(safe-area-inset-top) !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+  }
+
+  /* =======================================================
+     TIMER
+  ======================================================= */
+
+  #flipTimer {
+    position: absolute !important;
+
+    top: 50% !important;
+    left: 50% !important;
+
+    transform: translate(-50%, -50%) !important;
+
+    width: max-content !important;
+    max-width: 94vw !important;
+
+    display: flex !important;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: clamp(4px, 2vw, 10px) !important;
+
+    font-size: clamp(38px, 15vw, 70px) !important;
+
+    box-sizing: border-box;
+  }
+
+  /* =======================================================
+     STATIC DIGITS
+  ======================================================= */
+
+  #flipTimer .static-digit {
+    width: auto !important;
+    min-width: 0 !important;
+
+    font-size: clamp(42px, 16vw, 70px) !important;
+
+    line-height: 1 !important;
+    letter-spacing: -2px;
+
+    text-align: center;
+  }
+
+  /* =======================================================
+     COLON
+  ======================================================= */
+
+  #flipTimer .colon {
+    font-size: clamp(32px, 12vw, 58px) !important;
+
+    line-height: 1 !important;
+    font-weight: 500;
+  }
+
+  /* =======================================================
+     FLIP CARDS
+  ======================================================= */
+
+  #flipTimer .flip-unit {
+    width: clamp(48px, 18vw, 74px);
+    height: clamp(68px, 25vw, 100px);
+  }
+
+  #flipTimer .flip-card {
+    font-size: clamp(34px, 13vw, 54px);
+    line-height: clamp(34px, 12.5vw, 50px);
+
+    border-radius: 11px;
+  }
+
+  #flipTimer .flip-card.bottom {
+    top: 50%;
+  }
+
+  /* =======================================================
+     TOP CONTROLS
+  ======================================================= */
+
+  #timerScreen .top-right-btns {
+    position: absolute !important;
+
+    top: max(12px, env(safe-area-inset-top)) !important;
+    right: max(12px, env(safe-area-inset-right)) !important;
+
+    display: flex !important;
+
+    gap: 8px !important;
+
+    font-size: 19px !important;
+
+    z-index: 2000000 !important;
+  }
+
+  #timerScreen .top-right-btns > * {
+    width: 38px;
+    height: 38px;
+  }
+
+  /* =======================================================
+     MOBILE MODAL
+  ======================================================= */
+
+  .timer-modal .modal-content {
+    width: calc(100vw - 24px) !important;
+    max-width: none !important;
+
+    padding: 22px !important;
+
+    border-radius: 20px !important;
+  }
+
+  .timer-modal h3 {
+    font-size: 21px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .timer-modal input,
+  .timer-modal select {
+    font-size: 16px !important;
+    padding: 13px 14px !important;
+  }
+
+  .timer-modal button {
+    min-height: 46px;
+    font-size: 16px !important;
+  }
+}
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 390px) {
+
+  #flipTimer {
+    gap: 3px !important;
+  }
+
+  #flipTimer .flip-unit {
+    width: 48px;
+    height: 68px;
+  }
+
+  #flipTimer .flip-card {
+    font-size: 34px;
+    line-height: 34px;
+    border-radius: 9px;
+  }
+
+  #flipTimer .static-digit {
+    font-size: 42px !important;
+  }
+
+  #flipTimer .colon {
+    font-size: 34px !important;
+  }
+
+  #timerScreen .top-right-btns {
+    gap: 5px !important;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .flip-animate .top,
+  .flip-animate .bottom,
+  .timer-modal .modal-content {
+    animation: none !important;
+  }
+
+  #timerScreen .top-right-btns > *,
+  .timer-modal button {
+    transition: none !important;
+  }
+}
+
+/* =========================================================
+   TIMER VISIBILITY
+========================================================= */
+
+#timerScreen {
+  display: none;
+}

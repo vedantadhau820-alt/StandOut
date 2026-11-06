@@ -1,0 +1,130 @@
+        .improvement-points-line { margin: 3px 0 0; }
+
+        .mission-progress-counters {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            width: 100%;
+            margin: 8px 0 12px;
+        }
+
+        .mission-progress-card {
+            min-width: 0;
+            padding: 7px 9px;
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            border-radius: 9px;
+            background: rgba(148, 163, 184, 0.035);
+        }
+
+        .mission-progress-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            margin-bottom: 5px;
+        }
+
+        .mission-progress-label {
+            color: var(--muted-text, #94a3b8);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.045em;
+        }
+
+        .mission-progress-count {
+            color: var(--primary, #3B82F6);
+            font-size: 11px;
+            font-weight: 750;
+            white-space: nowrap;
+        }
+
+        .mission-progress-track {
+            height: 3px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.16);
+        }
+
+        .mission-progress-fill {
+            width: 0%;
+            height: 100%;
+            border-radius: inherit;
+            background: #3B82F6;
+            transition: width 220ms ease;
+        }
+
+        .mission-progress-detail {
+            margin: 5px 0 0;
+            color: var(--muted-text, #94a3b8);
+            font-size: 9px;
+            line-height: 1.25;
+        }
+
+        @media (max-width: 420px) {
+            .mission-progress-counters { gap: 6px; margin-top: 7px; }
+            .mission-progress-card { padding: 6px 7px; border-radius: 8px; }
+            .mission-progress-label { font-size: 8px; }
+            .mission-progress-count { font-size: 10px; }
+            .mission-progress-detail { font-size: 8px; }
+        }
+    
+
+/* =========================================================
+   CSP PREPARATION — EXTERNALIZED INLINE PRESENTATION
+========================================================= */
+.top-nav-action {
+    position: relative;
+    margin-right: 1.2rem;
+    cursor: pointer;
+}
+
+.top-nav-action--badge {
+    margin-right: 1.4rem;
+}
+
+.top-nav-action-icon,
+.timer-control-icon {
+    color: #3B82F6;
+    font-size: 22px;
+}
+
+.top-nav-notification-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    display: none;
+    padding: 2px 5px;
+    border-radius: 50%;
+    background: red;
+    color: white;
+    font-size: 11px;
+}
+
+.achievements-viewer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.backup-save-btn {
+    margin-bottom: 10px;
+    background: #2563EB;
+}
+
+.backup-restore-btn {
+    background: #16a34a;
+}
+
+.smart-notification-popup {
+    display: none;
+    background: #1f2937;
+    color: #fff;
+}
+
+.visually-hidden-file-input {
+    display: none;
+}
+
+.music-volume-label {
+    margin-top: 10px;
+}

@@ -1,0 +1,639 @@
+/* =========================================================
+   STAND OUT — MONTHLY DROP
+   CINEMATIC FULLSCREEN EVENT
+========================================================= */
+
+/* =========================================================
+   RESET
+========================================================= */
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+
+    overflow: hidden !important;
+}
+
+body.drop-page {
+    width: 100vw;
+    height: 100dvh;
+
+    background: #05070A !important;
+    color: #ffffff;
+
+    overflow: hidden !important;
+}
+
+
+/* =========================================================
+   MAIN SCREEN
+========================================================= */
+
+.drop-screen {
+    position: fixed;
+
+    inset: 0;
+
+    width: 100vw;
+    height: 100dvh;
+
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    isolation: isolate;
+
+    background: #05070A;
+}
+
+
+/* =========================================================
+   BANNER
+========================================================= */
+
+.drop-background {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-image: url("../assets/drop-banner.jpeg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+    z-index: -3;
+}
+
+
+/* =========================================================
+   DARK OVERLAY
+========================================================= */
+
+.drop-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0, 0, 0, .55),
+            rgba(0, 0, 0, .15),
+            rgba(0, 0, 0, .55)
+        ),
+        linear-gradient(
+            180deg,
+            rgba(0, 0, 0, .20),
+            rgba(0, 0, 0, .10),
+            rgba(0, 0, 0, .45)
+        );
+
+    z-index: -2;
+}
+
+
+/* =========================================================
+   AMBIENT GLOW
+========================================================= */
+
+.drop-glow {
+    position: absolute;
+
+    width: 400px;
+    height: 400px;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    filter: blur(100px);
+
+    opacity: .18;
+
+    z-index: -1;
+}
+
+.drop-glow-one {
+    top: -200px;
+    left: 10%;
+
+    background: #3B82F6;
+}
+
+.drop-glow-two {
+    right: 5%;
+    bottom: -250px;
+
+    background: #2563EB;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.drop-content {
+    position: relative;
+
+    z-index: 10;
+
+    width: min(900px, 90vw);
+    max-height: 100%;
+
+    box-sizing: border-box;
+
+    padding: 30px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: #ffffff;
+
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/* =========================================================
+   LABEL
+========================================================= */
+
+.drop-label {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    margin-bottom: 20px;
+
+    visibility: visible;
+    opacity: 1;
+}
+
+.drop-label-text {
+    display: inline-block;
+
+    color: #60A5FA !important;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: .28em;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.drop-line {
+    display: block;
+
+    width: 55px;
+    height: 1px;
+
+    background: #3B82F6;
+}
+
+.drop-diamond {
+    display: block;
+
+    width: 7px;
+    height: 7px;
+
+    background: #60A5FA;
+
+    transform: rotate(45deg);
+
+    box-shadow:
+        0 0 12px rgba(59,130,246,.9);
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.drop-title-area {
+    display: block;
+
+    visibility: visible;
+    opacity: 1;
+
+    text-align: center;
+}
+
+.drop-title-area h1 {
+    display: block;
+
+    margin: 0;
+
+    color: #ffffff !important;
+
+    font-size: clamp(42px, 8vw, 86px);
+    font-weight: 900;
+
+    line-height: .95;
+
+    letter-spacing: -.045em;
+
+    text-shadow:
+        0 0 20px rgba(59,130,246,.55),
+        0 0 55px rgba(59,130,246,.25);
+
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.drop-month {
+    display: block;
+
+    margin: 15px 0 0;
+
+    color: #60A5FA !important;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    letter-spacing: .32em;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.drop-description {
+    display: block;
+
+    max-width: 600px;
+
+    margin: 20px 0 25px;
+
+    color: rgba(255,255,255,.88) !important;
+
+    font-size: 17px;
+    line-height: 1.5;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+
+/* =========================================================
+   TAGS
+========================================================= */
+
+.drop-tags {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 25px;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.drop-tag {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 10px 16px;
+
+    border: 1px solid rgba(96,165,250,.45);
+
+    border-radius: 8px;
+
+    background: rgba(0,0,0,.38);
+
+    backdrop-filter: blur(8px);
+
+    color: rgba(255,255,255,.85) !important;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: .12em;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.tag-symbol {
+    color: #60A5FA !important;
+}
+
+
+/* =========================================================
+   EXPIRY
+========================================================= */
+
+.drop-expiry {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    margin-bottom: 25px;
+
+    color: rgba(255,255,255,.65) !important;
+
+    font-size: 10px;
+
+    letter-spacing: .12em;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.expiry-line {
+    display: block;
+
+    width: 40px;
+    height: 1px;
+
+    background: rgba(255,255,255,.35);
+}
+
+.drop-expiry strong {
+    color: #60A5FA !important;
+
+    font-size: 11px;
+
+    letter-spacing: .1em;
+}
+
+
+/* =========================================================
+   CONTINUE
+========================================================= */
+
+.drop-continue {
+    position: relative;
+
+    z-index: 20;
+
+    display: flex !important;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 16px;
+
+    width: min(360px, 75vw);
+    min-height: 58px;
+
+    padding: 14px 24px;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(96,165,250,.8);
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #3B82F6,
+            #1769E8
+        );
+
+    color: #ffffff !important;
+
+    font-size: 15px;
+    font-weight: 900;
+
+    letter-spacing: .12em;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 0 25px rgba(59,130,246,.45),
+        0 0 60px rgba(59,130,246,.18);
+
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    transition:
+        transform .2s ease,
+        filter .2s ease,
+        box-shadow .2s ease;
+}
+
+.drop-continue:hover {
+    transform: translateY(-2px);
+
+    filter: brightness(1.1);
+
+    box-shadow:
+        0 0 35px rgba(59,130,246,.65),
+        0 0 80px rgba(59,130,246,.25);
+}
+
+.continue-arrow {
+    font-size: 24px;
+
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   CORNERS
+========================================================= */
+
+.drop-corner {
+    position: absolute;
+
+    width: 42px;
+    height: 42px;
+
+    z-index: 15;
+
+    pointer-events: none;
+}
+
+.corner-top-left {
+    top: 20px;
+    left: 20px;
+
+    border-top: 1px solid rgba(96,165,250,.65);
+    border-left: 1px solid rgba(96,165,250,.65);
+}
+
+.corner-top-right {
+    top: 20px;
+    right: 20px;
+
+    border-top: 1px solid rgba(96,165,250,.65);
+    border-right: 1px solid rgba(96,165,250,.65);
+}
+
+.corner-bottom-left {
+    bottom: 20px;
+    left: 20px;
+
+    border-bottom: 1px solid rgba(96,165,250,.65);
+    border-left: 1px solid rgba(96,165,250,.65);
+}
+
+.corner-bottom-right {
+    right: 20px;
+    bottom: 20px;
+
+    border-bottom: 1px solid rgba(96,165,250,.65);
+    border-right: 1px solid rgba(96,165,250,.65);
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .drop-content {
+        width: 100%;
+        padding: 20px 14px;
+    }
+
+    .drop-label {
+        margin-bottom: 14px;
+    }
+
+    .drop-line {
+        width: 30px;
+    }
+
+    .drop-label-text {
+        font-size: 9px;
+        letter-spacing: .2em;
+    }
+
+    .drop-title-area h1 {
+        font-size: clamp(38px, 12vw, 58px);
+    }
+
+    .drop-month {
+        font-size: 11px;
+        letter-spacing: .2em;
+    }
+
+    .drop-description {
+        font-size: 14px;
+        margin: 15px 0 20px;
+    }
+
+    .drop-tags {
+        gap: 6px;
+    }
+
+    .drop-tag {
+        padding: 8px 10px;
+        font-size: 8px;
+    }
+
+    .drop-expiry {
+        font-size: 8px;
+        gap: 7px;
+    }
+
+    .drop-expiry strong {
+        font-size: 9px;
+    }
+
+    .drop-continue {
+        width: 75vw;
+        min-height: 52px;
+
+        font-size: 13px;
+    }
+
+    .drop-corner {
+        width: 28px;
+        height: 28px;
+    }
+
+    .corner-top-left,
+    .corner-top-right {
+        top: 12px;
+    }
+
+    .corner-bottom-left,
+    .corner-bottom-right {
+        bottom: 12px;
+    }
+
+    .corner-top-left,
+    .corner-bottom-left {
+        left: 12px;
+    }
+
+    .corner-top-right,
+    .corner-bottom-right {
+        right: 12px;
+    }
+}
+
+
+/* =========================================================
+   SHORT SCREENS
+========================================================= */
+
+@media (max-height: 650px) {
+
+    .drop-content {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .drop-label {
+        margin-bottom: 10px;
+    }
+
+    .drop-description {
+        margin: 10px 0 14px;
+    }
+
+    .drop-tags {
+        margin-bottom: 14px;
+    }
+
+    .drop-expiry {
+        margin-bottom: 14px;
+    }
+
+    .drop-continue {
+        min-height: 48px;
+    }
+}

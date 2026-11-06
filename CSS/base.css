@@ -1,0 +1,1088 @@
+/* =========================================================
+   BASE RESET & BODY
+========================================================= */
+
+html {
+    background: #000000;
+}
+
+body {
+    background: #000000;
+    margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: #000000;
+  color: #ffffff;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Disable mobile tap highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Remove focus outline globally (you already rely on visual cues) */
+*:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header {
+  text-align: center;
+  padding: 2rem;
+  background: #001f3f;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  color: #3b82f6;
+}
+
+/* =========================================================
+   TOP NAVBAR — PREMIUM
+========================================================= */
+
+.top-navbar {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    height: 60px;
+
+    padding:
+        0 16px;
+
+    padding-top:
+        env(safe-area-inset-top);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 14px;
+
+    box-sizing: border-box;
+
+    background:
+        rgba(8, 11, 17, 0.88);
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.055);
+
+    backdrop-filter:
+        blur(18px)
+        saturate(140%);
+
+    -webkit-backdrop-filter:
+        blur(18px)
+        saturate(140%);
+
+    z-index: 9999;
+
+    isolation: isolate;
+
+}
+
+
+/* =========================================================
+   LEFT SIDE
+========================================================= */
+
+.nav-left {
+
+    display: flex;
+
+    align-items: center;
+
+    min-width: 0;
+
+    font-size: 1.25rem;
+
+    font-weight: 700;
+
+    letter-spacing: -0.035em;
+
+    color: #f5f7fb;
+
+    white-space: nowrap;
+
+    user-select: none;
+
+}
+
+
+/* Accent only the important part if applicable */
+
+.nav-left span {
+
+    color:
+        #3b82f6;
+
+}
+
+
+/* =========================================================
+   RIGHT SIDE
+========================================================= */
+
+.nav-right {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    gap: 0px;
+
+    flex-shrink: 0;
+
+}
+
+
+/* =========================================================
+   PROFILE / NAV IMAGE
+========================================================= */
+
+.nav-right .nav-img {
+
+    width: 30px;
+
+    height: 30px;
+
+    flex: 0 0 40px;
+
+    display: block;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.10);
+
+    box-shadow:
+        0 0 0 3px rgba(59, 130, 246, 0.045);
+
+    background:
+        rgba(255, 255, 255, 0.04);
+
+    cursor: pointer;
+
+    transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+
+}
+
+
+/* =========================================================
+   PROFILE PRESS EFFECT
+========================================================= */
+
+.nav-right .nav-img:active {
+
+    transform:
+        scale(0.93);
+
+    box-shadow:
+        0 0 0 3px rgba(59, 130, 246, 0.10);
+
+}
+
+
+/* =========================================================
+   OPTIONAL NAV BUTTONS
+========================================================= */
+
+.nav-right button {
+
+    width: 40px;
+
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0;
+
+    border: 0;
+
+    border-radius: 12px;
+
+    background:
+        transparent;
+
+    color:
+        rgba(245, 247, 251, 0.65);
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color:
+        transparent;
+
+    transition:
+        background 180ms ease,
+        color 180ms ease,
+        transform 180ms ease;
+
+}
+
+
+.nav-right button:hover {
+
+    background:
+        rgba(255, 255, 255, 0.045);
+
+    color:
+        #f5f7fb;
+
+}
+
+
+.nav-right button:active {
+
+    transform:
+        scale(0.93);
+
+    background:
+        rgba(59, 130, 246, 0.08);
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .top-navbar {
+
+        height: 58px;
+
+        padding-left: 14px;
+
+        padding-right: 14px;
+
+    }
+
+    .nav-left {
+
+        font-size: 1.15rem;
+
+    }
+
+    .nav-right .nav-img {
+
+        width: 38px;
+
+        height: 38px;
+
+        flex-basis: 38px;
+
+    }
+   .nav-right {
+      gap: 0px;
+   }
+
+}
+
+
+/* =========================================================
+   REDUCE MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .nav-right .nav-img,
+    .nav-right button {
+
+        transition: none;
+
+    }
+
+}
+
+/* =========================================================
+   BOTTOM NAVIGATION — PREMIUM
+========================================================= */
+
+.bottom-nav {
+
+    position: fixed;
+
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+
+    height: 62px;
+
+    padding:
+        0 8px
+        env(safe-area-inset-bottom);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-evenly;
+
+    box-sizing: border-box;
+
+    background:
+        rgba(8, 11, 17, 0.92);
+
+    border-top:
+        1px solid rgba(255, 255, 255, 0.055);
+
+    backdrop-filter:
+        blur(20px)
+        saturate(140%);
+
+    -webkit-backdrop-filter:
+        blur(20px)
+        saturate(140%);
+
+    z-index: 9998;
+
+    isolation: isolate;
+
+}
+
+
+/* =========================================================
+   NAV BUTTON
+========================================================= */
+
+.bottom-nav button {
+
+    position: relative;
+
+    flex: 1;
+
+    height: 48px;
+
+    max-width: 90px;
+
+    margin: 0 3px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 4px;
+
+    padding: 0;
+
+    background: transparent;
+
+    border: 0;
+
+    border-radius: 14px;
+
+    color:
+        rgba(245, 247, 251, 0.38);
+
+    font-size: 10px;
+
+    font-weight: 500;
+
+    letter-spacing: .01em;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+
+    transition:
+        color 180ms ease,
+        background 180ms ease,
+        transform 180ms ease;
+
+}
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+.bottom-nav button i,
+.bottom-nav button svg {
+
+    font-size: 18px;
+
+    width: 20px;
+
+    height: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    transition:
+        transform 180ms ease;
+
+}
+
+
+/* =========================================================
+   ACTIVE
+========================================================= */
+
+.bottom-nav button.active {
+
+    color:
+        #3b82f6;
+
+    font-weight: 600;
+
+    background:
+        rgba(59, 130, 246, 0.065);
+
+}
+
+
+/* Active indicator */
+
+.bottom-nav button.active::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 3px;
+
+    left: 50%;
+
+    width: 18px;
+
+    height: 2px;
+
+    border-radius: 999px;
+
+    background:
+        #3b82f6;
+
+    transform:
+        translateX(-50%);
+
+}
+
+
+/* =========================================================
+   ACTIVE ICON
+========================================================= */
+
+.bottom-nav button.active i,
+.bottom-nav button.active svg {
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.bottom-nav button:hover {
+
+    color:
+        rgba(245, 247, 251, 0.75);
+
+    background:
+        rgba(255, 255, 255, 0.035);
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+/* =========================================================
+   PRESS
+========================================================= */
+
+.bottom-nav button:active {
+
+    transform:
+        scale(0.94);
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .bottom-nav {
+
+        height: 60px;
+
+        padding-left: 5px;
+
+        padding-right: 5px;
+
+    }
+
+    .bottom-nav button {
+
+        max-width: 78px;
+
+        height: 46px;
+
+        border-radius: 13px;
+
+        font-size: 9px;
+
+    }
+
+    .bottom-nav button i,
+    .bottom-nav button svg {
+
+        font-size: 17px;
+
+    }
+
+}
+
+
+/* =========================================================
+   REDUCE MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .bottom-nav button,
+    .bottom-nav button i,
+    .bottom-nav button svg {
+
+        transition: none;
+
+    }
+
+}
+
+/* =========================================================
+   PAGE SECTIONS
+========================================================= */
+
+section {
+  display: none;
+
+  padding: 1rem 1rem 120px;
+  margin-top: 60px;
+  margin-bottom: 120px;
+
+  opacity: 0;
+  transform: translateY(20px);
+
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+section.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Special account section behavior */
+#account {
+  height: auto !important;
+  overflow-y: auto !important;
+  padding-bottom: 80px !important;
+}
+
+/* =========================================================
+   FLOATING ACTION BUTTONS (POSITION ONLY)
+========================================================= */
+
+.plus-btn {
+  position: fixed;
+  bottom: 4.5rem;
+  right: 1rem;
+  z-index: 100;
+}
+
+.plus-btn2 {
+  position: sticky;
+  bottom: 0;
+}
+
+/* =========================================================
+   RESPONSIVE FIXES
+========================================================= */
+
+@media (max-width: 450px) {
+  .bottom-nav {
+    bottom: 0;
+  }
+
+  .plus-btn {
+    bottom: 6.8rem;
+  }
+    }
+
+/* =========================================================
+   SECTION VISIBILITY (FIX)
+========================================================= */
+
+section {
+    display: none;
+}
+
+section.active {
+    display: block !important;
+}
+
+/* =========================================================
+   CUSTOM APP BACKGROUND
+========================================================= */
+
+body {
+    position: relative;
+    background: #0a0a0a;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background-image:
+        var(--custom-background);
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    z-index: -2;
+    pointer-events: none;
+}
+
+html,
+body {
+    position: relative;
+    min-height: 100%;
+}
+
+/* body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background-image:
+        var(--custom-background);
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    z-index: -1;
+    pointer-events: none;
+} */
+
+/* =========================================================
+   CUSTOM BACKGROUND
+========================================================= */
+
+#customBackgroundLayer {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    pointer-events: none;
+
+    z-index: 0;
+
+    opacity: var(--background-opacity, 1);
+
+    filter: blur(var(--background-blur, 0px));
+
+    transform: scale(1.02);
+
+    transition:
+        opacity 0.25s ease,
+        filter 0.25s ease;
+}
+
+
+#customBackgroundOverlay {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: #000000;
+
+    opacity: var(--background-overlay, 0.35);
+
+    pointer-events: none;
+
+    z-index: 1;
+
+    transition:
+        opacity 0.25s ease;
+}
+
+/* =========================================================
+   CUSTOM BACKGROUND
+========================================================= */
+
+.account-setting-card {
+    width: 100%;
+    margin-top: 16px;
+
+    padding: 18px;
+
+    background: #111827;
+
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.account-setting-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 12px;
+}
+
+
+.account-setting-header h3 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    line-height: 1.3;
+}
+
+
+.account-setting-header p {
+    margin: 5px 0 0;
+
+    color: #9ca3af;
+
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.background-actions {
+    display: flex;
+    gap: 8px;
+
+    margin-top: 16px;
+}
+
+
+.background-action-btn {
+    min-height: 38px;
+
+    padding: 0 14px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #2d3748;
+    border-radius: 9px;
+
+    background: #1f2937;
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.1s ease;
+}
+
+
+.background-action-btn:hover {
+    background: #273449;
+    border-color: #3b82f6;
+}
+
+
+.background-action-btn:active {
+    transform: scale(0.97);
+}
+
+
+/* Remove button */
+
+.background-action-btn.secondary {
+    background: transparent;
+    color: #9ca3af;
+    border-color: #2d3748;
+}
+
+
+.background-action-btn.secondary:hover {
+    background: #1f2937;
+    color: #ffffff;
+    border-color: #4b5563;
+}
+
+
+/* =========================================================
+   BACKGROUND CONTROLS
+========================================================= */
+
+.background-controls {
+    display: flex;
+    flex-direction: column;
+
+    margin-top: 18px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+
+.background-control {
+    padding: 14px 0;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+
+.background-control:last-child {
+    border-bottom: none;
+    padding-bottom: 2px;
+}
+
+
+/* =========================================================
+   CONTROL HEADER
+========================================================= */
+
+.background-control-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+}
+
+
+.background-control-header span:first-child {
+    color: #d1d5db;
+
+    font-size: 12px;
+    font-weight: 500;
+}
+
+
+.background-control-header span:last-child {
+    color: #3b82f6;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   RANGE SLIDER
+========================================================= */
+
+.background-control input[type="range"] {
+    width: 100%;
+    height: 4px;
+
+    margin: 0;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    background: #374151;
+
+    border-radius: 999px;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+
+/* Chrome / Edge / Safari */
+
+.background-control input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 16px;
+    height: 16px;
+
+    border-radius: 50%;
+
+    background: #3b82f6;
+
+    border: 2px solid #111827;
+
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.25);
+
+    cursor: pointer;
+}
+
+
+/* Firefox */
+
+.background-control input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+
+    border-radius: 50%;
+
+    background: #3b82f6;
+
+    border: 2px solid #111827;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .account-setting-card {
+        padding: 16px;
+        border-radius: 13px;
+    }
+
+
+    .background-actions {
+        flex-direction: column;
+    }
+
+
+    .background-action-btn {
+        width: 100%;
+    }
+
+}
+
+/* OUR OTHER SERVICES */
+.other-services-section {
+    margin: 22px 0;
+}
+
+.other-services-section h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.other-services-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.other-service-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 11px;
+    border: 1px solid var(--border-color, rgba(128, 128, 128, 0.2));
+    border-radius: 10px;
+    background: var(--card-bg, rgba(128, 128, 128, 0.06));
+    color: var(--text-color, inherit);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.other-service-btn > i:first-child {
+    color: #3B82F6;
+    font-size: 13px;
+}
+
+.other-service-btn .external-icon {
+    font-size: 9px;
+    opacity: 0.5;
+}
+
+.other-service-btn:hover {
+    background: rgba(59, 130, 246, 0.08);
+    border-color: #3B82F6;
+}
+
+.other-service-btn:active {
+    transform: scale(0.98);
+}
+
+.other-service-btn:focus-visible {
+    outline: 2px solid #3B82F6;
+    outline-offset: 3px;
+}

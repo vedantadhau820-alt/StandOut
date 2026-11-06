@@ -1,0 +1,335 @@
+    :root {
+      --bg: #06111f;
+      --surface: #0a192b;
+      --surface-2: #0d2239;
+      --border: #153a5f;
+      --border-soft: rgba(59, 130, 246, .20);
+      --text: #f5f9ff;
+      --muted: #9fb4ca;
+      --accent: #3b82f6;
+      --accent-dark: #2563eb;
+      --accent-soft: rgba(59, 130, 246, .10);
+      --max-width: 900px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--bg);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 0 0 40px;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .doc-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      background: #071625;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .doc-brand {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .doc-brand span {
+      color: var(--accent);
+    }
+
+    .doc-nav a {
+      color: var(--muted);
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    .doc-nav a:hover {
+      color: #fff;
+    }
+
+    main {
+      width: min(calc(100% - 32px), var(--max-width));
+      margin: 0 auto;
+      padding-top: 28px;
+    }
+
+    section {
+      margin: 0 0 28px;
+      padding: 0 0 26px;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--border);
+      border-radius: 0;
+    }
+
+    section:first-child {
+      padding: 20px 22px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 6px;
+      margin-bottom: 30px;
+    }
+
+    section:last-of-type {
+      border-bottom: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: #fff;
+      line-height: 1.3;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+      font-weight: 650;
+      color: #fff;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      padding: 0 0 8px;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #60a5fa;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    h3 {
+      font-size: 1.05rem;
+    }
+
+    p {
+      margin: 6px 0 12px;
+      color: #c7d6e6;
+    }
+
+    strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    ul {
+      margin: 8px 0;
+      padding-left: 21px;
+    }
+
+    li {
+      margin: 5px 0;
+      color: #c7d6e6;
+    }
+
+    li::marker {
+      color: var(--accent);
+    }
+
+    table {
+      width: 100%;
+      margin: 14px 0 2px;
+      border-collapse: collapse;
+      background: var(--surface);
+      color: #c7d6e6;
+      border: 1px solid var(--border);
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    th:last-child,
+    td:last-child {
+      border-right: 0;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    th {
+      background: var(--surface-2);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    td {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(59, 130, 246, .035);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 4px;
+      padding: 9px 14px;
+      background: var(--accent);
+      border: 0;
+      border-radius: 5px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background: var(--accent-dark);
+    }
+
+    @media (max-width: 600px) {
+      .doc-nav {
+        padding: 0 14px;
+      }
+
+      main {
+        width: min(calc(100% - 24px), var(--max-width));
+        padding-top: 22px;
+      }
+
+      section {
+        margin-bottom: 24px;
+        padding-bottom: 22px;
+      }
+
+      section:first-child {
+        padding: 18px 16px 20px;
+      }
+
+      h1 {
+        font-size: 1.65rem;
+      }
+
+      h2 {
+        font-size: 1.15rem;
+      }
+
+      table,
+      thead,
+      tbody,
+      tr,
+      th,
+      td {
+        display: block;
+        width: 100%;
+      }
+
+      table {
+        border: 0;
+        background: transparent;
+      }
+
+      thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+      }
+
+      tbody {
+        display: block;
+      }
+
+      tr {
+        margin-bottom: 10px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+      }
+
+      tr:last-child {
+        margin-bottom: 0;
+      }
+
+      td {
+        display: grid;
+        grid-template-columns: 88px minmax(0, 1fr);
+        gap: 10px;
+        padding: 9px 10px;
+        border: 0;
+        border-bottom: 1px solid var(--border);
+        overflow-wrap: anywhere;
+      }
+
+      td:last-child {
+        border-bottom: 0;
+      }
+
+     /* Default: Application Overview table */
+table:not(.version-table) td:nth-child(1)::before {
+    content: "Page";
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+table:not(.version-table) td:nth-child(2)::before {
+    content: "Description";
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+table:not(.version-table) td:nth-child(3)::before {
+    content: "Key Features";
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+/* Version Information table */
+.version-table td:nth-child(1)::before {
+    content: "Version";
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+.version-table td:nth-child(2)::before {
+    content: "Date";
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+.version-table td:nth-child(3)::before {
+    content: "Changes Made";
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+      .button {
+        width: 100%;
+      }
+    }
+  

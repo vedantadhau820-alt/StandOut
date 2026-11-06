@@ -1,0 +1,1067 @@
+/* =========================================================
+   ACCOUNT SECTION
+========================================================= */
+
+#account {
+  height: auto !important;
+  overflow-y: auto !important;
+  padding-bottom: 80px !important;
+}
+
+/* =========================================================
+   ACHIEVEMENTS GRID
+========================================================= */
+
+.achievements-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+  padding: 1rem;
+}
+
+/* =========================================================
+   ACHIEVEMENT TILE
+========================================================= */
+
+.achievement-tile {
+  flex: 0 0 calc(33.333% - 10px);
+  padding: 10px;
+  background: #1f2937;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  transition: transform 0.2s, background 0.3s;
+}
+
+.achievement-tile:hover {
+  transform: scale(1.05);
+  background: #111827;
+}
+
+/* =========================================================
+   ACHIEVEMENT ICON
+========================================================= */
+
+.achievement-icon {
+  font-size: 28px;
+  margin-bottom: 5px;
+  color: #3B82F6;
+}
+
+.locked .achievement-icon {
+  color: #6b7280;
+}
+
+/* =========================================================
+   ACHIEVEMENT TEXT
+========================================================= */
+
+.achievement-title {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 3px;
+  color: #fff;
+}
+
+.achievement-desc {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* Locked state text */
+.locked .achievement-title,
+.locked .achievement-desc {
+  color: #6b7280;
+}
+
+/* ================================
+   ACHIEVEMENTS TOGGLE BUTTON
+   ================================ */
+
+.achievements-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    margin: 18px 0 4px;
+    padding: 11px 16px;
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-primary);
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease,
+        color 0.2s ease;
+}
+
+/* Hover */
+.achievements-toggle:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.20);
+}
+
+/* Press */
+.achievements-toggle:active {
+    transform: scale(0.98);
+}
+
+/* Arrow */
+.achievements-toggle i {
+    font-size: 10px;
+    opacity: 0.7;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.achievements-toggle:hover i {
+    opacity: 1;
+}
+
+/* =========================================================
+   ACHIEVEMENT DATE
+========================================================= */
+
+.achievement-date {
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 4px;
+}
+
+/* =========================================================
+   ACHIEVEMENT POPUP
+========================================================= */
+
+.achievement-popup {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111827;
+  color: #3B82F6;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  text-align: center;
+  font-weight: bold;
+}
+
+a {
+   text-decoration: none;
+   color: #3B82F6;
+}
+
+/* =========================================================
+   SOUND & TONES
+========================================================= */
+
+.sound-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0 0 28px;
+}
+
+
+.sound-setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    padding: 15px 16px;
+
+    background: #111111;
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
+    border-radius: 14px;
+
+    box-sizing: border-box;
+}
+
+
+.sound-setting-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+
+.sound-setting-info strong {
+    color: #f5f5f5;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+.sound-setting-info span {
+    color: rgba(255, 255, 255, 0.42);
+
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+
+.sound-setting-row select {
+    flex-shrink: 0;
+
+    min-width: 100px;
+
+    padding: 7px 10px;
+
+    background: #181818;
+
+    border: 1px solid rgba(255, 255, 255, 0.09);
+
+    border-radius: 9px;
+
+    color: #f5f5f5;
+
+    font-size: 12px;
+
+    outline: none;
+}
+
+
+.sound-setting-row select:focus {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+
+@media (max-width: 600px) {
+
+    .sound-setting-row {
+        padding: 14px;
+    }
+
+    .sound-setting-info strong {
+        font-size: 13px;
+    }
+
+    .sound-setting-info span {
+        font-size: 10px;
+    }
+
+    .sound-setting-row select {
+        min-width: 90px;
+    }
+
+}
+
+/* =========================================================
+   SOUND CONTROLS
+========================================================= */
+
+.sound-setting-control {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.sound-setting-row select {
+    min-width: 92px;
+}
+
+.tone-upload-btn,
+.tone-preview-btn {
+    height: 32px;
+
+    padding: 0 10px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9px;
+
+    background: transparent;
+    color: rgba(255, 255, 255, 0.65);
+
+    font-size: 11px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.tone-upload-btn:hover,
+.tone-preview-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.13);
+    color: #fff;
+}
+
+.tone-preview-btn {
+    width: 32px;
+    padding: 0;
+}
+
+.tone-preview-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+
+    .sound-setting-control {
+        gap: 4px;
+    }
+
+    .tone-upload-btn {
+        padding: 0 8px;
+    }
+
+}
+
+/* =========================================================
+   CUSTOM CARDS
+========================================================= */
+
+.custom-card-section {
+    margin-bottom: 30px;
+}
+
+.custom-card-description {
+    margin: -16px 0 14px;
+
+    color: rgba(255, 255, 255, 0.42);
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.create-custom-card-btn {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 48px;
+
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 14px;
+
+    background: #111;
+
+    color: #f5f5f5;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.create-custom-card-btn span {
+    font-size: 19px;
+    font-weight: 400;
+}
+
+.create-custom-card-btn:hover {
+    background: #181818;
+
+    border-color:
+        rgba(255, 255, 255, 0.15);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.custom-card-modal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 100000;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background:
+        rgba(0, 0, 0, 0.72);
+
+    backdrop-filter: blur(8px);
+}
+
+.custom-card-modal.active {
+    display: flex;
+}
+
+.custom-card-modal-content {
+    position: relative;
+
+    width: min(500px, 100%);
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    padding: 26px;
+
+    border-radius: 20px;
+
+    background: #0d0d0d;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.08);
+
+    box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.55);
+}
+
+
+/* =========================================================
+   CLOSE
+========================================================= */
+
+.custom-card-modal-close {
+    position: absolute;
+
+    top: 14px;
+    right: 14px;
+
+    width: 32px;
+    height: 32px;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    color: rgba(255, 255, 255, 0.65);
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.custom-card-modal-header {
+    margin-bottom: 24px;
+}
+
+.custom-card-modal-eyebrow {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: rgba(255, 255, 255, 0.35);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.12em;
+}
+
+.custom-card-modal-header h2 {
+    margin: 0;
+
+    color: #fff;
+
+    font-size: 21px;
+}
+
+.custom-card-modal-header p {
+    margin: 6px 0 0;
+
+    color: rgba(255, 255, 255, 0.4);
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   FIELDS
+========================================================= */
+
+.custom-card-field {
+    margin-bottom: 17px;
+}
+
+.custom-card-field label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: rgba(255, 255, 255, 0.65);
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.custom-card-field input,
+.custom-card-field textarea,
+.custom-card-field select {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 11px 12px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.08);
+
+    border-radius: 10px;
+
+    outline: none;
+
+    background: #151515;
+
+    color: #fff;
+
+    font-family: inherit;
+
+    font-size: 13px;
+}
+
+.custom-card-field textarea {
+    resize: vertical;
+}
+
+.custom-card-field input:focus,
+.custom-card-field textarea:focus,
+.custom-card-field select:focus {
+    border-color:
+        rgba(255, 255, 255, 0.2);
+}
+
+.custom-card-field input::placeholder,
+.custom-card-field textarea::placeholder {
+    color: rgba(255, 255, 255, 0.25);
+}
+
+
+/* =========================================================
+   IMAGE PICKER
+========================================================= */
+
+.custom-card-image-picker {
+    position: relative;
+
+    width: 100%;
+
+    height: 190px;
+
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px dashed rgba(255, 255, 255, 0.13);
+
+    border-radius: 14px;
+
+    background: #111;
+
+    cursor: pointer;
+}
+
+.custom-card-image-picker:hover {
+    border-color:
+        rgba(255, 255, 255, 0.25);
+}
+
+.custom-card-image-preview {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+#customCardImagePreview {
+    display: none;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+.custom-card-image-placeholder {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color: rgba(255, 255, 255, 0.42);
+}
+
+.custom-card-image-placeholder span {
+    font-size: 28px;
+
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.custom-card-image-placeholder strong {
+    font-size: 12px;
+
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.custom-card-image-placeholder small {
+    font-size: 10px;
+
+    color: rgba(255, 255, 255, 0.28);
+}
+
+
+/* =========================================================
+   TWO COLUMN
+========================================================= */
+
+.custom-card-two-column {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+}
+
+
+/* =========================================================
+   LIMITED
+========================================================= */
+
+.custom-card-limited-row {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin: 4px 0 17px;
+
+    padding: 13px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.07);
+
+    border-radius: 12px;
+
+    background: #111;
+}
+
+.custom-card-limited-row div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.custom-card-limited-row strong {
+    color: rgba(255, 255, 255, 0.75);
+
+    font-size: 12px;
+}
+
+.custom-card-limited-row span {
+    color: rgba(255, 255, 255, 0.32);
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.custom-card-actions {
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 8px;
+}
+
+.custom-card-actions button {
+    flex: 1;
+
+    min-height: 42px;
+
+    border-radius: 10px;
+
+    font-family: inherit;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.custom-card-cancel {
+    border:
+        1px solid rgba(255, 255, 255, 0.08);
+
+    background: transparent;
+
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.custom-card-create {
+    border: 0;
+
+    background: #f5f5f5;
+
+    color: #111;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .custom-card-modal {
+        padding: 10px;
+    }
+
+    .custom-card-modal-content {
+        padding: 22px 18px;
+
+        max-height: 94vh;
+
+        border-radius: 17px;
+    }
+
+    .custom-card-two-column {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .custom-card-image-picker {
+        height: 160px;
+    }
+
+}
+
+/* =========================================================
+   CUSTOM CARD MANAGEMENT
+========================================================= */
+
+.custom-cards-account {
+    padding: 0 12px 12px;
+}
+
+
+/* =========================================================
+   CREATE BUTTON
+========================================================= */
+
+.custom-card-add-btn {
+
+    width: 100%;
+
+    min-height: 52px;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    gap: 11px;
+
+    padding: 10px 12px;
+
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+
+    background: rgba(255,255,255,0.035);
+
+    color: rgba(255,255,255,0.75);
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        transform .2s ease;
+}
+
+.custom-card-add-btn:hover {
+
+    background:
+        rgba(255,255,255,0.06);
+
+    border-color:
+        rgba(255,255,255,0.13);
+
+    transform: translateY(-1px);
+}
+
+
+.custom-card-add-icon {
+
+    width: 30px;
+    height: 30px;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex: 0 0 30px;
+
+    border-radius: 9px;
+
+    background: rgba(255,255,255,0.08);
+
+    color: #fff;
+
+    font-size: 18px;
+    font-weight: 400;
+}
+
+
+/* =========================================================
+   MANAGER
+========================================================= */
+
+.custom-cards-manager {
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-top: 10px;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.custom-cards-empty {
+
+    padding: 20px 10px;
+
+    text-align: center;
+
+    color:
+        rgba(255,255,255,0.25);
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   CARD ROW
+========================================================= */
+
+.custom-card-manager-item {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    gap: 11px;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 9px;
+
+    border:
+        1px solid rgba(255,255,255,0.06);
+
+    border-radius: 13px;
+
+    background:
+        rgba(255,255,255,0.025);
+}
+
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+.custom-card-manager-image {
+
+    width: 54px;
+    height: 68px;
+
+    flex: 0 0 54px;
+
+    object-fit: cover;
+
+    border-radius: 8px;
+
+    background: #111;
+}
+
+
+/* =========================================================
+   INFO
+========================================================= */
+
+.custom-card-manager-info {
+
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 3px;
+}
+
+.custom-card-manager-title {
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    color: rgba(255,255,255,0.85);
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.custom-card-manager-meta {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    color:
+        rgba(255,255,255,0.3);
+
+    font-size: 9px;
+}
+
+.custom-card-manager-grade {
+
+    font-weight: 700;
+
+    color:
+        rgba(255,255,255,0.65);
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.custom-card-manager-actions {
+
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    align-items: center !important;
+
+    gap: 5px;
+
+    flex: 0 0 auto;
+}
+
+.custom-card-manager-actions button {
+
+    width: 30px;
+    height: 30px;
+
+    display: flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    padding: 0;
+
+    border-radius: 8px;
+
+    border:
+        1px solid rgba(255,255,255,0.07);
+
+    background:
+        rgba(255,255,255,0.035);
+
+    color:
+        rgba(255,255,255,0.55);
+
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.custom-card-manager-edit:hover {
+
+    background:
+        rgba(255,255,255,0.08);
+
+    color: #fff;
+}
+
+.custom-card-manager-delete:hover {
+
+    background:
+        rgba(255,70,70,0.1);
+
+    border-color:
+        rgba(255,70,70,0.2);
+
+    color: #ff7777;
+}

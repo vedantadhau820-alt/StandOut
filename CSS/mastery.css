@@ -1,0 +1,1481 @@
+/* =========================================================
+   MASTERY
+========================================================= */
+
+.mastery-section {
+
+    width: 100%;
+
+    margin-top: 28px;
+
+}
+
+
+.mastery-section-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+    margin-bottom: 16px;
+
+}
+
+
+.mastery-eyebrow {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #3B82F6;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: .16em;
+
+    text-transform: uppercase;
+
+}
+
+
+.mastery-section-header h2 {
+
+    margin: 0;
+
+    color: #f5f7fb;
+
+    font-size: 24px;
+
+    font-weight: 700;
+
+    letter-spacing: -.035em;
+
+}
+
+
+.mastery-section-header p {
+
+    margin: 6px 0 0;
+
+    max-width: 310px;
+
+    color: rgba(245,247,251,.48);
+
+    font-size: 12px;
+
+    line-height: 1.45;
+
+}
+
+
+.mastery-add-btn {
+
+    flex: 0 0 auto;
+
+    width: 40px;
+
+    height: 40px;
+
+    border: 1px solid rgba(59,130,246,.18);
+
+    border-radius: 13px;
+
+    background: rgba(59,130,246,.08);
+
+    color: #3B82F6;
+
+    font-size: 22px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease;
+
+}
+
+
+.mastery-add-btn:active {
+
+    transform: scale(.94);
+
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.mastery-empty {
+
+    padding: 28px 20px;
+
+    border: 1px solid rgba(255,255,255,.065);
+
+    border-radius: 18px;
+
+    background: rgba(255,255,255,.025);
+
+    text-align: center;
+
+}
+
+
+.mastery-empty strong {
+
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #f5f7fb;
+
+    font-size: 14px;
+
+}
+
+
+.mastery-empty span {
+
+    display: block;
+
+    color: rgba(245,247,251,.42);
+
+    font-size: 12px;
+
+    line-height: 1.5;
+
+}
+
+
+/* =========================================================
+   MASTERY CARD
+========================================================= */
+
+.mastery-card {
+
+    margin-bottom: 14px;
+
+    padding: 18px;
+
+    border: 1px solid rgba(59,130,246,.12);
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18,21,29,.98),
+            rgba(8,10,15,.98)
+        );
+
+    box-shadow:
+        0 14px 38px rgba(0,0,0,.22);
+
+}
+
+
+.mastery-card-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+}
+
+
+.mastery-card-header h3 {
+
+    margin: 0;
+
+    color: #f5f7fb;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+    letter-spacing: -.025em;
+
+}
+
+
+.mastery-stage {
+
+    flex: 0 0 auto;
+
+    padding: 5px 8px;
+
+    border-radius: 999px;
+
+    background: rgba(59,130,246,.08);
+
+    color: rgba(255,255,255,.55);
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: .08em;
+
+    text-transform: uppercase;
+
+}
+
+
+.mastery-description {
+
+    margin: 8px 0 0;
+
+    color: rgba(245,247,251,.48);
+
+    font-size: 12px;
+
+    line-height: 1.5;
+
+}
+
+
+.mastery-progress-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-top: 18px;
+
+}
+
+
+.mastery-progress-row strong {
+
+    color: #f5f7fb;
+
+    font-size: 13px;
+
+}
+
+
+.mastery-progress-row span {
+
+    color: rgba(245,247,251,.38);
+
+    font-size: 10px;
+
+}
+
+
+.mastery-progress {
+
+    width: 100%;
+
+    height: 6px;
+
+    margin-top: 8px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: rgba(255,255,255,.07);
+
+}
+
+
+.mastery-progress-fill {
+
+    width: 0;
+
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: #3B82F6;
+
+    transition:
+        width .5s ease;
+
+}
+
+
+/* =========================================================
+   MILESTONES
+========================================================= */
+
+.mastery-milestones {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    margin-top: 16px;
+
+}
+
+
+.mastery-milestone {
+
+    display: flex;
+
+    align-items: center;
+
+    width: 100%;
+
+    padding: 10px;
+
+    border: 1px solid rgba(255,255,255,.055);
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,.025);
+
+    color: rgba(255,255,255,.68);
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease;
+
+}
+
+
+.mastery-milestone-check {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex: 0 0 auto;
+
+    width: 22px;
+
+    height: 22px;
+
+    margin-right: 10px;
+
+    border: 1px solid rgba(255,255,255,.12);
+
+    border-radius: 50%;
+
+    font-size: 11px;
+
+}
+
+
+.mastery-milestone-title {
+
+    min-width: 0;
+
+    font-size: 11px;
+
+    line-height: 1.4;
+
+}
+
+
+.mastery-milestone.completed {
+
+    border-color: rgba(59,130,246,.14);
+
+    background: rgba(59,130,246,.055);
+
+}
+
+
+.mastery-milestone.completed
+.mastery-milestone-check {
+
+    border-color: #3B82F6;
+
+    background: #3B82F6;
+
+    color: white;
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.mastery-modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 10000;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: center;
+
+    padding: 16px;
+
+    visibility: hidden;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        opacity .25s ease,
+        visibility .25s ease;
+
+}
+
+
+.mastery-modal.open {
+
+    visibility: visible;
+
+    opacity: 1;
+
+    pointer-events: auto;
+
+}
+
+
+.mastery-modal-backdrop {
+
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(0,0,0,.72);
+
+    backdrop-filter: blur(8px);
+
+}
+
+
+.mastery-modal-card {
+
+    position: relative;
+
+    width: min(560px, 100%);
+
+    max-height: 88vh;
+
+    overflow-y: auto;
+
+    padding: 20px;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 22px;
+
+    background: #0d1118;
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.55);
+
+    transform: translateY(20px);
+
+    transition:
+        transform .3s
+        cubic-bezier(.22,1,.36,1);
+
+}
+
+
+.mastery-modal.open
+.mastery-modal-card {
+
+    transform: translateY(0);
+
+}
+
+
+.mastery-modal-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 16px;
+
+    margin-bottom: 22px;
+
+}
+
+
+.mastery-modal-header h2 {
+
+    margin: 0;
+
+    color: #f5f7fb;
+
+    font-size: 21px;
+
+    line-height: 1.15;
+
+    letter-spacing: -.025em;
+
+}
+
+
+.mastery-modal-close {
+
+    flex: 0 0 auto;
+
+    width: 34px;
+
+    height: 34px;
+
+    padding: 0;
+
+    border: 1px solid rgba(255,255,255,.07);
+
+    border-radius: 11px;
+
+    background: rgba(255,255,255,.035);
+
+    color: rgba(255,255,255,.55);
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.mastery-field {
+
+    margin-bottom: 18px;
+
+}
+
+
+.mastery-field > label,
+.mastery-field-heading label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: rgba(255,255,255,.38);
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: .12em;
+
+}
+
+
+.mastery-field input,
+.mastery-field textarea {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 12px 13px;
+
+    border: 1px solid rgba(255,255,255,.075);
+
+    border-radius: 12px;
+
+    outline: none;
+
+    background: rgba(255,255,255,.035);
+
+    color: #f5f7fb;
+
+    font: inherit;
+
+    font-size: 13px;
+
+    resize: vertical;
+
+}
+
+
+.mastery-field input:focus,
+.mastery-field textarea:focus {
+
+    border-color: rgba(59,130,246,.38);
+
+}
+
+
+.mastery-field input::placeholder,
+.mastery-field textarea::placeholder {
+
+    color: rgba(255,255,255,.24);
+
+}
+
+
+.mastery-field-heading {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+
+.mastery-add-milestone {
+
+    margin-bottom: 7px;
+
+    padding: 0;
+
+    border: 0;
+
+    background: none;
+
+    color: #3B82F6;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+.mastery-milestone-inputs {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+}
+
+
+.mastery-milestone-input-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+}
+
+
+.mastery-milestone-number {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex: 0 0 auto;
+
+    width: 24px;
+
+    height: 24px;
+
+    color: rgba(255,255,255,.3);
+
+    font-size: 9px;
+
+}
+
+
+.mastery-milestone-input {
+
+    flex: 1;
+
+}
+
+
+.mastery-remove-milestone {
+
+    flex: 0 0 auto;
+
+    width: 32px;
+
+    height: 32px;
+
+    padding: 0;
+
+    border: 1px solid rgba(255,255,255,.06);
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,.025);
+
+    color: rgba(255,255,255,.4);
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+}
+
+
+.mastery-form-error {
+
+    min-height: 18px;
+
+    margin-bottom: 6px;
+
+    color: #ef6464;
+
+    font-size: 11px;
+
+}
+
+
+.mastery-create-btn {
+
+    width: 100%;
+
+    padding: 13px;
+
+    border: 0;
+
+    border-radius: 13px;
+
+    background: #3B82F6;
+
+    color: white;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: .05em;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease;
+
+}
+
+
+.mastery-create-btn:active {
+
+    transform: scale(.98);
+
+}
+
+.mastery-card-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+}
+
+
+.mastery-action-btn {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 30px;
+
+    height: 30px;
+
+    padding: 0;
+
+    border: 1px solid rgba(255,255,255,.07);
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,.025);
+
+    color: rgba(255,255,255,.55);
+
+    font-size: 18px;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+}
+
+
+.mastery-delete-btn {
+
+    width: 100%;
+
+    margin-top: 8px;
+
+    padding: 11px;
+
+    border: 1px solid rgba(255,80,80,.12);
+
+    border-radius: 12px;
+
+    background: rgba(255,80,80,.035);
+
+    color: rgba(255,110,110,.7);
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: .05em;
+
+    cursor: pointer;
+
+}
+
+/* =========================================================
+   DELETE CONFIRMATION
+========================================================= */
+
+.mastery-delete-card {
+
+    position: relative;
+
+    width: min(380px, 100%);
+
+    padding: 24px;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 22px;
+
+    background: #0d1118;
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.55);
+
+    text-align: center;
+
+    transform: translateY(20px);
+
+    transition:
+        transform .3s
+        cubic-bezier(.22,1,.36,1);
+
+}
+
+
+.mastery-modal.open
+.mastery-delete-card {
+
+    transform: translateY(0);
+
+}
+
+
+.mastery-delete-icon {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 42px;
+
+    height: 42px;
+
+    margin: 0 auto 15px;
+
+    border: 1px solid rgba(255,90,90,.18);
+
+    border-radius: 50%;
+
+    background: rgba(255,90,90,.06);
+
+    color: rgba(255,110,110,.85);
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+}
+
+
+.mastery-delete-card h2 {
+
+    margin: 0;
+
+    color: #f5f7fb;
+
+    font-size: 19px;
+
+    letter-spacing: -.025em;
+
+}
+
+
+.mastery-delete-card p {
+
+    margin: 9px auto 22px;
+
+    max-width: 300px;
+
+    color: rgba(245,247,251,.45);
+
+    font-size: 12px;
+
+    line-height: 1.55;
+
+}
+
+
+.mastery-delete-actions {
+
+    display: flex;
+
+    gap: 8px;
+
+}
+
+
+.mastery-delete-actions button {
+
+    flex: 1;
+
+    min-height: 42px;
+
+    border-radius: 12px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: .05em;
+
+    cursor: pointer;
+
+}
+
+
+.mastery-cancel-delete {
+
+    border: 1px solid rgba(255,255,255,.07);
+
+    background: rgba(255,255,255,.035);
+
+    color: rgba(255,255,255,.6);
+
+}
+
+
+.mastery-confirm-delete {
+
+    border: 1px solid rgba(255,90,90,.15);
+
+    background: rgba(255,70,70,.08);
+
+    color: rgba(255,110,110,.9);
+
+}
+
+/* =========================================================
+   EMPTY MASTERY ACTION
+========================================================= */
+
+.mastery-empty-icon {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 42px;
+
+    height: 42px;
+
+    margin: 0 auto 14px;
+
+    border: 1px solid rgba(59,130,246,.16);
+
+    border-radius: 14px;
+
+    background: rgba(59,130,246,.06);
+
+    color: #3B82F6;
+
+    font-size: 22px;
+
+}
+
+
+.mastery-empty-add-btn {
+
+    margin-top: 18px;
+
+    padding: 10px 15px;
+
+    border: 1px solid rgba(59,130,246,.2);
+
+    border-radius: 11px;
+
+    background: rgba(59,130,246,.08);
+
+    color: #3B82F6;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: .06em;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        background .2s ease;
+
+}
+
+
+.mastery-empty-add-btn:active {
+
+    transform: scale(.97);
+
+}
+
+/* =========================================================
+   MASTERY EVIDENCE
+========================================================= */
+
+.mastery-milestone-wrapper {
+
+    width: 100%;
+
+}
+
+
+.mastery-evidence {
+
+    display: none;
+
+    padding: 0 10px 10px 42px;
+
+}
+
+
+.mastery-evidence.show {
+
+    display: block;
+
+}
+
+
+.mastery-evidence-btn {
+
+    padding: 6px 9px;
+
+    border: 1px solid rgba(59,130,246,.12);
+
+    border-radius: 8px;
+
+    background: rgba(59,130,246,.05);
+
+    color: rgba(59,130,246,.85);
+
+    font-size: 9px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+.mastery-evidence-preview {
+
+    margin: 8px 0 0;
+
+    color: rgba(245,247,251,.42);
+
+    font-size: 10px;
+
+    line-height: 1.5;
+
+    white-space: pre-wrap;
+
+}
+
+/* =========================================================
+   EVIDENCE MODAL
+========================================================= */
+
+.mastery-evidence-modal-card {
+    padding-bottom: 22px;
+}
+
+
+.mastery-evidence-milestone {
+
+    margin-bottom: 20px;
+
+    padding: 13px;
+
+    border: 1px solid rgba(59,130,246,.10);
+
+    border-radius: 13px;
+
+    background: rgba(59,130,246,.035);
+
+}
+
+
+.mastery-evidence-milestone span {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: rgba(255,255,255,.3);
+
+    font-size: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: .12em;
+
+}
+
+
+.mastery-evidence-milestone strong {
+
+    display: block;
+
+    color: rgba(255,255,255,.78);
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    line-height: 1.4;
+
+}
+
+
+.mastery-evidence-modal-card
+.mastery-field {
+
+    position: relative;
+
+}
+
+
+.mastery-evidence-modal-card
+textarea {
+
+    min-height: 135px;
+
+    padding-bottom: 28px;
+
+}
+
+
+.mastery-evidence-counter {
+
+    position: absolute;
+
+    right: 11px;
+
+    bottom: 9px;
+
+    color: rgba(255,255,255,.25);
+
+    font-size: 9px;
+
+    pointer-events: none;
+
+}
+
+.mastery-add-btn {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 38px;
+
+    border: 1px solid rgba(59, 130, 246, 0.18);
+    border-radius: 12px;
+
+    background: rgba(59, 130, 246, 0.06);
+
+    color: #3B82F6;
+
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.mastery-add-btn:active {
+    transform: scale(0.94);
+}
+
+.mastery-add-btn:hover {
+    background: rgba(59, 130, 246, 0.10);
+    border-color: rgba(59, 130, 246, 0.28);
+}
+
+/* =========================================================
+   MASTERY LIMIT ALERT
+========================================================= */
+
+.mastery-limit-card {
+
+    position: relative;
+
+    width: min(330px, calc(100vw - 40px));
+
+    padding: 26px 22px 22px;
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    border-radius: 22px;
+
+    background: #0d1118;
+
+    box-shadow:
+        0 30px 90px rgba(0,0,0,.6);
+
+    text-align: center;
+
+    transform: scale(.94) translateY(10px);
+
+    opacity: 0;
+
+    transition:
+        opacity .25s ease,
+        transform .3s cubic-bezier(.22,1,.36,1);
+
+}
+
+
+.mastery-modal.open
+.mastery-limit-card {
+
+    opacity: 1;
+
+    transform: scale(1) translateY(0);
+
+}
+
+
+.mastery-limit-icon {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 44px;
+
+    height: 44px;
+
+    margin: 0 auto 15px;
+
+    border: 1px solid rgba(59,130,246,.18);
+
+    border-radius: 14px;
+
+    background: rgba(59,130,246,.07);
+
+    color: #3b82f6;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+}
+
+
+.mastery-limit-card h2 {
+
+    margin: 0;
+
+    color: #f5f7fb;
+
+    font-size: 18px;
+
+    letter-spacing: -.025em;
+
+}
+
+
+.mastery-limit-card p {
+
+    margin: 10px auto 20px;
+
+    max-width: 260px;
+
+    color: rgba(245,247,251,.45);
+
+    font-size: 12px;
+
+    line-height: 1.55;
+
+}
+
+
+.mastery-limit-card p strong {
+
+    color: rgba(245,247,251,.72);
+
+}
+
+
+.mastery-limit-ok-btn {
+
+    width: 100%;
+
+    min-height: 42px;
+
+    border: 1px solid rgba(59,130,246,.2);
+
+    border-radius: 12px;
+
+    background: rgba(59,130,246,.08);
+
+    color: #3b82f6;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: .07em;
+
+    cursor: pointer;
+
+}
+
+/* =========================================================
+   MASTERY MODAL — MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .mastery-modal {
+        align-items: flex-end;
+        padding: 10px;
+    }
+
+    .mastery-modal-card {
+
+        width: 100%;
+        max-width: none;
+
+        max-height: calc(
+            100dvh - 20px
+        );
+
+        overflow-y: auto;
+        overscroll-behavior: contain;
+
+        padding: 20px;
+
+        border-radius: 22px 22px 16px 16px;
+
+        transform:
+            translateY(30px);
+
+    }
+
+    .mastery-modal.open
+    .mastery-modal-card {
+
+        transform:
+            translateY(0);
+
+    }
+
+    .mastery-modal-header {
+
+        margin-bottom: 20px;
+
+    }
+
+    .mastery-modal-header h2 {
+
+        font-size: 19px;
+
+    }
+
+    .mastery-modal-close {
+
+        width: 38px;
+        height: 38px;
+
+        flex: 0 0 38px;
+
+    }
+
+    .mastery-field {
+
+        margin-bottom: 15px;
+
+    }
+
+    .mastery-field input,
+    .mastery-field textarea {
+
+        font-size: 16px;
+        /* Prevents iOS Safari zoom */
+
+    }
+
+    .mastery-create-btn {
+
+        min-height: 46px;
+
+        margin-top: 6px;
+
+    }
+
+}
