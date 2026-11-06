@@ -366,34 +366,82 @@ function updateMission() {
     closeModal();
 }
 
+
 function deleteMission() {
     const li = window.missionBeingEdited;
-    if (!li) return;
 
-    if (li.dataset.hardcore === "true") {
-        const deadline = li.dataset.deadline;
-        const now = Date.now();
+    if (!li || !li.isConnected) return;
 
-        if (deadline && new Date(deadline).getTime() <= now) {
-            customAlert("🔥 Hardcore missions cannot be deleted after deadline.");
-            return;
-        }
+    const isHardcore = li.dataset.hardcore === "true";
 
-        customConfirm(
-            "🔥 This is a Hardcore mission.\nDelete only if created by mistake?",
-            () => {
-                li.remove();
-                saveData();
-                closeModal();
-            }
-        );
+    // Normal missions retain their existing deletion behavior.
+    if (!isHardcore) {
+        li.remove();
+        window.missionBeingEdited = null;
+        saveData();
+        closeModal();
         return;
     }
 
-    // Normal mission
-    li.remove();
-    saveData();
-    closeModal();
+    // Hardcore missions always require confirmation.
+    customConfirm(
+        "🔥 Delete this Hardcore mission?\n\n" +
+        "If its deadline has passed, its failure penalty " +
+        "must be processed before deletion.",
+        () => {
+
+            const deadline = li.dataset.deadline;
+            const deadlineTime = deadline
+                ? new Date(deadline).getTime()
+                : NaN;
+
+            const isOverdue =
+                Number.isFinite(deadlineTime) &&
+                deadlineTime <= Date.now();
+
+            const isUncompleted =
+                li.dataset.completed !== "true";
+
+            const penaltyNotProcessed =
+                li.dataset.hardcorePunished !== "true";
+
+            // Never allow deletion to bypass a Hardcore penalty.
+            if (
+                isOverdue &&
+                isUncompleted &&
+                penaltyNotProcessed
+            ) {
+                if (
+                    typeof window.checkMissedDeadlines !== "function"
+                ) {
+                    customAlert(
+                        "Unable to verify the Hardcore failure penalty. " +
+                        "The mission was not deleted."
+                    );
+                    return;
+                }
+
+                // Run the existing scheduler's overdue processing.
+                window.checkMissedDeadlines();
+
+                // Verify that the penalty was actually processed.
+                if (li.dataset.hardcorePunished !== "true") {
+                    customAlert(
+                        "The Hardcore failure penalty could not be " +
+                        "verified. The mission was not deleted."
+                    );
+                    return;
+                }
+            }
+
+            // Penalty is settled, or the mission is not overdue.
+            li.remove();
+            window.missionBeingEdited = null;
+
+            saveData();
+            closeModal();
+        }
+    );
 }
 
 export const missionManagement = Object.freeze({

@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.72-inline-style-externalization";
+const CACHE_NAME = "standout-v2.72-hardcore-deletable";
 
 // Resolve app assets against the service worker's registration scope. This
 // supports both a domain-root deployment and a project subfolder deployment.

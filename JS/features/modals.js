@@ -129,7 +129,12 @@ function openModal(type, skillDiv = null) {
         }
         nodes.push(createModalButton("Update", "updateMission"));
         if (isHardcore) {
-            nodes.push(createModalButton("🔒 Delete", null, { disabled: true, style: { opacity: "0.5", cursor: "not-allowed" } }));
+            nodes.push(
+    createModalButton(
+        isHardcore ? "🔥 Delete Hardcore Mission" : "Delete",
+        "deleteMission"
+    )
+);
         } else {
             nodes.push(createModalButton("Delete", "deleteMission"));
         }
