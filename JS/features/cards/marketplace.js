@@ -64,18 +64,26 @@ function getPinnedCardIds() {
     }
 }
 
-function togglePinnedCard(cardId) {
-    const id = String(cardId || "");
+function togglePinnedCard(cardOrId) {
+    const id = String(typeof cardOrId === "object" && cardOrId ? cardOrId.id : cardOrId || "");
+    const cardTitle = typeof cardOrId === "object" && cardOrId?.title
+        ? String(cardOrId.title)
+        : id;
     if (!id || !window.ownedCards?.[id]) return;
 
     const pinned = getPinnedCardIds();
     if (pinned.includes(id)) {
         try {
             localStorage.setItem(PINNED_CARDS_STORAGE_KEY, JSON.stringify(pinned.filter(item => item !== id)));
-            renderMyCards();
         } catch (error) {
             console.error("[Cards] Could not unpin card:", error);
             window.customAlert?.("Could not save this change. Please try again.");
+            return;
+        }
+
+        // Unpinning is free. Refresh only after the persisted change succeeds.
+        try { renderMyCards(); } catch (error) {
+            console.error("[Cards] Card was unpinned, but the collection could not refresh:", error);
         }
         return;
     }
@@ -85,121 +93,97 @@ function togglePinnedCard(cardId) {
         return;
     }
 
-    if ((Number(window.completedMissions) || 0) < PIN_CARD_COST) {
-        window.customAlert?.("You need 2 Improvement Points to pin a card.");
-        return;
-    }
-
     if (!points.spend(PIN_CARD_COST)) {
         window.customAlert?.("Not enough Improvement Points to pin this card.");
         return;
     }
 
+    // Persist pin state separately from rendering and alert presentation. In the
+    // previous flow, a rendering exception could skip the success alert even
+    // though the card had already been pinned and points deducted.
     try {
         localStorage.setItem(PINNED_CARDS_STORAGE_KEY, JSON.stringify([...pinned, id]));
-        renderMyCards();
     } catch (error) {
         console.error("[Cards] Could not save pinned card:", error);
-        // Roll back the charge only when the pin operation itself failed to persist.
         try { points.add(PIN_CARD_COST); } catch (rollbackError) {
             console.error("[Cards] Could not roll back failed pin charge:", rollbackError);
         }
         window.customAlert?.("Could not save this pin. Your 2 Improvement Points have been restored.");
+        return;
+    }
+
+    // Confirm immediately after both the charge and pin state have persisted.
+    // Do this before re-rendering so UI refresh errors cannot suppress feedback.
+    try {
+        if (typeof window.customAlert === "function") {
+            window.customAlert(`2 Improvement Points deducted. ${cardTitle} pinned.`);
+        } else {
+            console.error("[Cards] Pin succeeded, but the alert service is unavailable.");
+        }
+    } catch (alertError) {
+        console.error("[Cards] Pin succeeded, but its confirmation alert failed:", alertError);
+    }
+
+    try { renderMyCards(); } catch (renderError) {
+        console.error("[Cards] Pin succeeded, but the collection could not refresh:", renderError);
     }
 }
 
-function createPinButton(card, cardElement) {
-    const pinned = getPinnedCardIds().includes(card.id);
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = `card-pin-button${pinned ? " is-pinned" : ""}`;
-    button.textContent = pinned ? "Unpin card" : "Pin card · 2 pts";
-    button.setAttribute("aria-pressed", String(pinned));
-    button.setAttribute("aria-label", pinned ? `Unpin ${card.title}` : `Pin ${card.title} for 2 Improvement Points`);
-    button.addEventListener("click", event => {
-        event.preventDefault();
-        event.stopPropagation();
-        togglePinnedCard(card.id);
-    });
-    button.addEventListener("pointerdown", event => event.stopPropagation());
+/**
+ * Bind pinning to a deliberate double-click/double-tap on the OWNED button.
+ * A single click never changes pin state. The time-window fallback also makes
+ * the interaction work on touch browsers that emit two click events without
+ * dispatching a native dblclick event.
+ */
+function bindOwnedButtonDoubleClick(button, card) {
+    const DOUBLE_CLICK_WINDOW_MS = 350;
+    let lastClickAt = 0;
 
-    cardElement.classList.add("has-pin-control");
-    cardElement.tabIndex = 0;
-    cardElement.setAttribute("aria-label", `${card.title}. Press and hold for 0.5 seconds to show pin options.`);
-    cardElement.appendChild(button);
-    bindPinLongPress(cardElement);
-    return button;
-}
-
-// A stationary 500 ms press reveals the control. Pointer capture prevents
-// small browser hit-target changes from dropping the gesture; movement,
-// release, or cancellation safely cancels an unfinished hold.
-function bindPinLongPress(cardElement) {
-    if (cardElement.dataset.pinLongPressBound === "true") return;
-    cardElement.dataset.pinLongPressBound = "true";
-
-    const HOLD_DURATION_MS = 500;
-    const MOVE_TOLERANCE_PX = 12;
-    let holdTimer = null;
-    let activePointerId = null;
-    let startX = 0;
-    let startY = 0;
-
-    const clearHold = () => {
-        if (holdTimer !== null) {
-            window.clearTimeout(holdTimer);
-            holdTimer = null;
-        }
-        activePointerId = null;
+    const isPinned = () => getPinnedCardIds().includes(card.id);
+    const syncButton = () => {
+        const pinned = isPinned();
+        button.textContent = pinned ? "PINNED" : "OWNED";
+        button.classList.toggle("is-pinned", pinned);
+        button.dataset.pinned = String(pinned);
+        button.setAttribute("aria-pressed", String(pinned));
+        button.setAttribute(
+            "aria-label",
+            pinned
+                ? `${card.title} is pinned. Double-click to unpin.`
+                : `${card.title} is owned. Double-click to pin for 2 Improvement Points.`
+        );
+        button.title = pinned
+            ? "Double-click to unpin this card"
+            : "Double-click to pin this card for 2 Improvement Points";
     };
 
-    cardElement.addEventListener("pointerdown", event => {
-        if (event.target.closest(".card-pin-button")) return;
-        if (event.pointerType === "mouse" && event.button !== 0) return;
+    button.addEventListener("click", event => {
+        const now = Date.now();
+        const isSecondClick = lastClickAt > 0 && now - lastClickAt <= DOUBLE_CLICK_WINDOW_MS;
 
-        clearHold();
-        activePointerId = event.pointerId;
-        startX = event.clientX;
-        startY = event.clientY;
-
-        // Keep subsequent pointer events associated with this card while held.
-        try {
-            cardElement.setPointerCapture(event.pointerId);
-        } catch (_) {
-            // Pointer capture is an enhancement; the timer still works without it.
+        if (!isSecondClick) {
+            lastClickAt = now;
+            return;
         }
 
-        holdTimer = window.setTimeout(() => {
-            cardElement.classList.add("pin-actions-visible");
-            cardElement.dataset.pinActionsVisible = "true";
-            holdTimer = null;
-        }, HOLD_DURATION_MS);
-    });
-
-    cardElement.addEventListener("pointermove", event => {
-        if (holdTimer === null || event.pointerId !== activePointerId) return;
-        const movedX = Math.abs(event.clientX - startX);
-        const movedY = Math.abs(event.clientY - startY);
-        if (movedX > MOVE_TOLERANCE_PX || movedY > MOVE_TOLERANCE_PX) {
-            clearHold();
-        }
-    });
-
-    ["pointerup", "pointercancel", "lostpointercapture"].forEach(type => {
-        cardElement.addEventListener(type, event => {
-            if (activePointerId === null || event.pointerId === activePointerId) {
-                clearHold();
-            }
-        });
-    });
-
-    // Suppress the native long-press context menu on touch devices; the app's
-    // own pin action is revealed by the same 500 ms hold.
-    cardElement.addEventListener("contextmenu", event => {
+        lastClickAt = 0;
         event.preventDefault();
-        cardElement.classList.add("pin-actions-visible");
-        cardElement.dataset.pinActionsVisible = "true";
+        event.stopPropagation();
+        togglePinnedCard(card);
     });
+
+    syncButton();
+    return syncButton;
+}
+
+function createOwnedButton(card, button) {
+    button.type = "button";
+    button.disabled = false;
+    button.classList.add("owned-card-button");
+    button.textContent = "OWNED";
+    button.dataset.cardId = card.id;
+    bindOwnedButtonDoubleClick(button, card);
+    return button;
 }
 
 function getSafeCardImageSource(value) {
@@ -277,8 +261,7 @@ function createCardElement(card, { owned = false, canBuy = false, mintDate = "" 
     buyButton.className = "buy-btn";
     buyButton.type = "button";
     if (owned) {
-        buyButton.disabled = true;
-        buyButton.textContent = "OWNED";
+        createOwnedButton(card, buyButton);
     } else {
         buyButton.disabled = !canBuy;
         buyButton.textContent = `${cost} pts`;
@@ -302,9 +285,6 @@ function createCardElement(card, { owned = false, canBuy = false, mintDate = "" 
 
     cardElement.appendChild(body);
 
-    if (owned) {
-        createPinButton(card, cardElement);
-    }
     return cardElement;
 }
 
@@ -712,10 +692,14 @@ function renderMyCards() {
             meta.className = "season-owned-card-meta";
             meta.textContent = `Minted on ${mintedAt}`;
             body.append(meta);
+
+            const ownedButton = document.createElement("button");
+            ownedButton.className = "season-owned-card-owned-button";
+            createOwnedButton(card, ownedButton);
+            body.append(ownedButton);
+
             art.append(body);
             div.append(art);
-            createPinButton(card, div);
-
 
             seasonContainer.appendChild(
                 div
