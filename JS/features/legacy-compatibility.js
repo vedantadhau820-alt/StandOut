@@ -77,6 +77,7 @@ export function initializeLegacyCompatibility(windowRef = window) {
     function refreshRecurringMissions() { return core()?.missionScheduler?.refreshRecurringMissions(); }
     function resetRecurringMission(li, currentKey) { return core()?.missionScheduler?.resetRecurringMission(li, currentKey); }
     function checkMissedDeadlines() { return core()?.missionScheduler?.checkMissedDeadlines(); }
+    function processMissionDeadline(li) { return core()?.missionScheduler?.processMissionDeadline(li); }
 
     Object.assign(windowRef, {
         showPage,
@@ -96,7 +97,8 @@ export function initializeLegacyCompatibility(windowRef = window) {
         getRepeatKey,
         refreshRecurringMissions,
         resetRecurringMission,
-        checkMissedDeadlines
+        checkMissedDeadlines,
+        processMissionDeadline
     });
 
     return Object.freeze({
@@ -104,6 +106,6 @@ export function initializeLegacyCompatibility(windowRef = window) {
         startStaticTimer, openModal, closeModal, customAlert, closeAlert,
         customConfirm, confirmYes, confirmNo, completeMission,
         addImprovementPoints, getRepeatKey, refreshRecurringMissions,
-        resetRecurringMission, checkMissedDeadlines
+        resetRecurringMission, checkMissedDeadlines, processMissionDeadline
     });
 }

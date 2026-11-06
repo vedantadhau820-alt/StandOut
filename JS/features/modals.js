@@ -116,6 +116,11 @@ function openModal(type, skillDiv = null) {
         const oldText = skillDiv.querySelector(".mission-text")?.textContent.replace("🔥", "").trim() || "";
         const oldDeadline = skillDiv.dataset.deadline || "";
         const isHardcore = skillDiv.dataset.hardcore === "true";
+        const isHardcoreNonDeletable = isHardcore && (
+            skillDiv.dataset.hardcoreNonDeletable === "true" ||
+            (!skillDiv.hasAttribute("data-hardcore-non-deletable") &&
+                (skillDiv.dataset.repeat || "none") === "none")
+        );
         nodes.push(
             createModalHeading("Edit Mission"),
             createModalInput("editMissionInput", { value: oldText }),
@@ -127,16 +132,14 @@ function openModal(type, skillDiv = null) {
         if (isHardcore) {
             nodes.push(createModalElement("p", { text: "🔥 Hardcore mission — deadline cannot be changed", style: { color: "#ef4444", fontSize: "12px", marginTop: "6px" } }));
         }
+        if (isHardcoreNonDeletable) {
+            nodes.push(createModalElement("p", { text: "🔒 This Hardcore mission was created with Repeat: None and cannot be deleted.", style: { color: "#ef4444", fontSize: "12px", marginTop: "6px" } }));
+        }
         nodes.push(createModalButton("Update", "updateMission"));
-        if (isHardcore) {
-            nodes.push(
-    createModalButton(
-        isHardcore ? "🔥 Delete Hardcore Mission" : "Delete",
-        "deleteMission"
-    )
-);
+        if (isHardcoreNonDeletable) {
+            nodes.push(createModalButton("🔒 Cannot Delete Non-Repeatable Hardcore Mission", null, { disabled: true, style: { opacity: "0.55", cursor: "not-allowed" } }));
         } else {
-            nodes.push(createModalButton("Delete", "deleteMission"));
+            nodes.push(createModalButton(isHardcore ? "🔥 Delete Hardcore Mission" : "Delete", "deleteMission"));
         }
         nodes.push(createModalButton("Cancel", "closeModal"));
         content.replaceChildren(...nodes);

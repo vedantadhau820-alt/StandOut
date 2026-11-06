@@ -108,15 +108,70 @@ function togglePinnedCard(cardId) {
     }
 }
 
-function createPinButton(card) {
+function createPinButton(card, cardElement) {
     const pinned = getPinnedCardIds().includes(card.id);
     const button = document.createElement("button");
     button.type = "button";
     button.className = `card-pin-button${pinned ? " is-pinned" : ""}`;
-    button.textContent = pinned ? "Pinned · Unpin" : "Pin · 2 pts";
+    button.textContent = pinned ? "Unpin card" : "Pin card · 2 pts";
     button.setAttribute("aria-pressed", String(pinned));
-    button.addEventListener("click", () => togglePinnedCard(card.id));
+    button.setAttribute("aria-label", pinned ? `Unpin ${card.title}` : `Pin ${card.title} for 2 Improvement Points`);
+    button.addEventListener("click", event => {
+        event.stopPropagation();
+        togglePinnedCard(card.id);
+    });
+    button.addEventListener("pointerdown", event => event.stopPropagation());
+    cardElement.classList.add("has-pin-control");
+    cardElement.tabIndex = 0;
+    cardElement.setAttribute("aria-label", `${card.title}. Press and hold for pin options.`);
+    cardElement.appendChild(button);
+    bindPinLongPress(cardElement);
     return button;
+}
+
+// Reveal pin controls only after a deliberate 500 ms press/hold on a card.
+function bindPinLongPress(cardElement) {
+    if (cardElement.dataset.pinLongPressBound === "true") return;
+    cardElement.dataset.pinLongPressBound = "true";
+
+    let holdTimer = null;
+    let startX = 0;
+    let startY = 0;
+
+    const clearHold = () => {
+        if (holdTimer !== null) {
+            window.clearTimeout(holdTimer);
+            holdTimer = null;
+        }
+    };
+
+    cardElement.addEventListener("pointerdown", event => {
+        if (event.target.closest(".card-pin-button")) return;
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+        clearHold();
+        startX = event.clientX;
+        startY = event.clientY;
+        holdTimer = window.setTimeout(() => {
+            cardElement.classList.add("pin-actions-visible");
+            holdTimer = null;
+        }, 500);
+    });
+
+    cardElement.addEventListener("pointermove", event => {
+        if (holdTimer === null) return;
+        if (Math.abs(event.clientX - startX) > 10 || Math.abs(event.clientY - startY) > 10) {
+            clearHold();
+        }
+    });
+
+    ["pointerup", "pointercancel", "pointerleave"].forEach(type => {
+        cardElement.addEventListener(type, clearHold);
+    });
+
+    cardElement.addEventListener("contextmenu", event => {
+        event.preventDefault();
+        cardElement.classList.add("pin-actions-visible");
+    });
 }
 
 function getSafeCardImageSource(value) {
@@ -217,11 +272,11 @@ function createCardElement(card, { owned = false, canBuy = false, mintDate = "" 
         body.appendChild(cardCost);
     }
 
-    if (owned) {
-        body.appendChild(createPinButton(card));
-    }
-
     cardElement.appendChild(body);
+
+    if (owned) {
+        createPinButton(card, cardElement);
+    }
     return cardElement;
 }
 
@@ -629,10 +684,9 @@ function renderMyCards() {
             meta.className = "season-owned-card-meta";
             meta.textContent = `Minted on ${mintedAt}`;
             body.append(meta);
-            body.append(createPinButton(card));
-
             art.append(body);
             div.append(art);
+            createPinButton(card, div);
 
 
             seasonContainer.appendChild(

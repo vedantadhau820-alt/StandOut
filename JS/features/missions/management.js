@@ -82,8 +82,12 @@ function addMission() {
             ? "true"
             : "false";
 
-    li.dataset.repeat =
-        repeat;
+    li.dataset.repeat = repeat;
+
+    // A Hardcore mission created as non-repeatable is permanently protected
+    // from deletion. This flag is intentionally not cleared by later edits.
+    li.dataset.hardcoreNonDeletable =
+        isHardcore && repeat === "none" ? "true" : "false";
 
     li.dataset.repeatKey = getRepeatKey(new Date(), repeat);
 
@@ -274,8 +278,25 @@ function updateMission() {
        UPDATE REPEAT
     ===================================================== */
 
-    li.dataset.repeat =
-        newRepeat;
+    // Preserve the original Hardcore deletion policy. A Hardcore mission
+    // created with Repeat: None remains non-deletable even if edited later.
+    // For older saved missions without this marker, infer the original policy
+    // from the current value before changing it.
+    if (li.dataset.hardcore === "true") {
+        if (
+            li.dataset.hardcoreNonDeletable === "true" ||
+            (!li.hasAttribute("data-hardcore-non-deletable") &&
+                (li.dataset.repeat || "none") === "none")
+        ) {
+            li.dataset.hardcoreNonDeletable = "true";
+        } else if (!li.hasAttribute("data-hardcore-non-deletable")) {
+            li.dataset.hardcoreNonDeletable = "false";
+        }
+    } else {
+        li.dataset.hardcoreNonDeletable = "false";
+    }
+
+    li.dataset.repeat = newRepeat;
 
     const repeatBadge =
         li.querySelector(".repeat-badge");
@@ -366,80 +387,57 @@ function updateMission() {
     closeModal();
 }
 
-
 function deleteMission() {
     const li = window.missionBeingEdited;
-
     if (!li || !li.isConnected) return;
 
     const isHardcore = li.dataset.hardcore === "true";
+    const isHardcoreNonDeletable = isHardcore && (
+        li.dataset.hardcoreNonDeletable === "true" ||
+        (!li.hasAttribute("data-hardcore-non-deletable") &&
+            (li.dataset.repeat || "none") === "none")
+    );
 
-    // Normal missions retain their existing deletion behavior.
-    if (!isHardcore) {
+    if (isHardcoreNonDeletable) {
+        customAlert("🔥 This Hardcore mission was created as non-repeatable and cannot be deleted.");
+        return;
+    }
+
+    const removeMission = () => {
         li.remove();
         window.missionBeingEdited = null;
         saveData();
         closeModal();
+    };
+
+    if (!isHardcore) {
+        removeMission();
         return;
     }
 
-    // Hardcore missions always require confirmation.
     customConfirm(
-        "🔥 Delete this Hardcore mission?\n\n" +
-        "If its deadline has passed, its failure penalty " +
-        "must be processed before deletion.",
+        "🔥 Delete this Hardcore mission?\n\nIf its deadline has passed, the failure penalty will be applied before deletion.",
         () => {
-
-            const deadline = li.dataset.deadline;
-            const deadlineTime = deadline
-                ? new Date(deadline).getTime()
+            const deadlineTime = li.dataset.deadline
+                ? new Date(li.dataset.deadline).getTime()
                 : NaN;
+            const overdue = Number.isFinite(deadlineTime) && deadlineTime <= Date.now();
+            const unfinished = li.dataset.completed !== "true";
 
-            const isOverdue =
-                Number.isFinite(deadlineTime) &&
-                deadlineTime <= Date.now();
-
-            const isUncompleted =
-                li.dataset.completed !== "true";
-
-            const penaltyNotProcessed =
-                li.dataset.hardcorePunished !== "true";
-
-            // Never allow deletion to bypass a Hardcore penalty.
-            if (
-                isOverdue &&
-                isUncompleted &&
-                penaltyNotProcessed
-            ) {
-                if (
-                    typeof window.checkMissedDeadlines !== "function"
-                ) {
-                    customAlert(
-                        "Unable to verify the Hardcore failure penalty. " +
-                        "The mission was not deleted."
-                    );
+            if (overdue && unfinished && li.dataset.hardcorePunished !== "true") {
+                if (typeof window.processMissionDeadline !== "function") {
+                    customAlert("Unable to verify the Hardcore penalty. The mission was not deleted.");
                     return;
                 }
 
-                // Run the existing scheduler's overdue processing.
-                window.checkMissedDeadlines();
-
-                // Verify that the penalty was actually processed.
+                window.processMissionDeadline(li);
                 if (li.dataset.hardcorePunished !== "true") {
-                    customAlert(
-                        "The Hardcore failure penalty could not be " +
-                        "verified. The mission was not deleted."
-                    );
+                    customAlert("The Hardcore failure penalty could not be verified. The mission was not deleted.");
                     return;
                 }
             }
 
-            // Penalty is settled, or the mission is not overdue.
-            li.remove();
-            window.missionBeingEdited = null;
-
-            saveData();
-            closeModal();
+            removeMission();
         }
     );
 }
