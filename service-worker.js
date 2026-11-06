@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.90-force-visible-update-ui";
+const CACHE_NAME = "standout-v2.91-force-visible-update-ui";
 
 // Resolve app assets against the service worker's registration scope. This
 // supports both a domain-root deployment and a project subfolder deployment.
