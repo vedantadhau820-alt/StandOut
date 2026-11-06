@@ -14,7 +14,7 @@ export function registerServiceWorker({
     windowRef = globalThis.window,
     documentRef = globalThis.document,
     logger = globalThis.console,
-    updateIntervalMs = 20_000,
+    updateIntervalMs = 60_000,
     updateThrottleMs = 5_000
 } = {}) {
     const serviceWorker = navigatorRef?.serviceWorker;
@@ -34,72 +34,107 @@ export function registerServiceWorker({
     const trackedWorkers = new WeakSet();
     let pendingUpdateMessages = [];
 
-    const removeProgressUI = () => {
-        documentRef?.getElementById?.("standout-update-progress")?.remove?.();
-        progressBanner = null;
-    };
+    let readyWorker = null;
+    let reloadRequested = false;
 
-    const setProgressUI = (percent, message) => {
-        // Never show an update banner for a first-ever installation.
+    const setProgressUI = (percent, message, { ready = false } = {}) => {
+        // Never show update UI for a genuine first installation.
         if (!hadPreviousWorkerAtStartup || !documentRef?.createElement || !documentRef?.body) return;
 
         if (!progressBanner || !documentRef.getElementById?.("standout-update-progress")) {
             progressBanner = documentRef.createElement("section");
             progressBanner.id = "standout-update-progress";
+            progressBanner.className = "standout-update-toast";
             progressBanner.setAttribute?.("role", "status");
             progressBanner.setAttribute?.("aria-live", "polite");
-            progressBanner.style.cssText = [
-                "position:fixed", "top:12px", "left:50%", "transform:translateX(-50%)",
-                "width:min(520px,calc(100% - 24px))", "box-sizing:border-box", "z-index:100000",
-                "padding:13px 16px", "border-radius:12px", "background:#172554", "color:#fff",
-                "box-shadow:0 8px 28px rgba(0,0,0,.25)", "font:500 14px/1.4 system-ui,sans-serif"
-            ].join(";");
 
-            const label = documentRef.createElement("div");
+            const heading = documentRef.createElement("div");
+            heading.className = "standout-update-toast__heading";
+            heading.textContent = "StandOut update";
+
+            const label = documentRef.createElement("p");
             label.id = "standout-update-progress-label";
-            label.style.cssText = "margin-bottom:9px";
+            label.className = "standout-update-toast__message";
 
             const track = documentRef.createElement("div");
-            track.style.cssText = "height:7px;width:100%;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.22)";
+            track.className = "standout-update-progress__track";
+            track.setAttribute?.("role", "progressbar");
+            track.setAttribute?.("aria-label", "StandOut update progress");
+            track.setAttribute?.("aria-valuemin", "0");
+            track.setAttribute?.("aria-valuemax", "100");
 
             const fill = documentRef.createElement("div");
             fill.id = "standout-update-progress-fill";
-            fill.style.cssText = "height:100%;width:35%;border-radius:99px;background:#60a5fa;animation:standout-update-progress 1.25s ease-in-out infinite";
+            fill.className = "standout-update-progress__fill is-indeterminate";
             track.appendChild(fill);
 
-            const percentLabel = documentRef.createElement("div");
+            const footer = documentRef.createElement("div");
+            footer.className = "standout-update-toast__footer";
+
+            const percentLabel = documentRef.createElement("span");
             percentLabel.id = "standout-update-progress-percent";
-            percentLabel.style.cssText = "margin-top:6px;text-align:right;font-size:12px;color:#bfdbfe";
-            percentLabel.textContent = "Preparing…";
+            percentLabel.className = "standout-update-toast__percent";
+            percentLabel.textContent = "Preparing update…";
 
-            const style = documentRef.createElement("style");
-            style.textContent = "@keyframes standout-update-progress{0%{transform:translateX(-115%)}100%{transform:translateX(300%)}}";
-            (documentRef.head || documentRef.body).appendChild(style);
+            const reloadButton = documentRef.createElement("button");
+            reloadButton.id = "standout-update-reload";
+            reloadButton.className = "standout-update-toast__button";
+            reloadButton.type = "button";
+            reloadButton.textContent = "Reload now";
+            reloadButton.hidden = true;
+            reloadButton.addEventListener?.("click", () => {
+                if (reloadRequested) return;
+                const worker = registration?.waiting || readyWorker;
+                if (!worker) {
+                    if (label) label.textContent = "Update is ready. Preparing the reload…";
+                    return;
+                }
+                reloadRequested = true;
+                reloadButton.disabled = true;
+                reloadButton.textContent = "Reloading…";
+                if (label) label.textContent = "Applying the update and reloading StandOut…";
+                worker.postMessage?.("SKIP_WAITING");
+            });
 
-            progressBanner.append(label, track, percentLabel);
+            footer.append(percentLabel, reloadButton);
+            progressBanner.append(heading, label, track, footer);
             documentRef.body.appendChild(progressBanner);
         }
 
         const label = documentRef.getElementById?.("standout-update-progress-label");
         const fill = documentRef.getElementById?.("standout-update-progress-fill");
+        const track = fill?.parentNode;
         const percentLabel = documentRef.getElementById?.("standout-update-progress-percent");
+        const reloadButton = documentRef.getElementById?.("standout-update-reload");
         if (label) label.textContent = message;
 
         if (percent === null || percent === undefined || !Number.isFinite(Number(percent))) {
             if (fill) {
-                fill.style.width = "35%";
-                fill.style.animation = "standout-update-progress 1.25s ease-in-out infinite";
+                fill.className = "standout-update-progress__fill is-indeterminate";
+                fill.style.width = "38%";
             }
-            if (percentLabel) percentLabel.textContent = "Downloading…";
-            return;
+            if (percentLabel) percentLabel.textContent = "Downloading update…";
+            if (track) track.removeAttribute?.("aria-valuenow");
+        } else {
+            const safePercent = Math.max(0, Math.min(100, Math.round(Number(percent))));
+            if (fill) {
+                fill.className = "standout-update-progress__fill";
+                fill.style.width = `${safePercent}%`;
+            }
+            if (percentLabel) percentLabel.textContent = `${safePercent}% · app files processed`;
+            if (track) track.setAttribute?.("aria-valuenow", String(safePercent));
         }
 
-        const safePercent = Math.max(0, Math.min(100, Math.round(Number(percent))));
-        if (fill) {
-            fill.style.animation = "none";
-            fill.style.width = `${safePercent}%`;
+        if (ready && reloadButton) {
+            reloadButton.hidden = false;
+            if (label) label.textContent = "Update ready. Reload StandOut to start using the latest version.";
+            if (percentLabel) percentLabel.textContent = "Update downloaded";
         }
-        if (percentLabel) percentLabel.textContent = `${safePercent}% of app files processed`;
+    };
+
+    const showUpdateReadyUI = worker => {
+        if (worker) readyWorker = worker;
+        setProgressUI(100, "Update downloaded. Reload StandOut to finish.", { ready: true });
     };
 
     const handleServiceWorkerMessage = event => {
@@ -123,7 +158,7 @@ export function registerServiceWorker({
         } else if (data.type === "STANDOUT_UPDATE_PROGRESS") {
             setProgressUI(data.percent, `Updating StandOut… ${data.completed}/${data.total} files processed`);
         } else if (data.type === "STANDOUT_UPDATE_READY") {
-            setProgressUI(100, "Update downloaded. Applying new version…");
+            showUpdateReadyUI(registration?.waiting || readyWorker);
         } else if (data.type === "STANDOUT_UPDATE_FAILED") {
             setProgressUI(null, "Update could not finish. StandOut will retry automatically.");
         }
@@ -135,7 +170,7 @@ export function registerServiceWorker({
         reloadingForUpdate = true;
         setProgressUI(100, "Update applied. Reloading StandOut…");
         const reload = () => windowRef.location?.reload?.();
-        if (typeof windowRef.setTimeout === "function") windowRef.setTimeout(reload, 180);
+        if (typeof windowRef.setTimeout === "function") windowRef.setTimeout(reload, 350);
         else reload();
     };
 
@@ -155,9 +190,7 @@ export function registerServiceWorker({
             if (worker.state === "installing") {
                 setProgressUI(null, "Downloading StandOut update…");
             } else if (worker.state === "installed" && hadPreviousWorkerAtStartup) {
-                setProgressUI(100, "Download complete. Applying StandOut update…");
-                // Safe even if the worker also calls skipWaiting() itself.
-                worker.postMessage?.("SKIP_WAITING");
+                showUpdateReadyUI(worker);
             } else if (worker.state === "redundant" && hadPreviousWorkerAtStartup && !reloadingForUpdate) {
                 setProgressUI(null, "Update was interrupted. StandOut will retry automatically.");
             }
@@ -193,8 +226,7 @@ export function registerServiceWorker({
             trackWorker(candidate.installing);
         }
         if (candidate.waiting && hadPreviousWorkerAtStartup) {
-            setProgressUI(100, "Update downloaded. Applying new version…");
-            candidate.waiting.postMessage?.("SKIP_WAITING");
+            showUpdateReadyUI(candidate.waiting);
         }
     };
 
@@ -208,8 +240,7 @@ export function registerServiceWorker({
             await registration.update();
             if (registration.installing) trackWorker(registration.installing);
             if (registration.waiting && hadPreviousWorkerAtStartup) {
-                setProgressUI(100, "Update downloaded. Applying new version…");
-                registration.waiting.postMessage?.("SKIP_WAITING");
+                showUpdateReadyUI(registration.waiting);
             }
         } catch (error) {
             logger?.warn?.("StandOut update check failed; it will retry:", error);
