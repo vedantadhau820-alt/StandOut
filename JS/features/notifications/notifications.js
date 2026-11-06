@@ -112,8 +112,10 @@ export function initializeNotifications({ storage, dom }) {
 
     function clearAllNotifications() {
         setNotifications([]);
-        local.remove("appNotifications");
-        local.remove("lastNotifCount");
+        // Persist the empty state instead of removing the key. This prevents a
+        // stale notification snapshot from being restored by another startup path.
+        local.setJSON("appNotifications", []);
+        local.set("lastNotifCount", "0");
 
         const list = dom.byId("notificationList");
         if (list) {
@@ -187,6 +189,18 @@ export function initializeNotifications({ storage, dom }) {
                 } else {
                     drawer.classList.remove("notification-open");
                 }
+            });
+        }
+
+        // The drawer intentionally stops click propagation. Therefore the Clear
+        // button must be handled here directly; document-level delegation cannot
+        // receive its click while it is inside the drawer.
+        const clearButton = drawer?.querySelector?.(".notification-clear-btn");
+        if (clearButton) {
+            clearButton.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                clearAllNotifications();
             });
         }
 

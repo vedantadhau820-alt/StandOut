@@ -1,235 +1,240 @@
 /**
- * StandOut automatic service-worker updater.
+ * StandOut Notifications feature.
  *
- * Inspired by the supplied working pattern:
- * - Attach updatefound/statechange listeners as soon as possible.
- * - Show an update indicator as soon as an installing worker is detected.
- * - Use controllerchange as the authoritative signal that the new worker
- *   controls this page, then reload exactly once.
- * - Keep a visible, honest progress indicator. The percentage represents
- *   app-shell assets processed by the service worker, not downloaded bytes.
+ * Owns notification persistence, unread badge state, drawer rendering and
+ * transient smart notifications. Legacy global names are exposed deliberately
+ * because existing features and inline HTML handlers still call them.
+ *
+ * Existing persistence contract is unchanged:
+ *   appNotifications: JSON array of { title, msg, time }
+ *   lastNotifCount:   numeric string representing the read boundary
  */
-export function registerServiceWorker({
-    navigatorRef = globalThis.navigator,
-    windowRef = globalThis.window,
-    documentRef = globalThis.document,
-    logger = globalThis.console,
-    updateIntervalMs = 60_000,
-    updateThrottleMs = 5_000
-} = {}) {
-    const serviceWorker = navigatorRef?.serviceWorker;
-    if (!serviceWorker || !windowRef?.addEventListener) return false;
+export function initializeNotifications({ storage, dom }) {
+    const local = storage.local;
 
-    const hadControllerAtStartup = Boolean(serviceWorker.controller);
-    let started = false;
-    let registration = null;
-    let checkingUpdate = false;
-    let lastUpdateCheckAt = 0;
-    let reloadingForUpdate = false;
-    let progressBanner = null;
-    const trackedRegistrations = new WeakSet();
-    const trackedWorkers = new WeakSet();
+    // The Notifications feature owns its state. Keep the established global
+    // accessor as a compatibility surface for backup, restore, and older code.
+    let notificationsState = [];
+    try {
+        const saved = local.getJSON("appNotifications", []);
+        notificationsState = Array.isArray(saved) ? saved : [];
+    } catch (error) {
+        console.warn("[StandOut Notifications] Could not load saved notifications:", error);
+    }
 
-    const removeProgressUI = () => {
-        documentRef?.getElementById?.("standout-update-progress")?.remove?.();
-        progressBanner = null;
-    };
-
-    const setProgressUI = (percent, message) => {
-        // Never show an update banner for a first-ever installation.
-        if (!hadControllerAtStartup || !documentRef?.createElement || !documentRef?.body) return;
-
-        if (!progressBanner || !documentRef.getElementById?.("standout-update-progress")) {
-            progressBanner = documentRef.createElement("section");
-            progressBanner.id = "standout-update-progress";
-            progressBanner.setAttribute?.("role", "status");
-            progressBanner.setAttribute?.("aria-live", "polite");
-            progressBanner.style.cssText = [
-                "position:fixed", "top:12px", "left:50%", "transform:translateX(-50%)",
-                "width:min(520px,calc(100% - 24px))", "box-sizing:border-box", "z-index:100000",
-                "padding:13px 16px", "border-radius:12px", "background:#172554", "color:#fff",
-                "box-shadow:0 8px 28px rgba(0,0,0,.25)", "font:500 14px/1.4 system-ui,sans-serif"
-            ].join(";");
-
-            const label = documentRef.createElement("div");
-            label.id = "standout-update-progress-label";
-            label.style.cssText = "margin-bottom:9px";
-
-            const track = documentRef.createElement("div");
-            track.style.cssText = "height:7px;width:100%;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.22)";
-
-            const fill = documentRef.createElement("div");
-            fill.id = "standout-update-progress-fill";
-            fill.style.cssText = "height:100%;width:35%;border-radius:99px;background:#60a5fa;animation:standout-update-progress 1.25s ease-in-out infinite";
-            track.appendChild(fill);
-
-            const percentLabel = documentRef.createElement("div");
-            percentLabel.id = "standout-update-progress-percent";
-            percentLabel.style.cssText = "margin-top:6px;text-align:right;font-size:12px;color:#bfdbfe";
-            percentLabel.textContent = "Preparing…";
-
-            const style = documentRef.createElement("style");
-            style.textContent = "@keyframes standout-update-progress{0%{transform:translateX(-115%)}100%{transform:translateX(300%)}}";
-            (documentRef.head || documentRef.body).appendChild(style);
-
-            progressBanner.append(label, track, percentLabel);
-            documentRef.body.appendChild(progressBanner);
+    Object.defineProperty(window, "appNotifications", {
+        configurable: false,
+        enumerable: true,
+        get() {
+            return notificationsState;
+        },
+        set(value) {
+            notificationsState = Array.isArray(value) ? value : [];
         }
+    });
 
-        const label = documentRef.getElementById?.("standout-update-progress-label");
-        const fill = documentRef.getElementById?.("standout-update-progress-fill");
-        const percentLabel = documentRef.getElementById?.("standout-update-progress-percent");
-        if (label) label.textContent = message;
+    function getNotifications() {
+        return Array.isArray(window.appNotifications)
+            ? window.appNotifications
+            : [];
+    }
 
-        if (percent === null || percent === undefined || !Number.isFinite(Number(percent))) {
-            if (fill) {
-                fill.style.width = "35%";
-                fill.style.animation = "standout-update-progress 1.25s ease-in-out infinite";
-            }
-            if (percentLabel) percentLabel.textContent = "Downloading…";
+    function setNotifications(notifications) {
+        window.appNotifications = Array.isArray(notifications) ? notifications : [];
+    }
+
+    function saveNotifications() {
+        local.setJSON("appNotifications", getNotifications());
+    }
+
+    function updateNotificationBadge() {
+        const badge = dom.byId("notifyBadge");
+        if (!badge) return;
+
+        const lastCount = parseInt(local.get("lastNotifCount"), 10) || 0;
+        const unread = getNotifications().length - lastCount;
+
+        if (unread <= 0) {
+            badge.style.display = "none";
+        } else {
+            badge.style.display = "inline-block";
+            badge.textContent = unread;
+        }
+    }
+
+    function pushNotification(title, msg) {
+        const notifications = getNotifications();
+        notifications.unshift({
+            title,
+            msg,
+            time: new Date().toLocaleString()
+        });
+
+        setNotifications(notifications);
+        updateNotificationBadge();
+        saveNotifications();
+    }
+
+    function renderNotifications() {
+        const container = dom.byId("notificationList");
+        if (!container) return;
+
+        container.replaceChildren();
+        const notifications = getNotifications();
+
+        if (notifications.length === 0) {
+            const empty = document.createElement("p");
+            empty.style.opacity = "0.7";
+            empty.style.textAlign = "center";
+            empty.textContent = "No notifications";
+            container.appendChild(empty);
             return;
         }
 
-        const safePercent = Math.max(0, Math.min(100, Math.round(Number(percent))));
-        if (fill) {
-            fill.style.animation = "none";
-            fill.style.width = `${safePercent}%`;
-        }
-        if (percentLabel) percentLabel.textContent = `${safePercent}% of app files processed`;
-    };
+        notifications.forEach((notification) => {
+            const card = document.createElement("div");
+            card.className = "notification-card";
 
-    const handleServiceWorkerMessage = event => {
-        const data = event?.data;
-        if (!data || typeof data !== "object") return;
+            const title = document.createElement("strong");
+            title.textContent = notification.title ?? "";
 
-        if (data.type === "STANDOUT_UPDATE_START") {
-            setProgressUI(0, "A new StandOut version was found. Starting update…");
-        } else if (data.type === "STANDOUT_UPDATE_PROGRESS") {
-            setProgressUI(data.percent, `Updating StandOut… ${data.completed}/${data.total} files processed`);
-        } else if (data.type === "STANDOUT_UPDATE_READY") {
-            setProgressUI(100, "Update downloaded. Applying new version…");
-        } else if (data.type === "STANDOUT_UPDATE_FAILED") {
-            setProgressUI(null, "Update could not finish. StandOut will retry automatically.");
-        }
-    };
+            const message = document.createElement("span");
+            message.textContent = notification.msg ?? "";
 
-    const handleControllerChange = () => {
-        // Ignore first installation; reload only when replacing an existing app worker.
-        if (!hadControllerAtStartup || reloadingForUpdate) return;
-        reloadingForUpdate = true;
-        setProgressUI(100, "Update applied. Reloading StandOut…");
-        const reload = () => windowRef.location?.reload?.();
-        if (typeof windowRef.setTimeout === "function") windowRef.setTimeout(reload, 180);
-        else reload();
-    };
+            const time = document.createElement("span");
+            time.className = "notification-time";
+            time.textContent = notification.time ?? "";
 
-    // Register listeners before registration/update can trigger installation.
-    serviceWorker.addEventListener?.("message", handleServiceWorkerMessage);
-    serviceWorker.addEventListener?.("controllerchange", handleControllerChange);
-
-    const trackWorker = worker => {
-        if (!worker || trackedWorkers.has(worker)) return;
-        trackedWorkers.add(worker);
-
-        if (worker.state === "installing") {
-            setProgressUI(null, "A new StandOut version was found. Updating app…");
-        }
-
-        worker.addEventListener?.("statechange", () => {
-            if (worker.state === "installing") {
-                setProgressUI(null, "Downloading StandOut update…");
-            } else if (worker.state === "installed" && hadControllerAtStartup) {
-                setProgressUI(100, "Download complete. Applying StandOut update…");
-                // Safe even if the worker also calls skipWaiting() itself.
-                worker.postMessage?.("SKIP_WAITING");
-            } else if (worker.state === "redundant" && hadControllerAtStartup && !reloadingForUpdate) {
-                setProgressUI(null, "Update was interrupted. StandOut will retry automatically.");
-            }
+            card.append(title, document.createElement("br"), message, time);
+            container.appendChild(card);
         });
-    };
-
-    const attachRegistration = candidate => {
-        if (!candidate || trackedRegistrations.has(candidate)) return;
-        trackedRegistrations.add(candidate);
-
-        // This is the key lifecycle from the supplied example.
-        candidate.addEventListener?.("updatefound", () => {
-            const installingWorker = candidate.installing;
-            if (!installingWorker) return;
-            setProgressUI(null, "A new StandOut version was found. Updating app…");
-            trackWorker(installingWorker);
-        });
-
-        // Recover workers whose updatefound event happened before registration resolved.
-        if (candidate.installing) trackWorker(candidate.installing);
-        if (candidate.waiting && hadControllerAtStartup) {
-            setProgressUI(100, "Update downloaded. Applying new version…");
-            candidate.waiting.postMessage?.("SKIP_WAITING");
-        }
-    };
-
-    const checkForUpdate = async ({ force = false } = {}) => {
-        if (!registration || typeof registration.update !== "function" || checkingUpdate) return;
-        const now = Date.now();
-        if (!force && now - lastUpdateCheckAt < updateThrottleMs) return;
-        checkingUpdate = true;
-        lastUpdateCheckAt = now;
-        try {
-            await registration.update();
-            if (registration.installing) trackWorker(registration.installing);
-            if (registration.waiting && hadControllerAtStartup) {
-                setProgressUI(100, "Update downloaded. Applying new version…");
-                registration.waiting.postMessage?.("SKIP_WAITING");
-            }
-        } catch (error) {
-            logger?.warn?.("StandOut update check failed; it will retry:", error);
-        } finally {
-            checkingUpdate = false;
-        }
-    };
-
-    const start = async () => {
-        if (started) return;
-        started = true;
-
-        try {
-            // Attach to an existing registration before register() performs its own check.
-            const existing = await serviceWorker.getRegistration?.();
-            if (existing) {
-                registration = existing;
-                attachRegistration(existing);
-            }
-
-            registration = await navigatorRef.serviceWorker.register("./service-worker.js", { updateViaCache: "none" });
-            attachRegistration(registration);
-            logger?.log?.("Service worker registered:", registration.scope);
-
-            // The register() call itself checks for updates; this explicit check
-            // forces a fresh script check and bypasses the browser's HTTP cache.
-            await checkForUpdate({ force: true });
-
-            if (typeof windowRef.setInterval === "function") {
-                windowRef.setInterval(() => checkForUpdate(), updateIntervalMs);
-            }
-            windowRef.addEventListener("focus", () => checkForUpdate());
-            windowRef.addEventListener("pageshow", () => checkForUpdate());
-            documentRef?.addEventListener?.("visibilitychange", () => {
-                if (!documentRef.visibilityState || documentRef.visibilityState === "visible") checkForUpdate();
-            });
-        } catch (error) {
-            logger?.error?.("Service worker registration failed:", error);
-        }
-    };
-
-    // This module is loaded near the end of index.html. Start immediately rather
-    // than waiting for window.load, so updatefound/message events are not missed.
-    if (documentRef?.readyState === "loading") {
-        documentRef.addEventListener?.("DOMContentLoaded", () => { void start(); }, { once: true });
-    } else {
-        void start();
     }
 
-    return true;
-}
+    function clearAllNotifications() {
+        setNotifications([]);
+        // Persist the empty state instead of removing the key. This prevents a
+        // stale notification snapshot from being restored by another startup path.
+        local.setJSON("appNotifications", []);
+        local.set("lastNotifCount", "0");
 
-if (typeof window !== "undefined" && typeof navigator !== "undefined") registerServiceWorker();
+        const list = dom.byId("notificationList");
+        if (list) {
+            const empty = document.createElement("p");
+            empty.style.opacity = "0.6";
+            empty.textContent = "No notifications";
+            list.replaceChildren(empty);
+        }
+
+        const badge = dom.byId("notifyBadge");
+        if (badge) {
+            badge.style.display = "none";
+            badge.textContent = "";
+        }
+
+        console.log("All notifications cleared.");
+    }
+
+    function showSmartNotification(title, message) {
+        const popup = dom.byId("smartNotify");
+        const titleElement = dom.byId("notifyTitle");
+        const messageElement = dom.byId("notifyMsg");
+        if (!popup || !titleElement || !messageElement) return;
+
+        titleElement.innerText = title;
+        messageElement.innerText = message;
+
+        popup.style.display = "block";
+        popup.style.opacity = 0;
+        popup.style.transform = "translateY(-40px)";
+
+        setTimeout(() => {
+            popup.style.transition = "all 0.4s ease";
+            popup.style.opacity = 1;
+            popup.style.transform = "translateY(0)";
+        }, 20);
+
+        setTimeout(() => {
+            popup.style.opacity = 0;
+            popup.style.transform = "translateY(-40px)";
+            setTimeout(() => {
+                popup.style.display = "none";
+            }, 400);
+        }, 3000);
+    }
+
+    function bindDrawer() {
+        const bell = dom.byId("notifyBell");
+        const drawer = dom.byId("notificationDrawer");
+
+        if (bell) {
+            bell.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                if (!drawer) return;
+
+                const isOpen = drawer.classList.contains("notification-open");
+                if (!isOpen) {
+                    renderNotifications();
+                    drawer.classList.add("notification-open");
+
+                    const badge = dom.byId("notifyBadge");
+                    if (badge) {
+                        badge.style.display = "none";
+                        badge.textContent = "";
+                    }
+
+                    local.set("lastNotifCount", getNotifications().length);
+                    updateNotificationBadge();
+                    saveNotifications();
+                } else {
+                    drawer.classList.remove("notification-open");
+                }
+            });
+        }
+
+        // The drawer intentionally stops click propagation. Therefore the Clear
+        // button must be handled here directly; document-level delegation cannot
+        // receive its click while it is inside the drawer.
+        const clearButton = drawer?.querySelector?.(".notification-clear-btn");
+        if (clearButton) {
+            clearButton.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                clearAllNotifications();
+            });
+        }
+
+        if (drawer) {
+            drawer.addEventListener("click", (event) => event.stopPropagation());
+        }
+
+        document.addEventListener("click", () => {
+            if (drawer && drawer.style.display === "block") {
+                drawer.style.display = "none";
+            }
+        });
+    }
+
+    // Keep the names used by existing classic scripts and inline HTML handlers.
+    Object.assign(window, {
+        saveNotifications,
+        pushNotification,
+        clearAllNotifications,
+        updateNotificationBadge,
+        renderNotifications,
+        showSmartNotification
+    });
+
+    bindDrawer();
+    window.addEventListener("load", updateNotificationBadge);
+
+    return Object.freeze({
+        save: saveNotifications,
+        push: pushNotification,
+        clear: clearAllNotifications,
+        updateBadge: updateNotificationBadge,
+        render: renderNotifications,
+        show: showSmartNotification,
+        getAll: getNotifications
+    });
+}
