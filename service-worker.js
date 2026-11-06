@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.73-card-pinning-and-hardcore-delete-again-and-again";
+const CACHE_NAME = "standout-v2.81-in-app-update-prompt";
 
 // Resolve app assets against the service worker's registration scope. This
 // supports both a domain-root deployment and a project subfolder deployment.
@@ -374,7 +374,8 @@ self.addEventListener(
     );
 
 
-    self.skipWaiting();
+    // Do not activate an update automatically. The app presents an update
+    // prompt and sends SKIP_WAITING only after the user selects "Update now".
 
   }
 );
