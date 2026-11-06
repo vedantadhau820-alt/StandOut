@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.89-update-indicator-race-fix";
+const CACHE_NAME = "standout-v2.90-update-indicator-race-fix";
 
 // Resolve app assets against the service worker's registration scope. This
 // supports both a domain-root deployment and a project subfolder deployment.
