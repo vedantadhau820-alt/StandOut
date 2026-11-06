@@ -48,6 +48,77 @@ Object.defineProperties(window, {
     }
 });
 
+const PINNED_CARDS_STORAGE_KEY = "pinnedCards";
+const MAX_PINNED_CARDS = 4;
+const PIN_CARD_COST = 2;
+
+function getPinnedCardIds() {
+    try {
+        const stored = JSON.parse(localStorage.getItem(PINNED_CARDS_STORAGE_KEY) || "[]");
+        return Array.isArray(stored)
+            ? [...new Set(stored.filter(id => typeof id === "string" && id.trim()))].slice(0, MAX_PINNED_CARDS)
+            : [];
+    } catch (error) {
+        console.error("[Cards] Could not load pinned cards:", error);
+        return [];
+    }
+}
+
+function togglePinnedCard(cardId) {
+    const id = String(cardId || "");
+    if (!id || !window.ownedCards?.[id]) return;
+
+    const pinned = getPinnedCardIds();
+    if (pinned.includes(id)) {
+        try {
+            localStorage.setItem(PINNED_CARDS_STORAGE_KEY, JSON.stringify(pinned.filter(item => item !== id)));
+            renderMyCards();
+        } catch (error) {
+            console.error("[Cards] Could not unpin card:", error);
+            window.customAlert?.("Could not save this change. Please try again.");
+        }
+        return;
+    }
+
+    if (pinned.length >= MAX_PINNED_CARDS) {
+        window.customAlert?.("You can pin up to 4 cards. Unpin a card before pinning another.");
+        return;
+    }
+
+    if ((Number(window.completedMissions) || 0) < PIN_CARD_COST) {
+        window.customAlert?.("You need 2 Improvement Points to pin a card.");
+        return;
+    }
+
+    if (!points.spend(PIN_CARD_COST)) {
+        window.customAlert?.("Not enough Improvement Points to pin this card.");
+        return;
+    }
+
+    try {
+        localStorage.setItem(PINNED_CARDS_STORAGE_KEY, JSON.stringify([...pinned, id]));
+        renderMyCards();
+    } catch (error) {
+        console.error("[Cards] Could not save pinned card:", error);
+        // Roll back the charge only when the pin operation itself failed to persist.
+        try { points.add(PIN_CARD_COST); } catch (rollbackError) {
+            console.error("[Cards] Could not roll back failed pin charge:", rollbackError);
+        }
+        window.customAlert?.("Could not save this pin. Your 2 Improvement Points have been restored.");
+    }
+}
+
+function createPinButton(card) {
+    const pinned = getPinnedCardIds().includes(card.id);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `card-pin-button${pinned ? " is-pinned" : ""}`;
+    button.textContent = pinned ? "Pinned · Unpin" : "Pin · 2 pts";
+    button.setAttribute("aria-pressed", String(pinned));
+    button.addEventListener("click", () => togglePinnedCard(card.id));
+    return button;
+}
+
 function getSafeCardImageSource(value) {
     if (typeof value !== "string" || !value || value.length > 2_000_000 || /[\u0000-\u001f\u007f]/.test(value)) {
         return "";
@@ -144,6 +215,10 @@ function createCardElement(card, { owned = false, canBuy = false, mintDate = "" 
         cardCost.className = "mint-date";
         cardCost.textContent = `Card Cost ${cost} pts`;
         body.appendChild(cardCost);
+    }
+
+    if (owned) {
+        body.appendChild(createPinButton(card));
     }
 
     cardElement.appendChild(body);
@@ -355,6 +430,11 @@ function renderMyCards() {
 
     if (!container) return;
 
+    const pinnedIds = getPinnedCardIds();
+    const pinCounter = document.getElementById("pinnedCardsCounter");
+    if (pinCounter) {
+        pinCounter.textContent = `Pinned ${pinnedIds.length}/${MAX_PINNED_CARDS} · Pinning costs 2 Improvement Points. Unpin anytime; no refund.`;
+    }
 
     /* =====================================================
        LOAD OWNED CARDS
@@ -405,11 +485,12 @@ function renderMyCards() {
                     card.id
                     ]
             )
-            .sort(
-                (a, b) =>
-                    window.gradeRank(b.grade) -
-                    window.gradeRank(a.grade)
-            );
+            .sort((a, b) => {
+                const aPinned = pinnedIds.includes(a.id) ? 1 : 0;
+                const bPinned = pinnedIds.includes(b.id) ? 1 : 0;
+                if (aPinned !== bPinned) return bPinned - aPinned;
+                return window.gradeRank(b.grade) - window.gradeRank(a.grade);
+            });
 
 
     /* =====================================================
@@ -548,6 +629,7 @@ function renderMyCards() {
             meta.className = "season-owned-card-meta";
             meta.textContent = `Minted on ${mintedAt}`;
             body.append(meta);
+            body.append(createPinButton(card));
 
             art.append(body);
             div.append(art);
@@ -687,6 +769,7 @@ window.showMintedCard = showMintedCard;
 window.closeMintedCard = closeMintedCard;
 window.renderMarketplace = renderMarketplace;
 window.renderMyCards = renderMyCards;
+window.togglePinnedCard = togglePinnedCard;
 window.buyCard = buyCard;
 window.isExpired = isExpired;
 window.formatDate = formatDate;
@@ -704,6 +787,8 @@ export const cardsFeature = Object.freeze({
     closeMintedCard,
     renderMarketplace,
     renderMyCards,
+    togglePinnedCard,
+    getPinnedCardIds,
     buyCard,
     isExpired,
     formatDate,
