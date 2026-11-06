@@ -1,3 +1,5 @@
+import { DAILY_IMPROVEMENT_LIMIT, shouldApplyMissionFailurePenalty } from "./progression.js";
+
 /**
  * Mission scheduling feature.
  *
@@ -82,6 +84,7 @@ function resetRecurringMission(li, currentKey) {
     li.classList.remove("completed", "remove");
 
     delete li.dataset.deducted;
+    delete li.dataset.penaltySuppressed;
     delete li.dataset.overdueNotified;
     delete li.dataset.warned;
     delete li.dataset.hardcorePunished;
@@ -151,6 +154,14 @@ function shiftRecurringDeadline(li, repeat) {
 
 function processMissionDeadline(li, now = Date.now()) {
     if (!li) return false;
+
+    // Keep the normal-task eligibility window aligned with the IST daily cycle,
+    // even when the deadline poll runs before the regular reset interval.
+    try {
+        window.enforceDailyReset?.();
+    } catch (error) {
+        console.warn("[StandOut] Daily reset check failed during deadline processing:", error);
+    }
     const deadline = li.dataset.deadline;
     if (!deadline || li.dataset.completed === "true") return false;
 
@@ -206,17 +217,34 @@ function processMissionDeadline(li, now = Date.now()) {
     }
 
     if (!li.dataset.deducted) {
+        const normalDailyCount = Math.max(0, Number(window.dailyImprovementCount) || 0);
+
+        // Normal missions stop affecting IP after the normal daily reward cap
+        // has been reached. Mark the occurrence handled so it cannot be
+        // penalized later after midnight or after a reload.
+        if (!shouldApplyMissionFailurePenalty({
+            isHardcore: false,
+            dailyCount: normalDailyCount
+        })) {
+            li.dataset.deducted = "true";
+            li.dataset.penaltySuppressed = "daily-limit";
+            window.recordMissionPerformance?.(li, "missed", 0);
+            window.saveData?.();
+            window.updateMissionProgressCounters?.();
+            return true;
+        }
+
         const pointsBefore = Number(window.completedMissions) || 0;
         window.completedMissions = Math.max(0, pointsBefore - 1);
         li.dataset.deducted = "true";
 
         const pointsDelta = window.completedMissions - pointsBefore;
-        window.recordMissionPerformance(li, "missed", pointsDelta);
+        window.recordMissionPerformance?.(li, "missed", pointsDelta);
 
         const counter = document.getElementById("missionCounter");
         if (counter) counter.textContent = window.completedMissions;
         window.localStorage.setItem("completedMissions", window.completedMissions);
-        window.saveData();
+        window.saveData?.();
     }
 
     return true;

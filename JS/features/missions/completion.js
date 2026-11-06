@@ -2,7 +2,7 @@
  * Mission completion and reward orchestration.
  * Runtime state and legacy services are accessed through explicit window bridges.
  */
-import { DAILY_IMPROVEMENT_LIMIT } from "./progression.js";
+import { canEarnMissionImprovementPoint } from "./progression.js";
 
 const COMPLETED_MISSION_COUNT_KEY = "completedMissionCount";
 let completedMissionCountState = 0;
@@ -166,14 +166,23 @@ function completeMission(btn) {
        SUCCESSFUL COMPLETION
     ===================================================== */
 
-    const canEarnImprovementPoint =
-    window.dailyImprovementCount < DAILY_IMPROVEMENT_LIMIT;
+    const isHardcore = li.dataset.hardcore === "true";
 
-if (canEarnImprovementPoint) {
-    window.completedMissionCount++;
-    window.dailyImprovementCount++;
-    window.completedMissions++;
-}
+    // Hardcore rewards are independent of the normal daily 10-point cap.
+    // Only normal missions consume the normal daily reward allowance.
+    const canEarnImprovementPoint = canEarnMissionImprovementPoint({
+        isHardcore,
+        dailyCount: window.dailyImprovementCount
+    });
+
+    if (canEarnImprovementPoint) {
+        window.completedMissionCount++;
+        window.completedMissions++;
+
+        if (!isHardcore) {
+            window.dailyImprovementCount++;
+        }
+    }
 
 
 // Audio and history are supporting effects; they must not prevent the
@@ -185,7 +194,7 @@ try {
 }
 
 try {
-    window.recordMissionPerformance?.(li, "completed", 1);
+    window.recordMissionPerformance?.(li, "completed", canEarnImprovementPoint ? 1 : 0);
 } catch (error) {
     console.warn("[StandOut] Mission history could not be recorded:", error);
 }
@@ -332,19 +341,21 @@ try {
     }
 
 
-   window.showPopup?.(
-    canEarnImprovementPoint
-        ? (
-            repeat === "none"
-                ? "Mission completed! Improvement point gained."
-                : "Mission completed! It will return for the next occurrence."
-        )
-        : (
-            repeat === "none"
-                ? "Mission completed! No Improvement Point gained. Daily Improvement Limit Reached."
-                : "Mission completed! No Improvement Point gained. Daily Improvement Limit Reached. It will return for the next occurrence."
-        )
-);
+    window.showPopup?.(
+        canEarnImprovementPoint
+            ? (
+                isHardcore
+                    ? "🔥 Hardcore mission completed! +1 Improvement Point."
+                    : repeat === "none"
+                        ? "Mission completed! Improvement point gained."
+                        : "Mission completed! It will return for the next occurrence."
+            )
+            : (
+                repeat === "none"
+                    ? "Mission completed! No Improvement Point gained. Daily normal-task limit reached."
+                    : "Mission completed! No Improvement Point gained. Daily normal-task limit reached. It will return for the next occurrence."
+            )
+    );
 
 
     window.saveData?.();

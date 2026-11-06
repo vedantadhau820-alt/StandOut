@@ -16,7 +16,24 @@ function buildMissionMilestones() {
 
 export const missionMilestones = buildMissionMilestones();
 
+/**
+ * Normal missions share one daily IP allowance for rewards and failure
+ * penalties. Hardcore missions are intentionally exempt from this cap.
+ */
+export function canEarnMissionImprovementPoint({ isHardcore = false, dailyCount = 0 } = {}) {
+    if (isHardcore) return true;
+    return Math.max(0, Number(dailyCount) || 0) < DAILY_IMPROVEMENT_LIMIT;
+}
+
+export function shouldApplyMissionFailurePenalty({ isHardcore = false, dailyCount = 0 } = {}) {
+    if (isHardcore) return true;
+    return Math.max(0, Number(dailyCount) || 0) < DAILY_IMPROVEMENT_LIMIT;
+}
+
+
 export const missionProgression = Object.freeze({
     DAILY_IMPROVEMENT_LIMIT,
-    missionMilestones
+    missionMilestones,
+    canEarnMissionImprovementPoint,
+    shouldApplyMissionFailurePenalty
 });

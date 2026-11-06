@@ -567,8 +567,8 @@ function updateMissionProgressCounters({
     if (capCount) capCount.textContent = `${currentDailyCount} / ${cap}`;
     if (capRemaining) {
         capRemaining.textContent = remaining === 0
-            ? "Daily cap reached — no more points today"
-            : `${remaining} task${remaining === 1 ? "" : "s"} left to earn points`;
+            ? "Normal-task IP cap reached — Hardcore rewards remain unlimited"
+            : `${remaining} normal task${remaining === 1 ? "" : "s"} left to earn IP`;
     }
     if (capBar) capBar.style.width = `${Math.min(100, (currentDailyCount / cap) * 100)}%`;
     if (capTrack) {
@@ -696,4 +696,3 @@ window.syncAchievements = syncAchievements;
 window.renderAchievements = renderAchievements;
 window.unlockAchievement = unlockAchievement;
 window.showAchievementPopup = showAchievementPopup;
-
