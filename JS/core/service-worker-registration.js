@@ -14,7 +14,7 @@ export function registerServiceWorker({
     windowRef = globalThis.window,
     documentRef = globalThis.document,
     logger = globalThis.console,
-    updateIntervalMs = 60_000,
+    updateIntervalMs = 20_000,
     updateThrottleMs = 5_000
 } = {}) {
     const serviceWorker = navigatorRef?.serviceWorker;
