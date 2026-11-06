@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.86-auto-update-progress";
+const CACHE_NAME = "standout-v2.87-auto-update-progress";
 
 // Resolve app assets against the service worker's registration scope. This
 // supports both a domain-root deployment and a project subfolder deployment.
