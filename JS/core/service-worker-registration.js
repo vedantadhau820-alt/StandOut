@@ -1,21 +1,20 @@
 /**
- * Register the StandOut service worker and manage user-approved updates.
+ * StandOut automatic service-worker updater.
  *
- * Update lifecycle guarantees:
- * - Observe an existing registration before requesting an update (avoids the
- *   updatefound race that can occur while register()/update() is resolving).
- * - Inspect already-installing and already-waiting workers after attaching.
- * - Check on startup, periodically, on focus, pageshow, and tab visibility.
- * - Reload only after the user explicitly selects "Update now".
+ * Behavior:
+ * - Checks for a new worker as soon as the app starts.
+ * - Checks again periodically and when the app becomes visible/focused.
+ * - Displays download progress sent by the installing service worker.
+ * - Automatically activates the new worker after its install completes.
+ * - The activating service worker navigates existing tabs after activation.
  */
 export function registerServiceWorker({
     navigatorRef = globalThis.navigator,
     windowRef = globalThis.window,
     documentRef = globalThis.document,
-    locationRef = globalThis.location,
     logger = globalThis.console,
     updateIntervalMs = 60_000,
-    updateThrottleMs = 15_000
+    updateThrottleMs = 10_000
 } = {}) {
     const serviceWorker = navigatorRef?.serviceWorker;
     if (!serviceWorker || !windowRef?.addEventListener) return false;
@@ -26,141 +25,105 @@ export function registerServiceWorker({
         if (started) return;
         started = true;
 
+        const hadControllerAtStartup = Boolean(serviceWorker.controller);
         let registration = null;
-        let reloading = false;
-        let userApprovedActivation = false;
-        let dismissedForSession = false;
         let checkingUpdate = false;
         let lastUpdateCheckAt = 0;
-
+        let updateInProgress = false;
+        let progressBanner = null;
         const trackedRegistrations = new WeakSet();
         const trackedWorkers = new WeakSet();
 
-        const reloadOnce = () => {
-            if (!userApprovedActivation || reloading) return;
-            reloading = true;
-            locationRef?.reload?.();
-        };
+        const setProgressUI = (percent, message) => {
+            if (!hadControllerAtStartup || !documentRef?.createElement || !documentRef?.body) return;
 
-        serviceWorker.addEventListener?.("controllerchange", reloadOnce);
-
-        const removeBanner = () => {
-            documentRef?.getElementById?.("standout-update-banner")?.remove?.();
-        };
-
-        const showBanner = (mode, worker = null) => {
-            if (dismissedForSession || !documentRef?.createElement || !documentRef?.body) return;
-
-            let banner = documentRef.getElementById?.("standout-update-banner");
-            if (!banner) {
-                banner = documentRef.createElement("section");
-                banner.id = "standout-update-banner";
-                banner.setAttribute?.("role", "status");
-                banner.setAttribute?.("aria-live", "polite");
-                banner.style.cssText = [
+            if (!progressBanner || !documentRef.getElementById?.("standout-update-progress")) {
+                progressBanner = documentRef.createElement("section");
+                progressBanner.id = "standout-update-progress";
+                progressBanner.setAttribute?.("role", "status");
+                progressBanner.setAttribute?.("aria-live", "polite");
+                progressBanner.style.cssText = [
                     "position:fixed", "top:12px", "left:50%", "transform:translateX(-50%)",
-                    "width:min(560px, calc(100% - 24px))", "box-sizing:border-box",
-                    "z-index:100000", "display:flex", "align-items:center", "justify-content:space-between",
-                    "gap:12px", "flex-wrap:wrap", "padding:14px 16px", "border-radius:12px",
-                    "background:#172554", "color:#fff", "box-shadow:0 8px 28px rgba(0,0,0,.25)",
-                    "font:500 14px/1.4 system-ui,sans-serif"
+                    "width:min(520px,calc(100% - 24px))", "box-sizing:border-box", "z-index:100000",
+                    "padding:14px 16px", "border-radius:12px", "background:#172554", "color:#fff",
+                    "box-shadow:0 8px 28px rgba(0,0,0,.25)", "font:500 14px/1.4 system-ui,sans-serif"
                 ].join(";");
-                documentRef.body.appendChild(banner);
+
+                const label = documentRef.createElement("div");
+                label.id = "standout-update-progress-label";
+                label.style.cssText = "margin-bottom:9px";
+
+                const track = documentRef.createElement("div");
+                track.style.cssText = "height:7px;width:100%;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.22)";
+
+                const fill = documentRef.createElement("div");
+                fill.id = "standout-update-progress-fill";
+                fill.style.cssText = "height:100%;width:0%;border-radius:99px;background:#60a5fa;transition:width .18s ease";
+                track.appendChild(fill);
+
+                const percentLabel = documentRef.createElement("div");
+                percentLabel.id = "standout-update-progress-percent";
+                percentLabel.style.cssText = "margin-top:6px;text-align:right;font-size:12px;color:#bfdbfe";
+                percentLabel.textContent = "0%";
+
+                progressBanner.append(label, track, percentLabel);
+                documentRef.body.appendChild(progressBanner);
             }
 
-            banner.replaceChildren?.();
-            const message = documentRef.createElement("span");
-            message.textContent = mode === "ready"
-                ? "A new StandOut version is ready."
-                : "A StandOut update is downloading…";
-            banner.appendChild(message);
-
-            if (mode !== "ready") return;
-
-            const actions = documentRef.createElement("div");
-            actions.style.cssText = "display:flex;gap:8px;align-items:center;";
-
-            const updateButton = documentRef.createElement("button");
-            updateButton.type = "button";
-            updateButton.textContent = "Update now";
-            updateButton.style.cssText = "border:0;border-radius:8px;padding:9px 13px;background:#60a5fa;color:#0b1220;font-weight:700;cursor:pointer;";
-            updateButton.addEventListener("click", () => {
-                const waitingWorker = registration?.waiting || worker;
-                if (!waitingWorker) {
-                    updateButton.disabled = false;
-                    updateButton.textContent = "Update now";
-                    return;
-                }
-
-                userApprovedActivation = true;
-                updateButton.disabled = true;
-                updateButton.textContent = "Updating…";
-
-                // controllerchange is the primary reload signal. Worker state
-                // is also observed as a fallback for browsers with delayed events.
-                waitingWorker.addEventListener?.("statechange", () => {
-                    if (waitingWorker.state === "activated") reloadOnce();
-                });
-                waitingWorker.postMessage("SKIP_WAITING");
-            }, { once: true });
-
-            const laterButton = documentRef.createElement("button");
-            laterButton.type = "button";
-            laterButton.textContent = "Later";
-            laterButton.style.cssText = "border:1px solid rgba(255,255,255,.35);border-radius:8px;padding:9px 12px;background:transparent;color:#fff;cursor:pointer;";
-            laterButton.addEventListener("click", () => {
-                dismissedForSession = true;
-                removeBanner();
-            }, { once: true });
-
-            actions.append(updateButton, laterButton);
-            banner.appendChild(actions);
+            const label = documentRef.getElementById?.("standout-update-progress-label");
+            const fill = documentRef.getElementById?.("standout-update-progress-fill");
+            const percentLabel = documentRef.getElementById?.("standout-update-progress-percent");
+            const safePercent = Math.max(0, Math.min(100, Math.round(Number(percent) || 0)));
+            if (label) label.textContent = message;
+            if (fill) fill.style.width = `${safePercent}%`;
+            if (percentLabel) percentLabel.textContent = `${safePercent}%`;
         };
 
-        const announceWaitingWorker = () => {
-            if (registration?.waiting && serviceWorker.controller) {
-                showBanner("ready", registration.waiting);
+        const handleServiceWorkerMessage = event => {
+            const data = event?.data;
+            if (!data || typeof data !== "object") return;
+            if (data.type === "STANDOUT_UPDATE_START") {
+                updateInProgress = true;
+                setProgressUI(0, "A new StandOut version was found. Preparing download…");
+            } else if (data.type === "STANDOUT_UPDATE_PROGRESS") {
+                updateInProgress = true;
+                setProgressUI(data.percent, `Downloading StandOut update… ${data.completed}/${data.total}`);
+            } else if (data.type === "STANDOUT_UPDATE_READY") {
+                updateInProgress = true;
+                setProgressUI(100, "Applying StandOut update…");
+            } else if (data.type === "STANDOUT_UPDATE_FAILED") {
+                updateInProgress = false;
+                setProgressUI(0, "Update could not be completed. StandOut will retry next time.");
             }
         };
 
-        const handleWorkerState = worker => {
-            if (!worker) return;
-            if (worker.state === "installed" && serviceWorker.controller) {
-                showBanner("ready", registration?.waiting || worker);
-            } else if (worker.state === "redundant") {
-                // Do not remove a banner for a different, still-waiting worker.
-                if (!registration?.waiting) removeBanner();
-            } else if (worker.state === "activated") {
-                reloadOnce();
-            }
-        };
-
-        const trackInstallingWorker = worker => {
+        serviceWorker.addEventListener?.("message", handleServiceWorkerMessage);
+        const trackWorker = worker => {
             if (!worker || trackedWorkers.has(worker)) return;
             trackedWorkers.add(worker);
-
-            if (worker.state === "installing" && serviceWorker.controller) {
-                showBanner("downloading", worker);
+            if (worker.state === "installing" && hadControllerAtStartup) {
+                updateInProgress = true;
+                setProgressUI(0, "Preparing StandOut update…");
             }
-
-            worker.addEventListener?.("statechange", () => handleWorkerState(worker));
-            // The worker may already have reached installed before we attached.
-            handleWorkerState(worker);
+            worker.addEventListener?.("statechange", () => {
+                if (worker.state === "installing" && hadControllerAtStartup) {
+                    updateInProgress = true;
+                    setProgressUI(0, "Downloading StandOut update…");
+                }
+            });
         };
 
         const attachRegistration = candidate => {
             if (!candidate || trackedRegistrations.has(candidate)) return;
             trackedRegistrations.add(candidate);
-
-            // Attach before update() and before register() on an existing
-            // registration, so updatefound cannot be missed.
-            candidate.addEventListener?.("updatefound", () => {
-                trackInstallingWorker(candidate.installing);
-            });
-
-            if (candidate.installing) trackInstallingWorker(candidate.installing);
-            if (candidate.waiting && serviceWorker.controller) {
-                showBanner("ready", candidate.waiting);
+            candidate.addEventListener?.("updatefound", () => trackWorker(candidate.installing));
+            // Inspect current state after listener attachment; updatefound may
+            // have happened before register() returned.
+            if (candidate.installing) trackWorker(candidate.installing);
+            if (candidate.waiting) {
+                // Recover a worker left waiting by an older version of StandOut.
+                updateInProgress = hadControllerAtStartup;
+                candidate.waiting.postMessage?.("SKIP_WAITING");
             }
         };
 
@@ -168,72 +131,58 @@ export function registerServiceWorker({
             if (!registration || typeof registration.update !== "function" || checkingUpdate) return;
             const now = Date.now();
             if (!force && now - lastUpdateCheckAt < updateThrottleMs) return;
-
             checkingUpdate = true;
             lastUpdateCheckAt = now;
             try {
                 await registration.update();
-                announceWaitingWorker();
-                if (registration.installing) trackInstallingWorker(registration.installing);
+                if (registration.installing) trackWorker(registration.installing);
+                if (registration.waiting) {
+                    updateInProgress = hadControllerAtStartup;
+                    registration.waiting.postMessage?.("SKIP_WAITING");
+                }
             } catch (error) {
-                // Update checks must never prevent the app from starting.
-                logger?.warn?.("StandOut update check failed; will retry later:", error);
+                logger?.warn?.("StandOut update check failed; it will retry:", error);
             } finally {
                 checkingUpdate = false;
             }
         };
 
         try {
-            // Observe an existing registration before register() triggers its
-            // built-in update check. This closes the updatefound timing race.
+            // Attach to an existing registration before register() can trigger
+            // its implicit update check.
             try {
-                const existingRegistration = await serviceWorker.getRegistration?.();
-                if (existingRegistration) {
-                    registration = existingRegistration;
-                    attachRegistration(registration);
+                const existing = await serviceWorker.getRegistration?.();
+                if (existing) {
+                    registration = existing;
+                    attachRegistration(existing);
                 }
             } catch (error) {
-                logger?.warn?.("Could not inspect the existing service worker registration:", error);
+                logger?.warn?.("Could not inspect existing service worker registration:", error);
             }
 
-            const registered = await navigatorRef.serviceWorker.register("./service-worker.js", {
-                updateViaCache: "none"
-            });
-            registration = registered;
+            registration = await navigatorRef.serviceWorker.register("./service-worker.js", { updateViaCache: "none" });
             attachRegistration(registration);
-            logger?.log?.("Service worker registered with scope:", registration.scope);
+            logger?.log?.("Service worker registered:", registration.scope);
 
-            announceWaitingWorker();
+            // Always check immediately when the app opens.
             await checkForUpdate({ force: true });
-            announceWaitingWorker();
 
-            // Check periodically while the app remains open.
             if (typeof windowRef.setInterval === "function") {
                 windowRef.setInterval(() => checkForUpdate(), updateIntervalMs);
             }
-
-            // Re-check when users return to the app or switch back to its tab.
             windowRef.addEventListener("focus", () => checkForUpdate());
             windowRef.addEventListener("pageshow", () => checkForUpdate());
             documentRef?.addEventListener?.("visibilitychange", () => {
-                if (!documentRef.visibilityState || documentRef.visibilityState === "visible") {
-                    checkForUpdate();
-                }
+                if (!documentRef.visibilityState || documentRef.visibilityState === "visible") checkForUpdate();
             });
         } catch (error) {
-            logger?.error?.("Service worker registration/update check failed:", error);
+            logger?.error?.("Service worker registration failed:", error);
         }
     };
 
-    if (documentRef?.readyState === "complete") {
-        void start();
-    } else {
-        windowRef.addEventListener("load", () => { void start(); }, { once: true });
-    }
-
+    if (documentRef?.readyState === "complete") void start();
+    else windowRef.addEventListener("load", () => { void start(); }, { once: true });
     return true;
 }
 
-if (typeof window !== "undefined" && typeof navigator !== "undefined") {
-    registerServiceWorker();
-}
+if (typeof window !== "undefined" && typeof navigator !== "undefined") registerServiceWorker();

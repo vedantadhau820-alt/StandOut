@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.85-reliable-update-lifecycle";
+const CACHE_NAME = "standout-v2.86-auto-update-progress";
 
 // Resolve app assets against the service worker's registration scope. This
 // supports both a domain-root deployment and a project subfolder deployment.
@@ -200,294 +200,140 @@ const BACKGROUND_ASSETS = [
    INSTALL → CACHE APP SHELL
 =========================== */
 
-self.addEventListener(
-  "install",
-  event => {
+self.addEventListener("install", event => {
+  console.log("🟡 SW installing…");
 
-    console.log(
-      "🟡 SW installing..."
-    );
+  event.waitUntil((async () => {
+    const appCache = await caches.open(CACHE_NAME);
+    const fontAwesomeCache = await caches.open(FONT_AWESOME_CACHE);
+    const welcomeCache = await caches.open(WELCOME_CACHE);
+    const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    const total = APP_SHELL.length + FONT_AWESOME_FILES.length + WELCOME_ASSETS.length;
+    let completed = 0;
 
-    event.waitUntil(
+    const broadcast = message => {
+      for (const client of clients) client.postMessage(message);
+    };
+    const reportProgress = () => {
+      completed += 1;
+      broadcast({
+        type: "STANDOUT_UPDATE_PROGRESS",
+        completed,
+        total,
+        percent: Math.round((completed / total) * 100)
+      });
+    };
 
-      (async () => {
+    broadcast({ type: "STANDOUT_UPDATE_START", total });
 
-        /* =====================================================
-           APP SHELL
-        ===================================================== */
+    // Cache each shell asset independently so one optional/missing asset does
+    // not prevent the rest of the application from being updated.
+    await Promise.all(APP_SHELL.map(async path => {
+      try {
+        const assetURL = resolveAppURL(path);
+        const response = await fetch(assetURL, { cache: "no-cache" });
+        if (response.ok) await appCache.put(assetURL, response.clone());
+        else console.warn("⚠️ Shell file unavailable:", path, response.status);
+      } catch (error) {
+        console.warn("⚠️ Shell cache failed:", path, error);
+      } finally {
+        reportProgress();
+      }
+    }));
 
-        const appCache =
-          await caches.open(
-            CACHE_NAME
-          );
+    // Third-party fonts are part of the same visible download progress.
+    for (const url of FONT_AWESOME_FILES) {
+      try {
+        const response = await fetch(url, { mode: "cors", cache: "no-cache" });
+        if (response.ok) await fontAwesomeCache.put(url, response.clone());
+        else console.warn("⚠️ Font Awesome file unavailable:", url, response.status);
+      } catch (error) {
+        console.warn("⚠️ Could not cache Font Awesome:", url, error);
+      } finally {
+        reportProgress();
+      }
+    }
 
-        /*
-         * Cache files individually.
-         *
-         * IMPORTANT:
-         * If one file is missing, the Service Worker
-         * installation will NOT fail.
-         */
+    // Cache welcome assets individually to keep progress measurable.
+    for (const path of WELCOME_ASSETS) {
+      try {
+        const assetURL = resolveAppURL(path);
+        const response = await fetch(assetURL, { cache: "no-cache" });
+        if (response.ok) await welcomeCache.put(assetURL, response.clone());
+        else console.warn("⚠️ Welcome asset unavailable:", path, response.status);
+      } catch (error) {
+        console.warn("⚠️ Welcome asset cache failed:", path, error);
+      } finally {
+        reportProgress();
+      }
+    }
 
-        await Promise.all(
+    broadcast({ type: "STANDOUT_UPDATE_READY", percent: 100 });
+    console.log("✅ StandOut update assets processed; activating new worker.");
 
-          APP_SHELL.map(
-            async url => {
-
-              try {
-
-                const assetURL = resolveAppURL(url);
-                const response =
-                  await fetch(
-                    assetURL,
-                    {
-                      cache: "no-cache"
-                    }
-                  );
-
-                if (response.ok) {
-
-                  await appCache.put(
-                    assetURL,
-                    response.clone()
-                  );
-
-                  console.log(
-                    "✅ Shell cached:",
-                    url
-                  );
-
-                } else {
-
-                  console.warn(
-                    "⚠️ Shell file unavailable:",
-                    url,
-                    response.status
-                  );
-
-                }
-
-              } catch (error) {
-
-                console.warn(
-                  "⚠️ Shell cache failed:",
-                  url,
-                  error
-                );
-
-              }
-
-            }
-          )
-
-        );
-
-        console.log(
-          "✅ App shell caching finished"
-        );
-
-
-        /* =====================================================
-           FONT AWESOME
-        ===================================================== */
-
-        const fontAwesomeCache =
-          await caches.open(
-            FONT_AWESOME_CACHE
-          );
-
-
-        for (
-          const url of FONT_AWESOME_FILES
-        ) {
-
-          try {
-
-            const response =
-              await fetch(
-                url,
-                {
-                  mode: "cors"
-                }
-              );
-
-            if (
-              response.ok
-            ) {
-
-              await fontAwesomeCache.put(
-                url,
-                response
-              );
-
-              console.log(
-                "✅ Font Awesome cached:",
-                url
-              );
-
-            }
-
-          } catch (error) {
-
-            console.warn(
-              "⚠️ Could not cache Font Awesome:",
-              url,
-              error
-            );
-
-          }
-
-        }
-
-
-        /* =====================================================
-           WELCOME VIDEO
-        ===================================================== */
-
-        const welcomeCache =
-          await caches.open(
-            WELCOME_CACHE
-          );
-
-
-        try {
-
-          await welcomeCache.addAll(
-            WELCOME_ASSETS.map(resolveAppURL)
-          );
-
-          console.log(
-            "✅ Welcome video cached"
-          );
-
-        } catch (error) {
-
-          console.warn(
-            "⚠️ Welcome video cache failed:",
-            error
-          );
-
-        }
-
-      })()
-
-    );
-
-
-    // Do not activate an update automatically. The app presents an update
-    // prompt and sends SKIP_WAITING only after the user selects "Update now".
-
-  }
-);
-
+    // Give controlled pages a moment to paint the completed progress state,
+    // then activate automatically. The page reloads on controllerchange.
+    await new Promise(resolve => setTimeout(resolve, 400));
+    await self.skipWaiting();
+  })());
+});
 
 /* ===========================
    MESSAGE
 =========================== */
-
-self.addEventListener(
-  "message",
-  event => {
-
-    if (
-      event.data === "SKIP_WAITING"
-    ) {
-
-      self.skipWaiting();
-
-    }
-
-  }
-);
+self.addEventListener("message", event => {
+  if (event.data === "SKIP_WAITING") self.skipWaiting();
+});
 
 
 /* ===========================
    ACTIVATE → CLEAN OLD CACHES
 =========================== */
 
-self.addEventListener(
-  "activate",
-  event => {
+self.addEventListener("activate", event => {
+  console.log("🟢 SW activating");
 
-    console.log(
-      "🟢 SW activating"
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    const hadPreviousStandOutCache = keys.some(key =>
+      key.startsWith("standout-v") && key !== CACHE_NAME
     );
 
-    event.waitUntil(
+    await Promise.all(keys.map(key => {
+      if (
+        key === CACHE_NAME ||
+        key === FONT_AWESOME_CACHE ||
+        key === BACKGROUND_CACHE ||
+        key === WELCOME_CACHE
+      ) return Promise.resolve();
+      return caches.delete(key);
+    }));
 
-      (async () => {
+    cacheBackgroundAssets().catch(error => {
+      console.warn("Background asset caching failed:", error);
+    });
 
-        const keys =
-          await caches.keys();
+    // Claim first so the new worker controls existing StandOut tabs.
+    await self.clients.claim();
+    const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
 
+    for (const client of windows) {
+      if (!client.url || !client.url.startsWith(APP_SCOPE_URL)) continue;
+      client.postMessage({ type: "SW_UPDATED", cacheName: CACHE_NAME });
 
-        await Promise.all(
-
-          keys.map(
-            k => {
-
-              if (
-                k === CACHE_NAME ||
-                k === FONT_AWESOME_CACHE ||
-                k === BACKGROUND_CACHE ||
-                k === WELCOME_CACHE
-              ) {
-
-                return Promise.resolve();
-
-              }
-
-
-              return caches.delete(k);
-
-            }
-          )
-
-        );
-
-
-        cacheBackgroundAssets()
-          .catch(
-            error => {
-
-              console.warn(
-                "Background asset caching failed:",
-                error
-              );
-
-            }
-          );
-
-
-        /* =====================================================
-           NOTIFY CLIENTS
-        ===================================================== */
-
-        const clients =
-          await self.clients.matchAll({
-            includeUncontrolled: true
-          });
-
-
-        clients.forEach(
-          client => {
-
-            client.postMessage({
-              type: "SW_UPDATED"
-            });
-
-          }
-        );
-
-      })()
-
-    );
-
-
-    self.clients.claim();
-
-  }
-);
+      // Migration bridge: older app shells did not auto-reload on controllerchange.
+      // Navigate only when a previous StandOut cache proves this is an update,
+      // not the first-ever installation.
+      if (hadPreviousStandOutCache && typeof client.navigate === "function") {
+        try {
+          await client.navigate(client.url);
+        } catch (error) {
+          console.warn("Could not reload an updated StandOut tab:", error);
+        }
+      }
+    }
+  })());
+});
 
 
 /* =========================================================
