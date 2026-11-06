@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.90-test";
+const CACHE_NAME = "standout-v2.91-test 2";
 
 // Resolve app assets against the service worker's registration scope. This
 // supports both a domain-root deployment and a project subfolder deployment.
