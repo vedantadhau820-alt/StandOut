@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.90-update-indicator-race-fix";
+const CACHE_NAME = "standout-v2.90-force-visible-update-ui";
 
 // Resolve app assets against the service worker's registration scope. This
 // supports both a domain-root deployment and a project subfolder deployment.
@@ -269,12 +269,10 @@ self.addEventListener("install", event => {
     }
 
     broadcast({ type: "STANDOUT_UPDATE_READY", percent: 100 });
-    console.log("✅ StandOut update assets processed; activating new worker.");
+    console.log("✅ StandOut update assets processed; waiting for the user to reload.");
 
-    // Give controlled pages a moment to paint the completed progress state,
-    // then activate automatically. The page reloads on controllerchange.
-    await new Promise(resolve => setTimeout(resolve, 400));
-    await self.skipWaiting();
+    // Keep the current app running until the in-app update prompt is accepted.
+    // The page sends SKIP_WAITING when the user selects "Reload now".
   })());
 });
 
@@ -295,10 +293,6 @@ self.addEventListener("activate", event => {
 
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    const hadPreviousStandOutCache = keys.some(key =>
-      key.startsWith("standout-v") && key !== CACHE_NAME
-    );
-
     await Promise.all(keys.map(key => {
       if (
         key === CACHE_NAME ||
@@ -321,16 +315,9 @@ self.addEventListener("activate", event => {
       if (!client.url || !client.url.startsWith(APP_SCOPE_URL)) continue;
       client.postMessage({ type: "SW_UPDATED", cacheName: CACHE_NAME });
 
-      // Migration bridge: older app shells did not auto-reload on controllerchange.
-      // Navigate only when a previous StandOut cache proves this is an update,
-      // not the first-ever installation.
-      if (hadPreviousStandOutCache && typeof client.navigate === "function") {
-        try {
-          await client.navigate(client.url);
-        } catch (error) {
-          console.warn("Could not reload an updated StandOut tab:", error);
-        }
-      }
+      // Updated app shells reload from their controllerchange handler after
+      // the user accepts the in-app "Reload now" prompt. Do not navigate here:
+      // that would bypass the prompt and reload before it can be seen.
     }
   })());
 });
