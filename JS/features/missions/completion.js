@@ -168,10 +168,10 @@ function completeMission(btn) {
 
     const isHardcore = li.dataset.hardcore === "true";
 
-    // Hardcore rewards are independent of the normal daily 10-point cap.
-    // Only normal missions consume the normal daily reward allowance.
+    // Normal and Hardcore missions share one daily 10-point allowance.
+    // Hardcore still has its separate failure penalty, but no longer bypasses
+    // the reward cap or the daily task count.
     const canEarnImprovementPoint = canEarnMissionImprovementPoint({
-        isHardcore,
         dailyCount: window.dailyImprovementCount
     });
 
@@ -179,9 +179,7 @@ function completeMission(btn) {
         window.completedMissionCount++;
         window.completedMissions++;
 
-        if (!isHardcore) {
-            window.dailyImprovementCount++;
-        }
+        window.dailyImprovementCount++;
     }
 
 
@@ -363,8 +361,8 @@ try {
             )
             : (
                 repeat === "none"
-                    ? "Mission completed! No Improvement Point gained. Daily normal-task limit reached."
-                    : "Mission completed! No Improvement Point gained. Daily normal-task limit reached. It will return for the next occurrence."
+                    ? "Mission completed! No Improvement Point gained. Daily 10-task limit reached."
+                    : "Mission completed! No Improvement Point gained. Daily 10-task limit reached. It will return for the next occurrence."
             )
     );
 

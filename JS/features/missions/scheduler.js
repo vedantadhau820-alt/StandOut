@@ -219,7 +219,7 @@ function processMissionDeadline(li, now = Date.now()) {
     if (!li.dataset.deducted) {
         const normalDailyCount = Math.max(0, Number(window.dailyImprovementCount) || 0);
 
-        // Normal missions stop affecting IP after the normal daily reward cap
+        // Normal missions stop affecting IP after the shared daily reward cap
         // has been reached. Mark the occurrence handled so it cannot be
         // penalized later after midnight or after a reload.
         if (!shouldApplyMissionFailurePenalty({
