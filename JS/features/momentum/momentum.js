@@ -1,3 +1,5 @@
+import { normalizeMomentumState, normalizeMomentumHistory } from "./normalization.js";
+
 /* =========================================================
    MOMENTUM SYSTEM
    Standalone system for Standout
@@ -137,59 +139,8 @@ export const momentum = (() => {
 
 
             return {
-
                 ...DEFAULT_STATE,
-
-                ...saved,
-
-
-                momentum:
-                    Math.max(
-                        0,
-                        Number(
-                            saved.momentum
-                        ) || 0
-                    ),
-
-
-                energy:
-                    Math.min(
-                        100,
-                        Math.max(
-                            0,
-                            Number(
-                                saved.energy
-                            ) || 0
-                        )
-                    ),
-
-
-                bestMomentum:
-                    Math.max(
-                        0,
-                        Number(
-                            saved.bestMomentum
-                        ) || 0
-                    ),
-
-
-                shields:
-                    Math.max(
-                        0,
-                        Number(
-                            saved.shields
-                        ) || 0
-                    ),
-
-
-                totalProofDays:
-                    Math.max(
-                        0,
-                        Number(
-                            saved.totalProofDays
-                        ) || 0
-                    )
-
+                ...normalizeMomentumState(saved)
             };
 
         }
@@ -230,12 +181,7 @@ export const momentum = (() => {
             const saved =
                 JSON.parse(raw);
 
-            return (
-                saved &&
-                typeof saved === "object"
-            )
-                ? saved
-                : {};
+            return normalizeMomentumHistory(saved);
 
         }
 

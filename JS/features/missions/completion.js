@@ -341,6 +341,17 @@ try {
     }
 
 
+    // A successful mission is Momentum proof regardless of whether it is
+    // normal or Hardcore. Hardcore missions intentionally do not increment
+    // dailyImprovementCount, so Momentum must not depend on that counter.
+    // registerProof is idempotent per IST day; the legacy click detector can
+    // safely remain as a compatibility fallback for other completion paths.
+    try {
+        window.Momentum?.registerProof?.("mission");
+    } catch (error) {
+        console.warn("[StandOut] Momentum proof could not be registered:", error);
+    }
+
     window.showPopup?.(
         canEarnImprovementPoint
             ? (

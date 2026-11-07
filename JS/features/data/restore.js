@@ -4,6 +4,7 @@
  */
 import { customCards } from "../cards/custom-cards.js";
 import { background } from "../background/background.js";
+import { normalizeMomentumStorageValue } from "../momentum/normalization.js";
 
 const BACKUP_TYPE = "STANDOUT_COMPLETE";
 
@@ -123,6 +124,15 @@ function buildStoragePayload(backup) {
         values.standout_daily_challenge = backup.dailyChallenge;
     }
 
+    // Momentum state/history must use canonical IST date keys after restore.
+    // Older backups may contain MM/DD/YYYY keys and duplicate days in both
+    // formats; normalize before replacing the user's current LocalStorage.
+    for (const key of ["standout_momentum_state", "standout_momentum_history"]) {
+        if (typeof values[key] === "string") {
+            values[key] = normalizeMomentumStorageValue(key, values[key]);
+        }
+    }
+
     return values;
 }
 
@@ -151,6 +161,10 @@ async function restoreStandOutBackupFile() {
     try {
         const text = (await file.text()).replace(/^\uFEFF/, "").trim();
         const backup = validateBackup(JSON.parse(text));
+
+        // Build and validate all LocalStorage values before any destructive
+        // IndexedDB or LocalStorage changes are attempted.
+        const storagePayload = buildStoragePayload(backup);
 
         const confirmed = window.confirm(
             "Restore this StandOut backup? Your current app data will be replaced. " +
@@ -193,7 +207,7 @@ async function restoreStandOutBackupFile() {
                 }
             }
 
-            await replaceLocalStorage(buildStoragePayload(backup));
+            await replaceLocalStorage(storagePayload);
         } catch (restoreError) {
             console.error("[StandOut Restore] Restore failed; rolling back:", restoreError);
             try {
@@ -212,7 +226,7 @@ async function restoreStandOutBackupFile() {
 
         console.info("[StandOut Restore] Backup restored.", {
             backupVersion: backup.backupVersion,
-            localStorageKeys: Object.keys(buildStoragePayload(backup)).length,
+            localStorageKeys: Object.keys(storagePayload).length,
             customCards: Array.isArray(backup.customCards) ? backup.customCards.length : "unchanged",
             cardCatalog: Array.isArray(backup.cardCatalog) ? backup.cardCatalog.length : "unchanged"
         });
