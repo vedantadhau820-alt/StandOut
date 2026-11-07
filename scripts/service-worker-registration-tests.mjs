@@ -22,19 +22,18 @@ const logger = {
 
 assert.equal(registerServiceWorker({ navigatorRef: {}, windowRef, logger }), false,
     'unsupported browsers should not register or throw');
-assert.equal(registerServiceWorker({ navigatorRef, windowRef, logger }), true);
-assert.equal(calls.listeners.length, 1);
-assert.equal(calls.listeners[0].type, 'load');
-assert.deepEqual(calls.listeners[0].options, { once: true });
-await calls.listeners[0].callback();
+assert.equal(registerServiceWorker({ navigatorRef, windowRef, logger, documentRef: undefined }), true);
+await new Promise(resolve => setImmediate(resolve));
 assert.deepEqual(calls.registrations, ['./service-worker.js']);
+assert.ok(calls.listeners.some(item => item.type === 'focus'));
+assert.ok(calls.listeners.some(item => item.type === 'pageshow'));
 assert.equal(calls.logs.length, 1);
 assert.equal(calls.errors.length, 0);
 
-const failingWindow = { addEventListener(type, callback) { this.callback = callback; } };
+const failingWindow = { addEventListener() {} };
 const failingNavigator = { serviceWorker: { async register() { throw new Error('registration denied'); } } };
-assert.equal(registerServiceWorker({ navigatorRef: failingNavigator, windowRef: failingWindow, logger }), true);
-await failingWindow.callback();
+assert.equal(registerServiceWorker({ navigatorRef: failingNavigator, windowRef: failingWindow, logger, documentRef: undefined }), true);
+await new Promise(resolve => setImmediate(resolve));
 assert.equal(calls.errors.length, 1, 'registration failures should be reported');
 
 console.log('[Service Worker Registration Tests] PASSED (unsupported browser, load timing, app-relative path, and failure handling).');

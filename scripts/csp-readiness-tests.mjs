@@ -34,8 +34,8 @@ const sw = await readFile(new URL('service-worker.js', root), 'utf8');
 for (const asset of ['index-embedded.css', 'documentation-embedded.css', 'standout-guide-embedded.css']) {
   assert.ok(sw.includes(`/CSS/${asset}`), `${asset} must be included in the service-worker app shell`);
 }
-assert.match(sw, /standout-v2\.72-inline-style-externalization/, 'Service-worker cache version must be advanced');
-const draft = await readFile(new URL('CSP-REPORT-ONLY-DRAFT.md', root), 'utf8');
+assert.match(sw, /standout-v2\.100-special-card-interactions/, 'Service-worker cache version must be advanced');
+const draft = await readFile(new URL('Extra/CSP-REPORT-ONLY-DRAFT.md', root), 'utf8');
 assert.match(draft, /Content-Security-Policy-Report-Only:/, 'A report-only candidate header must be documented');
 assert.match(draft, /CSP enforcement is not enabled/i, 'The report must state that enforcing CSP remains disabled');
 const indexHtml = await readFile(new URL('index.html', root), 'utf8');

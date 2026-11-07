@@ -10,6 +10,7 @@ import { points } from "../economy/points.js";
 let currentMarketplaceFilter = "ALL";
 let isMarketplaceOpen = false;
 let ownedCardsState = {};
+let lastSpecialCardCheckDate = null;
 
 try {
     const storedOwnedCards = localStorage.getItem("ownedCards");
@@ -51,6 +52,208 @@ Object.defineProperties(window, {
 const PINNED_CARDS_STORAGE_KEY = "pinnedCards";
 const MAX_PINNED_CARDS = 4;
 const PIN_CARD_COST = 2;
+
+const SPECIAL_CARD_STORAGE_KEY = "standout_special_cards";
+const SPECIAL_CARD_DEFINITIONS = Object.freeze({
+    // season_03_exclusive_card: { type: "improvement", label: "Weekly Improvement", description: "+2 Improvement Points every 7 days", intervalDays: 7 },
+    Raje: { type: "discount", label: "Sunday Discount", description: "20% off Marketplace cards every Sunday", intervalDays: 7 },
+    // season_03_card: { type: "shield", label: "Universal Protection", description: "+1 Shield Point every 14 days", intervalDays: 14 }
+});
+
+function getISTTodayKey() {
+    // Explicit test-only override; clear it to return to the real IST date.
+    if (typeof window.__standoutSpecialCardTestDate === "string" &&
+        parseDateKey(window.__standoutSpecialCardTestDate)) {
+        return window.__standoutSpecialCardTestDate;
+    }
+    return typeof window.getTodayKey === "function"
+        ? window.getTodayKey()
+        : new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+}
+
+function parseDateKey(value) {
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+    const [year, month, day] = value.split("-").map(Number);
+    const date = new Date(Date.UTC(year, month - 1, day));
+    return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day ? date : null;
+}
+
+function dateKey(date) {
+    return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}-${String(date.getUTCDate()).padStart(2, "0")}`;
+}
+
+function addDaysToKey(key, days) {
+    const date = parseDateKey(key);
+    if (!date) return null;
+    date.setUTCDate(date.getUTCDate() + days);
+    return dateKey(date);
+}
+
+function addCalendarMonthsToKey(key, months) {
+    const date = parseDateKey(key);
+    if (!date) return null;
+    const originalDay = date.getUTCDate();
+    date.setUTCDate(1);
+    date.setUTCMonth(date.getUTCMonth() + months);
+    const lastDay = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 0)).getUTCDate();
+    date.setUTCDate(Math.min(originalDay, lastDay));
+    return dateKey(date);
+}
+
+function readSpecialCardState() {
+    try {
+        const value = JSON.parse(localStorage.getItem(SPECIAL_CARD_STORAGE_KEY) || "{}");
+        return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+    } catch (error) {
+        console.error("[Special Cards] Could not read reward ledger:", error);
+        return {};
+    }
+}
+
+function writeSpecialCardState(state) {
+    localStorage.setItem(SPECIAL_CARD_STORAGE_KEY, JSON.stringify(state));
+}
+
+function getSpecialDefinition(cardOrId) {
+    const id = typeof cardOrId === "string" ? cardOrId : cardOrId?.id;
+    return SPECIAL_CARD_DEFINITIONS[id] || null;
+}
+
+function getSpecialActivation(cardId, owned = window.ownedCards || {}) {
+    const data = owned?.[cardId];
+    const definition = getSpecialDefinition(cardId);
+    const activation = data?.specialActivation;
+    if (!definition || !activation?.activatedAt || !activation?.expiresAt) return null;
+    const today = getISTTodayKey();
+    if (today >= activation.expiresAt) return { ...activation, status: "expired" };
+    return { ...activation, status: "active" };
+}
+
+function isSpecialDiscountActive() {
+    const today = getISTTodayKey();
+    const date = parseDateKey(today);
+    if (!date || date.getUTCDay() !== 0) return false;
+
+    // Always inspect the latest persisted ownership state, including after reload
+    // or activation from another browser tab.
+    let owned = window.ownedCards || {};
+    try {
+        const stored = JSON.parse(localStorage.getItem("ownedCards") || "{}");
+        if (stored && typeof stored === "object" && !Array.isArray(stored)) {
+            owned = stored;
+            window.ownedCards = stored;
+        }
+    } catch (error) {
+        console.warn("[Special Cards] Could not refresh owned cards for discount check:", error);
+    }
+
+    const activation = owned.Raje?.specialActivation;
+    return Boolean(
+        activation?.activatedAt &&
+        activation?.expiresAt &&
+        today >= activation.activatedAt &&
+        today < activation.expiresAt
+    );
+}
+
+function activateSpecialCard(cardId) {
+    const definition = getSpecialDefinition(cardId);
+    if (!definition) return;
+    const owned = { ...(window.ownedCards || {}) };
+    const data = { ...(owned[cardId] || {}) };
+    if (!data.mintedAt) {
+        window.customAlert?.("This card must be owned before activation.");
+        return;
+    }
+    if (data.specialActivation) {
+        window.customAlert?.("This Special Card has already been activated.");
+        return;
+    }
+
+    const activatedAt = getISTTodayKey();
+    data.specialActivation = {
+        activatedAt,
+        expiresAt: addCalendarMonthsToKey(activatedAt, 3),
+        nextRewardDate: definition.intervalDays ? addDaysToKey(activatedAt, definition.intervalDays) : null
+    };
+    owned[cardId] = data;
+
+    try {
+        localStorage.setItem("ownedCards", JSON.stringify(owned));
+        window.ownedCards = owned;
+    } catch (error) {
+        console.error("[Special Cards] Activation could not be saved:", error);
+        window.customAlert?.("Could not activate this card. Please try again.");
+        return;
+    }
+
+    processSpecialCardRewards();
+    renderMarketplace(window.currentMarketplaceFilter || "ALL");
+    renderMyCards();
+    window.customAlert?.(`${definition.label} activated. Powers expire on ${formatDate(data.specialActivation.expiresAt)}.`);
+}
+
+function processSpecialCardRewards() {
+    const today = getISTTodayKey();
+    const owned = { ...(window.ownedCards || {}) };
+    const ledger = readSpecialCardState();
+    let ownedChanged = false;
+    let pointsGranted = 0;
+    let shieldsGranted = 0;
+
+    Object.entries(SPECIAL_CARD_DEFINITIONS).forEach(([cardId, definition]) => {
+        const data = owned[cardId];
+        const activation = data?.specialActivation;
+        if (!activation?.activatedAt || !activation?.expiresAt || !definition.intervalDays) return;
+
+        // Catch up every reward earned during the active window, even if the
+        // user next opens the app after the card has expired.
+        const lastEligibleDate = addDaysToKey(activation.expiresAt, -1);
+        const rewardThroughDate = today < lastEligibleDate ? today : lastEligibleDate;
+        let nextRewardDate = activation.nextRewardDate || addDaysToKey(activation.activatedAt, definition.intervalDays);
+        let guard = 0;
+        while (nextRewardDate && nextRewardDate <= rewardThroughDate && nextRewardDate < activation.expiresAt && guard < 20) {
+            const claimKey = `${cardId}:${nextRewardDate}`;
+            if (!ledger[claimKey]) {
+                ledger[claimKey] = { cardId, rewardDate: nextRewardDate, type: definition.type, amount: definition.type === "improvement" ? 2 : 1 };
+                if (definition.type === "improvement") pointsGranted += 2;
+                if (definition.type === "shield") shieldsGranted += 1;
+            }
+            nextRewardDate = addDaysToKey(nextRewardDate, definition.intervalDays);
+            guard += 1;
+        }
+        if (activation.nextRewardDate !== nextRewardDate) {
+            data.specialActivation = { ...activation, nextRewardDate };
+            ownedChanged = true;
+        }
+    });
+
+    // Persist claims and schedule advancement before applying rewards, preventing
+    // repeat grants on reload or when multiple UI surfaces render.
+    if (pointsGranted || shieldsGranted || ownedChanged) {
+        try {
+            writeSpecialCardState(ledger);
+            if (ownedChanged) {
+                localStorage.setItem("ownedCards", JSON.stringify(owned));
+                window.ownedCards = owned;
+            }
+        } catch (error) {
+            console.error("[Special Cards] Could not persist reward claims:", error);
+            return;
+        }
+        if (pointsGranted > 0) points.add(pointsGranted);
+        if (shieldsGranted > 0) window.Momentum?.addShieldPoints?.(shieldsGranted);
+        if (pointsGranted || shieldsGranted) {
+            window.customAlert?.(`Special Card rewards collected: ${pointsGranted ? `${pointsGranted} Improvement Points` : ""}${pointsGranted && shieldsGranted ? " and " : ""}${shieldsGranted ? `${shieldsGranted} Shield Point${shieldsGranted > 1 ? "s" : ""}` : ""}.`);
+        }
+    }
+}
+
+function getDiscountedCardCost(card) {
+    const cost = Math.max(0, Number(card?.cost) || 0);
+    return isSpecialDiscountActive() ? Math.round(cost * 0.8) : cost;
+}
+
 
 function getPinnedCardIds() {
     try {
@@ -186,6 +389,41 @@ function createOwnedButton(card, button) {
     return button;
 }
 
+function bindSpecialActionButton(button, card, singleClickAction = null) {
+    let clickTimer = null;
+    const syncPinnedState = () => {
+        const pinned = getPinnedCardIds().includes(card.id);
+        button.classList.toggle("is-pinned", pinned);
+        button.dataset.pinned = String(pinned);
+        button.setAttribute("aria-pressed", String(pinned));
+        button.title = pinned
+            ? `${card.title} is pinned. Double-click to unpin.`
+            : `Double-click to pin ${card.title} for 2 Improvement Points.`;
+    };
+
+    button.addEventListener("click", event => {
+        event.preventDefault();
+        if (clickTimer !== null) return;
+        clickTimer = window.setTimeout(() => {
+            clickTimer = null;
+            if (typeof singleClickAction === "function") singleClickAction();
+        }, 350);
+    });
+
+    button.addEventListener("dblclick", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (clickTimer !== null) {
+            window.clearTimeout(clickTimer);
+            clickTimer = null;
+        }
+        togglePinnedCard(card);
+    });
+
+    syncPinnedState();
+    return syncPinnedState;
+}
+
 function getSafeCardImageSource(value) {
     if (typeof value !== "string" || !value || value.length > 2_000_000 || /[\u0000-\u001f\u007f]/.test(value)) {
         return "";
@@ -215,8 +453,11 @@ function createCardElement(card, { owned = false, canBuy = false, mintDate = "" 
         ? Number(card.cost)
         : 0;
     const limited = card.limited === true;
+    const specialDefinition = getSpecialDefinition(card);
+    const specialActivation = owned && specialDefinition ? getSpecialActivation(card.id) : null;
+    const showSpecialFeatures = Boolean(specialDefinition && specialActivation?.status !== "expired");
     const cardElement = document.createElement("div");
-    cardElement.className = `flex-card grade-${safeGrade.toLowerCase()} ${owned ? "owned" : "locked"}${limited ? " limited" : ""}`;
+    cardElement.className = `flex-card grade-${safeGrade.toLowerCase()} ${owned ? "owned" : "locked"}${limited ? " limited" : ""}${showSpecialFeatures ? " special-card" : ""}${specialActivation?.status === "active" ? " special-card-active" : ""}`;
 
     const image = document.createElement("img");
     const imageSource = getSafeCardImageSource(card.image);
@@ -230,6 +471,13 @@ function createCardElement(card, { owned = false, canBuy = false, mintDate = "" 
     gradeBadge.className = "grade-badge";
     gradeBadge.textContent = safeGrade;
     cardElement.appendChild(gradeBadge);
+
+    if (showSpecialFeatures) {
+        const specialBadge = document.createElement("span");
+        specialBadge.className = "special-card-badge";
+        specialBadge.textContent = "SPECIAL";
+        cardElement.appendChild(specialBadge);
+    }
 
     if (limited) {
         const limitedBadge = document.createElement("span");
@@ -257,19 +505,44 @@ function createCardElement(card, { owned = false, canBuy = false, mintDate = "" 
         body.appendChild(expiry);
     }
 
+    if (showSpecialFeatures) {
+        const power = document.createElement("div");
+        power.className = "special-card-power";
+        power.textContent = specialDefinition.description;
+        body.appendChild(power);
+    }
+
     const buyButton = document.createElement("button");
     buyButton.className = "buy-btn";
     buyButton.type = "button";
-    if (owned) {
+    if (owned && specialDefinition && !specialActivation) {
+        buyButton.classList.add("special-activate-btn");
+        buyButton.textContent = "ACTIVATE";
+        bindSpecialActionButton(buyButton, card, () => activateSpecialCard(card.id));
+    } else if (owned && specialDefinition && specialActivation?.status === "active") {
+        buyButton.classList.add("special-active-btn");
+        buyButton.textContent = "ACTIVE";
+        bindSpecialActionButton(buyButton, card);
+    } else if (owned) {
         createOwnedButton(card, buyButton);
     } else {
+        const discountedCost = getDiscountedCardCost(card);
         buyButton.disabled = !canBuy;
-        buyButton.textContent = `${cost} pts`;
+        buyButton.textContent = isSpecialDiscountActive()
+            ? `${discountedCost} pts · 20% OFF`
+            : `${cost} pts`;
         if (canBuy && !isExpired(card)) {
             buyButton.addEventListener("click", () => buyCard(card.id));
         }
     }
     body.appendChild(buyButton);
+
+    if (specialActivation?.status === "active") {
+        const status = document.createElement("div");
+        status.className = "special-card-status";
+        status.textContent = `Active until ${formatDate(specialActivation.expiresAt)}`;
+        body.appendChild(status);
+    }
 
     if (owned && mintDate) {
         const minted = document.createElement("div");
@@ -289,10 +562,19 @@ function createCardElement(card, { owned = false, canBuy = false, mintDate = "" 
 }
 
 function renderMarketplace(filterGrade = "ALL") {
+    processSpecialCardRewards();
     const shop = document.getElementById("cardShop");
     if (!shop) return;
 
     shop.replaceChildren();
+    const fragment = document.createDocumentFragment();
+
+    if (isSpecialDiscountActive()) {
+        const discountBanner = document.createElement("div");
+        discountBanner.className = "special-discount-banner";
+        discountBanner.textContent = "RAJE POWER ACTIVE · 20% OFF ALL MARKETPLACE CARDS TODAY, INCLUDING LIMITED EDITIONS";
+        fragment.appendChild(discountBanner);
+    }
 
     let cards = cardCatalogue.getAll();
     if (filterGrade !== "ALL") {
@@ -308,8 +590,8 @@ function renderMarketplace(filterGrade = "ALL") {
         const bOwned = window.ownedCards[b.id] ? 1 : 0;
         if (aOwned !== bOwned) return bOwned - aOwned;
 
-        const aCanBuy = window.completedMissions >= a.cost ? 1 : 0;
-        const bCanBuy = window.completedMissions >= b.cost ? 1 : 0;
+        const aCanBuy = window.completedMissions >= getDiscountedCardCost(a) ? 1 : 0;
+        const bCanBuy = window.completedMissions >= getDiscountedCardCost(b) ? 1 : 0;
         if (aCanBuy !== bCanBuy) return bCanBuy - aCanBuy;
 
         return window.gradeRank(b.grade) - window.gradeRank(a.grade);
@@ -339,13 +621,12 @@ function renderMarketplace(filterGrade = "ALL") {
         });
     });
 
-    const fragment = document.createDocumentFragment();
     cards.forEach(card => {
         if (!card || card.seasonReward === true || window.ownedCards[card.id]) return;
         const expired = isExpired(card);
         if (expired) return;
 
-        const canBuy = window.completedMissions >= Number(card.cost);
+        const canBuy = window.completedMissions >= getDiscountedCardCost(card);
         fragment.appendChild(createCardElement(card, { canBuy }));
     });
     shop.replaceChildren(fragment);
@@ -372,13 +653,14 @@ function buyCard(cardId) {
         return;
     }
 
-    if (window.completedMissions < card.cost) {
+    const purchaseCost = getDiscountedCardCost(card);
+    if (window.completedMissions < purchaseCost) {
         window.customAlert("Not enough Improvement Points.");
         return;
     }
 
     window.customConfirm(
-        `Mint "${card.title}" for ${card.cost} points?\nThis is permanent.`,
+        `Mint "${card.title}" for ${purchaseCost} points${purchaseCost < card.cost ? " (20% Sunday discount)" : ""}?\nThis is permanent.`,
         () => {
             // Re-check mutable conditions after confirmation to prevent stale or
             // repeated confirmation callbacks from charging for the same card.
@@ -416,7 +698,8 @@ function buyCard(cardId) {
                 return;
             }
 
-            if (window.completedMissions < card.cost) {
+            const finalPurchaseCost = getDiscountedCardCost(card);
+            if (window.completedMissions < finalPurchaseCost) {
                 window.customAlert("Not enough Improvement Points.");
                 return;
             }
@@ -435,7 +718,7 @@ function buyCard(cardId) {
                 localStorage.setItem("ownedCards", JSON.stringify(nextOwnedCards));
                 window.ownedCards = nextOwnedCards;
 
-                if (!points.spend(card.cost)) {
+                if (!points.spend(finalPurchaseCost)) {
                     if (previousOwnedCardsRaw === null) {
                         localStorage.removeItem("ownedCards");
                     } else {
@@ -478,6 +761,7 @@ function formatDate(isoDate) {
 }
 
 function renderMyCards() {
+    processSpecialCardRewards();
 
     const container =
         document.getElementById("ownedCards");
@@ -693,10 +977,47 @@ function renderMyCards() {
             meta.textContent = `Minted on ${mintedAt}`;
             body.append(meta);
 
-            const ownedButton = document.createElement("button");
-            ownedButton.className = "season-owned-card-owned-button";
-            createOwnedButton(card, ownedButton);
-            body.append(ownedButton);
+            const specialDefinition = getSpecialDefinition(card);
+            const specialActivation = specialDefinition ? getSpecialActivation(card.id, currentOwnedCards) : null;
+            const showSpecialFeatures = Boolean(specialDefinition && specialActivation?.status !== "expired");
+            if (showSpecialFeatures) {
+                div.classList.add("special-card");
+                const specialBadge = document.createElement("span");
+                specialBadge.className = "special-card-badge season-special-badge";
+                specialBadge.textContent = "SPECIAL";
+                art.append(specialBadge);
+
+                const power = document.createElement("p");
+                power.className = "special-card-power";
+                power.textContent = specialDefinition.description;
+                body.append(power);
+            }
+
+            if (specialDefinition && !specialActivation) {
+                const activateButton = document.createElement("button");
+                activateButton.type = "button";
+                activateButton.className = "season-owned-card-owned-button special-activate-btn";
+                activateButton.textContent = "ACTIVATE";
+                bindSpecialActionButton(activateButton, card, () => activateSpecialCard(card.id));
+                body.append(activateButton);
+            } else if (specialDefinition && specialActivation?.status === "active") {
+                const activeButton = document.createElement("button");
+                activeButton.type = "button";
+                activeButton.disabled = false;
+                activeButton.className = "season-owned-card-owned-button special-active-btn";
+                activeButton.textContent = "ACTIVE";
+                bindSpecialActionButton(activeButton, card);
+                body.append(activeButton);
+                const status = document.createElement("div");
+                status.className = "special-card-status";
+                status.textContent = `Active until ${formatDate(specialActivation.expiresAt)}`;
+                body.append(status);
+            } else {
+                const ownedButton = document.createElement("button");
+                ownedButton.className = "season-owned-card-owned-button";
+                createOwnedButton(card, ownedButton);
+                body.append(ownedButton);
+            }
 
             art.append(body);
             div.append(art);
@@ -791,6 +1112,19 @@ function closeMintedCard() {
 }
 
 function initializeCardMarketplace() {
+    lastSpecialCardCheckDate = getISTTodayKey();
+    if (!window.__standoutSpecialCardClockStarted) {
+        window.__standoutSpecialCardClockStarted = true;
+        window.setInterval(() => {
+            const today = getISTTodayKey();
+            if (today === lastSpecialCardCheckDate) return;
+            lastSpecialCardCheckDate = today;
+            processSpecialCardRewards();
+            renderMarketplace(window.currentMarketplaceFilter || "ALL");
+            renderMyCards();
+        }, 60_000);
+    }
+
     document.querySelectorAll(".card-filters button").forEach(btn => {
         btn.addEventListener("click", () => {
             document.querySelectorAll(".card-filters button")
@@ -803,6 +1137,7 @@ function initializeCardMarketplace() {
     });
 
     window.addEventListener("load", () => {
+        processSpecialCardRewards();
         renderMarketplace();
         renderMyCards();
     });
@@ -837,6 +1172,12 @@ window.renderMarketplace = renderMarketplace;
 window.renderMyCards = renderMyCards;
 window.togglePinnedCard = togglePinnedCard;
 window.buyCard = buyCard;
+window.activateSpecialCard = activateSpecialCard;
+window.isSpecialDiscountActive = isSpecialDiscountActive;
+window.getDiscountedCardCost = getDiscountedCardCost;
+window.activateSpecialCard = activateSpecialCard;
+window.isSpecialDiscountActive = isSpecialDiscountActive;
+window.getDiscountedCardCost = getDiscountedCardCost;
 window.isExpired = isExpired;
 window.formatDate = formatDate;
 window.formatCardDate = formatDate;
@@ -858,6 +1199,9 @@ export const cardsFeature = Object.freeze({
     buyCard,
     isExpired,
     formatDate,
+    activateSpecialCard,
+    processSpecialCardRewards,
+    getSpecialDefinition,
     gradeRank,
     getCurrentFilter: () => currentMarketplaceFilter,
     setCurrentFilter: value => { currentMarketplaceFilter = value || "ALL"; },

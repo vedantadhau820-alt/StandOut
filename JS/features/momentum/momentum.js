@@ -1800,6 +1800,14 @@ export const momentum = (() => {
         registerProof:
             registerProof,
 
+        addShieldPoints(amount = 1) {
+            const value = Math.max(0, Math.floor(Number(amount) || 0));
+            if (!value) return state.shields;
+            state.shields = Math.max(0, Number(state.shields) || 0) + value;
+            saveState();
+            render();
+            return state.shields;
+        },
 
         render:
             render,

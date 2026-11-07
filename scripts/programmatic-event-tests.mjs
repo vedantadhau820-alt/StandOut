@@ -26,7 +26,7 @@ assert.match(sources.notifications, /bell\.addEventListener\("click"/,
     'notification drawer toggle must use addEventListener');
 assert.match(sources.appPart3, /removeBtn\.addEventListener\("click"/,
     'legacy goal-card remove action must use addEventListener');
-assert.match(sources.serviceWorker, /standout-v2\.72-inline-style-externalization/,
+assert.match(sources.serviceWorker, /standout-v2\.100-special-card-interactions/,
     'service worker cache must be versioned for this release');
 
 console.log('[Programmatic Event Tests] PASSED (marketplace, monthly resolution, notifications, goal cards, and cache version).');

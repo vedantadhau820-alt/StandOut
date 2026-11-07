@@ -72,7 +72,7 @@ const builtInCardCatalog = [
    { id: "JJK_Gojo", title: "Saturo Gojo", grade: "w", quote: "I Am Alone Honoured One.", cost: 210, image: "Images/JJK_Gojo.gif", limited: true, expiresAt: "2026-10-31T23:29:30Z" },
    { id: "Rama", title: "Shri Ram", grade: "w", quote: "Only Those Who DO Not Believe In Their Own Abilities Are Tested.", cost: 250, image: "Images/Rama.gif", limited: true, expiresAt: "2026-11-30T23:29:30Z" },
    { id: "Ravana", title: "Ravan", grade: "w", quote: "No Force In The Universe Can Break My Will, I Bow Only To My Own Principles.", cost: 230, image: "Images/Ravana.gif", limited: true, expiresAt: "2026-11-30T23:29:30Z" },
-   { id: "Raje", title: "Raje", grade: "w", quote: "Dharmo Rakshati Rakshitah.", cost: 50, image: "Images/Raje.jpeg", limited: true, expiresAt: "2026-11-08T23:29:30Z" },
+   { id: "Raje", title: "Raje", grade: "w", quote: "Dharmo Rakshati Rakshitah.", cost: 50, image: "Images/Raje.jpeg", limited: true, expiresAt: "2026-11-08T23:29:30Z", specialCard: true, specialPower: "discount" },
    
    { id: "season_01_card", title: "The Ascension", quote: "You don't rise by chance. You rise by choice.", grade: "A", cost: 0, image: "assets/cards/season-01-ascension.png", limited: true, expiresAt: "2026-09-30T23:29:30Z", season: "season-01", seasonReward: true},
    { id: "season_01_exclusive_card", title: "Beyond Limits", quote: "The limit was never the wall. It was the belief.", grade: "S", cost: 0, image: "assets/cards/season-01-beyond-limits.png", limited: true, expiresAt: "2026-09-30T23:29:30Z", season: "season-01", seasonReward: true},

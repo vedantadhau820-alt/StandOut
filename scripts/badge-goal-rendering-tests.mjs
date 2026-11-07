@@ -33,6 +33,6 @@ assert.doesNotMatch(achievementOverlay, /overlay\.innerHTML\s*=/,
 assert.match(achievementOverlay, /videoElement\.append\(source\)/);
 assert.match(goals, /overdueBadge\.replaceChildren\(overdueLabel\)/);
 assert.doesNotMatch(goals, /overdueBadge\.innerHTML\s*=/);
-assert.match(serviceWorker, /standout-v2\.72-inline-style-externalization/);
+assert.match(serviceWorker, /standout-v2\.100-special-card-interactions/);
 
 console.log('[Badge & Goal Rendering Tests] PASSED (badge text, artwork allow-list, collection, goal edit modal, achievement overlay, overdue label, and cache version).');

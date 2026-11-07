@@ -15,5 +15,5 @@ assert.ok(config.headers.some(route => route.source === '/service-worker.js' && 
 assert.ok(config.headers.some(route => route.source === '/manifest.json' && (route.headers || []).some(header => header.key === 'Cache-Control')), 'Manifest must have an explicit revalidation policy');
 assert.equal(config.rewrites, undefined, 'Do not add SPA rewrites to the current multi-page static app');
 const sw = await readFile(new URL('service-worker.js', root), 'utf8');
-assert.match(sw, /standout-v2\.72-inline-style-externalization/, 'Deployment preparation must not change the verified service-worker cache identity');
+assert.match(sw, /standout-v2\.100-special-card-interactions/, 'Deployment preparation must not change the verified service-worker cache identity');
 console.log('[Vercel Deployment Tests] PASSED (headers, report-only CSP, cache revalidation, no SPA rewrites, unchanged SW cache).');

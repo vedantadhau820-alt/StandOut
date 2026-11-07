@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-11-07T10:22:43.135Z",
+  "automated": {
+    "passed": 24,
+    "total": 24,
+    "results": [
+      {
+        "check": "app-part3-compatibility-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[App-Part3 Compatibility Tests] PASSED (49 globals, delegated calls, load hook, utility/accessor behavior).",
+        "error": null
+      },
+      {
+        "check": "app-shell-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[App Shell Tests] PASSED (update indicator, compatibility globals, report toggle, and navigation bridge).",
+        "error": null
+      },
+      {
+        "check": "badge-goal-rendering-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Badge & Goal Rendering Tests] PASSED (badge text, artwork allow-list, collection, goal edit modal, achievement overlay, overdue label, and cache version).",
+        "error": null
+      },
+      {
+        "check": "card-catalogue-module-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Card Catalogue Module Tests] PASSED (43 records, checksum, global publication, reassignment, facade behavior, and Season rewards).",
+        "error": null
+      },
+      {
+        "check": "csp-readiness-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[CSP Readiness Tests] PASSED (4 HTML pages; inline scripts=0, handlers=0, embedded styles=0, style attributes=0).",
+        "error": null
+      },
+      {
+        "check": "event-delegation-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Event Delegation Tests] PASSED (static HTML, allow-list, click/input dispatch, unknown action rejection, and cache coverage).",
+        "error": null
+      },
+      {
+        "check": "legacy-compatibility-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Legacy Compatibility Tests] PASSED (17 global bridges and delegated calls).",
+        "error": null
+      },
+      {
+        "check": "modal-dom-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Modal DOM Tests] PASSED (DOM-built forms, text-safe dynamic values, edit state, countdown IST, and completion marker clearing).",
+        "error": null
+      },
+      {
+        "check": "momentum-dom-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Momentum DOM Tests] PASSED (core artwork, panel, text-only dynamic values, and bounded progress styles).",
+        "error": null
+      },
+      {
+        "check": "monthly-drop-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Monthly Drop Tests] PASSED (month key, first-day gate, seen-state, navigation).",
+        "error": null
+      },
+      {
+        "check": "monthly-resolution-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "Monthly Resolution tests passed (legacy API, startup binding, missing-markup safety).",
+        "error": null
+      },
+      {
+        "check": "programmatic-event-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Programmatic Event Tests] PASSED (marketplace, monthly resolution, notifications, goal cards, and cache version).",
+        "error": null
+      },
+      {
+        "check": "safe-rendering-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Safe Rendering Tests] PASSED (notification content, reset states, mission DOM, overdue badge, monthly momentum empty state, and cache version).",
+        "error": null
+      },
+      {
+        "check": "season-progression-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Season Progression Tests] PASSED (10 scenario groups).",
+        "error": null
+      },
+      {
+        "check": "season-ui-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Season UI Tests] PASSED (rendering, reward states, max-level label, and countdown phases).",
+        "error": null
+      },
+      {
+        "check": "service-worker-registration-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Service Worker Registration Tests] PASSED (unsupported browser, load timing, app-relative path, and failure handling).",
+        "error": null
+      },
+      {
+        "check": "special-card-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Special Card Tests] PASSED (assignments, activation, calendar expiry, reward cadence/catch-up, Sunday discount, Shield integration, and shared styling).",
+        "error": null
+      },
+      {
+        "check": "startup-coordinator-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Startup Coordinator Tests] PASSED (ordered startup, optional integrations, 1s music delay, fallback page, and idempotence).",
+        "error": null
+      },
+      {
+        "check": "storage-render-hardening-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Storage & Rendering Hardening Tests] PASSED (goal record shape, achievement record shape, owned season cards, momentum toast, monthly selector, and cache version).",
+        "error": null
+      },
+      {
+        "check": "vercel-deployment-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Vercel Deployment Tests] PASSED (headers, report-only CSP, cache revalidation, no SPA rewrites, unchanged SW cache).",
+        "error": null
+      },
+      {
+        "check": "welcome-intro-tests.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Welcome Intro Smoke Tests] PASSED (module loading, DOM contracts, Monthly Drop integration, video completion, Escape handling, and browser-smoke welcome lifecycle).",
+        "error": null
+      },
+      {
+        "check": "architecture-audit.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Architecture Audit] PASSED\n - 51 active module files (all active module entry points and dependencies) resolve and are present in APP_SHELL.\n - Active script order preserves legacy bridges before the modular bootstrap.\n - Exactly one app-relative service-worker registration is active.\n - Service-worker cache version: standout-v2.100-special-card-interactions",
+        "error": null
+      },
+      {
+        "check": "security-audit.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Security Audit] Vercel CSP is configured in Report-Only mode; enforcement remains disabled pending deployed-origin review.\n[Security Audit] PASSED\n - Inspected 55 active script entry/import paths for unsafe dynamic execution APIs.\n - Mission creation and editing render user-entered names as text.\n - Achievement tiles, achievement popup, minted-card, and monthly-resolution UI content uses safe DOM properties.\n - Goal cards, edit modal, achievement overlay, and overdue labels use safe DOM APIs.\n - Badge requirements, artwork, and collection render stored values through safe DOM properties and validated local image paths.\n - Custom-card manager and marketplace card text/actions/images use validated DOM construction.\n - Mastery cards, milestones, evidence previews, and milestone inputs use safe DOM construction.\n - Monthly insight cards render generated titles and descriptions with textContent and allowlisted classes.\n - Bottom navigation and global Add controls use event listeners rather than inline handlers.\n - Goal and achievement storage collections reject malformed record entries.\n - Owned season cards, momentum toast, monthly selector, and modal forms use safe DOM APIs.\n - WARNING: The page loads third-party assets; review self-hosting, pinning, and integrity controls.",
+        "error": null
+      },
+      {
+        "check": "release-audit.mjs",
+        "status": "PASS",
+        "exitCode": 0,
+        "output": "[Release Audit] PASSED\n - 30 active HTML asset references checked.\n - PWA start_url and scope are relative and manifest icons resolve.\n[Release Audit] WARNING: Missing active HTML asset: welcome.mp4 (source.src)\n[Release Audit] WARNING: Missing active HTML asset: Music/Complete.mp3 (audio.src)",
+        "error": null
+      }
+    ]
+  },
+  "browser": {
+    "status": "NOT_RUN",
+    "reason": "Run node scripts/browser-smoke.mjs in a supported Chromium/Playwright environment, and complete BROWSER-TESTING.md manual workflows."
+  },
+  "releaseReady": false,
+  "note": "Automated checks alone do not certify production readiness."
+}

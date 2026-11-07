@@ -45,6 +45,6 @@ assert.doesNotMatch(momentum.slice(momentum.indexOf('function renderCore()'), mo
     'Momentum core and panel must use safe DOM construction');
 assert.match(momentum, /core\.replaceChildren\(light, text\)/);
 assert.match(momentum, /panel\.replaceChildren\(fragment\)/);
-assert.match(serviceWorker, /standout-v2\.72-inline-style-externalization/);
+assert.match(serviceWorker, /standout-v2\.100-special-card-interactions/);
 
 console.log('[Safe Rendering Tests] PASSED (notification content, reset states, mission DOM, overdue badge, monthly momentum empty state, and cache version).');

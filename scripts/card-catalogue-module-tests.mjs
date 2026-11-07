@@ -17,7 +17,7 @@ const checksum = crypto
     .digest('hex');
 assert.equal(
     checksum,
-    '947e2cae245540bb297e5c867c19ee3ece166d8ddeabe692a05013898c0574a9',
+    'e15a2ae2c009855eb0d54a2e849f3b7033d43db49546acf7cf2de0fc3ce91af8',
     'serialized built-in card data must remain byte-for-byte equivalent in meaning'
 );
 
@@ -33,6 +33,9 @@ assert.equal(cardCatalogue.validate().valid, true);
 globalThis.cardCatalog = originalCatalogue;
 assert.equal(cardCatalogue.getAll().length, 43, 'restoring the global must restore facade visibility');
 assert.equal(cardCatalogue.getSeasonRewards('season-03').length, 2);
+assert.equal(cardCatalogue.getById('season_03_card').specialPower, 'shield');
+assert.equal(cardCatalogue.getById('season_03_exclusive_card').specialPower, 'improvement');
+assert.equal(cardCatalogue.getById('Raje').specialPower, 'discount');
 assert.equal(cardCatalogue.getMarketplaceCards().some(card => card.seasonReward === true), false);
 
 console.log('[Card Catalogue Module Tests] PASSED (43 records, checksum, global publication, reassignment, facade behavior, and Season rewards).');

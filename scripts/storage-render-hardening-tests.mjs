@@ -35,6 +35,6 @@ assert.doesNotMatch(momentum.slice(momentum.indexOf('function renderCore()'), mo
     'Momentum core and panel must use safe DOM construction');
 assert.match(momentum, /core\.replaceChildren\(light, text\)/);
 assert.match(momentum, /panel\.replaceChildren\(fragment\)/);
-assert.match(serviceWorker, /standout-v2\.72-inline-style-externalization/);
+assert.match(serviceWorker, /standout-v2\.100-special-card-interactions/);
 
 console.log('[Storage & Rendering Hardening Tests] PASSED (goal record shape, achievement record shape, owned season cards, momentum toast, monthly selector, and cache version).');

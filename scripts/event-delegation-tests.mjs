@@ -19,7 +19,7 @@ for (const [name, source] of [['index.html', indexHTML], ['standout-guide.html',
         `${name} must load the external event delegation module`);
 }
 
-assert.match(serviceWorker, /standout-v2\.72-inline-style-externalization/,
+assert.match(serviceWorker, /standout-v2\.100-special-card-interactions/,
     'service-worker cache must be versioned for the new active module');
 assert.match(serviceWorker, /"\/JS\/core\/event-delegation\.js"/,
     'event delegation module must be precached');

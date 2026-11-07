@@ -17,5 +17,5 @@ assert.match(modals, /window\.skillBeingEdited = skillDiv/);
 assert.match(modals, /timeZone: "Asia\/Kolkata"/);
 assert.doesNotMatch(completion, /overdueMark\.innerHTML\s*=/);
 assert.match(completion, /overdueMark\.replaceChildren\(\)/);
-assert.match(serviceWorker, /standout-v2\.72-inline-style-externalization/);
+assert.match(serviceWorker, /standout-v2\.100-special-card-interactions/);
 console.log("[Modal DOM Tests] PASSED (DOM-built forms, text-safe dynamic values, edit state, countdown IST, and completion marker clearing).");
