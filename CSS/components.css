@@ -540,11 +540,11 @@ ul li.remove {
   cursor: not-allowed;
 }
 
-.flex-card.owned {
+#ownedCards .flex-card.owned {
   border-color: #3B82F6;
 }
 
-.flex-card.owned .buy-btn {
+#ownedCards .flex-card.owned .buy-btn {
   background: transparent;
   border: none;
   color: #22c55e;
@@ -1091,14 +1091,14 @@ ul li.remove {
    OWNED CARD — FULL ARTWORK
 ========================================================= */
 
-.flex-card.owned {
+#ownedCards .flex-card.owned {
     position: relative;
     overflow: hidden;
     padding: 0;
 }
 
 
-.flex-card.owned .owned-card-image {
+#ownedCards .flex-card.owned .owned-card-image {
     width: 100%;
     height: auto;
 
@@ -1112,7 +1112,7 @@ ul li.remove {
    OWNED CARD — TRANSPARENT INFORMATION LAYER
 ========================================================= */
 
-.flex-card.owned .card-body {
+#ownedCards .flex-card.owned .card-body {
     position: absolute;
 
     left: 0;
@@ -1133,22 +1133,22 @@ ul li.remove {
 }
 
 
-.flex-card.owned .card-body h3 {
+#ownedCards .flex-card.owned .card-body h3 {
     color: #fff;
 }
 
 
-.flex-card.owned .card-quote {
+#ownedCards .flex-card.owned .card-quote {
     color: rgba(255, 255, 255, 0.78);
 }
 
 
-.flex-card.owned .mint-date {
+#ownedCards .flex-card.owned .mint-date {
     color: rgba(255, 255, 255, 0.65);
 }
 
 
-.flex-card.owned .buy-btn {
+#ownedCards .flex-card.owned .buy-btn {
     background: rgba(255, 255, 255, 0.92);
     color: #111;
     border: none;
@@ -1161,7 +1161,7 @@ ul li.remove {
 
 @media (max-width: 600px) {
 
-    .flex-card.owned .owned-card-image {
+    #ownedCards .flex-card.owned .owned-card-image {
         max-width: 100%;
     }
 
@@ -1559,4 +1559,553 @@ ul li.remove {
 
 .special-active-btn {
     cursor: pointer !important;
+}
+
+/* =========================================================
+   SPECIAL CARD ARTWORK LAYOUT
+   Match the Season card presentation in Marketplace and My Cards.
+   Keep the artwork dominant; anchor compact information at the bottom.
+========================================================= */
+.flex-card.special-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 187 / 280;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #111;
+    border: 1px solid rgba(96, 165, 250, .55);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, .28);
+}
+
+.flex-card.special-card > img,
+.flex-card.special-card > .market-card-image,
+.flex-card.special-card > .owned-card-image {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: center;
+}
+
+
+.flex-card.special-card .card-body {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 42px 10px 9px;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.18) 18%, rgba(0,0,0,.78) 66%, rgba(0,0,0,.94) 100%);
+    color: #fff;
+}
+
+.flex-card.special-card .card-body h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.15;
+    text-shadow: 0 1px 4px rgba(0,0,0,.9);
+}
+
+.flex-card.special-card .card-quote {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 1px 0 2px;
+    color: rgba(255,255,255,.78);
+    font-size: 9px;
+    line-height: 1.25;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.flex-card.special-card .expire-text,
+.flex-card.special-card .mint-date,
+.flex-card.special-card .special-card-status {
+    margin: 0px 0;
+    color: rgba(255,255,255,.68);
+    font-size: 8px;
+    line-height: 1.2;
+}
+
+.flex-card.special-card .special-card-power {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 1px 0 3px;
+    color: #bfdbfe;
+    font-size: 9px;
+    line-height: 1.25;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.flex-card.special-card .buy-btn {
+    align-self: flex-start;
+    width: auto;
+    min-width: 76px;
+    max-width: 100%;
+    min-height: 24px;
+    margin: 2px 0 0;
+    padding: 4px 10px;
+    border: 1px solid rgba(255,255,255,.42);
+    border-radius: 6px;
+    background: rgba(255,255,255,.94);
+    color: #111827;
+    font-size: 9px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: .035em;
+}
+
+.flex-card.special-card .buy-btn:hover {
+    background: #fff;
+    color: #111827;
+}
+
+.flex-card.special-card .special-activate-btn {
+    border-color: #60a5fa;
+    background: rgba(37,99,235,.92);
+    color: #fff;
+}
+
+.flex-card.special-card .special-active-btn {
+    border-color: rgba(74,222,128,.7);
+    background: rgba(22,101,52,.92);
+    color: #fff;
+    cursor: pointer;
+}
+
+.flex-card.special-card .special-card-badge {
+    top: 9px;
+    left: 9px;
+    z-index: 4;
+    padding: 4px 6px;
+    font-size: 8px;
+}
+
+.flex-card.special-card .grade-badge,
+.flex-card.special-card .limited-badge {
+    z-index: 4;
+    font-size: 9px;
+    padding: 4px 6px;
+}
+
+.flex-card.special-card .grade-badge {
+    top: 9px;
+    right: 9px;
+}
+
+.flex-card.special-card .limited-badge {
+    top: 10px;
+    right: 10px;
+}
+
+.season-owned-card.special-card .season-owned-card-body {
+    padding-top: 48px;
+}
+
+.season-owned-card.special-card .special-card-power {
+    margin: 3px 0 4px;
+    font-size: 9px;
+    line-height: 1.25;
+}
+
+.season-owned-card.special-card .special-card-status {
+    margin-top: 3px;
+    font-size: 8px;
+}
+
+.season-owned-card.special-card .season-owned-card-owned-button {
+    align-self: flex-start;
+    width: auto;
+    min-width: 76px;
+    height: 24px;
+    margin-top: 4px;
+    padding: 0 10px;
+    border-radius: 6px;
+    font-size: 9px;
+    line-height: 1;
+}
+
+@media (max-width: 500px) {
+    .flex-card.special-card .card-body {
+        padding: 36px 8px 8px;
+        gap: 3px;
+    }
+    .flex-card.special-card .card-body h3 {
+        font-size: 12px;
+    }
+    .flex-card.special-card .card-quote,
+    .flex-card.special-card .special-card-power {
+        font-size: 8px;
+    }
+    .flex-card.special-card .buy-btn {
+        min-width: 70px;
+        min-height: 23px;
+        padding: 4px 8px;
+        font-size: 8px;
+    }
+}
+
+
+/* =========================================================
+   MY CARDS — NORMAL OWNED CARDS
+   Match the Season Collection card treatment. This is deliberately
+   scoped to #ownedCards; Marketplace and Special Card styling is untouched.
+========================================================= */
+#ownedCards .flex-card.owned {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 187 / 280;
+    overflow: hidden;
+    padding: 0;
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 12px;
+    background: #111;
+    box-shadow: 0 5px 18px rgba(0,0,0,.35);
+}
+
+#ownedCards .flex-card.owned > .owned-card-image {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: center;
+    transform: scale(1.01);
+    filter: saturate(1.05) contrast(1.04) brightness(.92);
+}
+
+#ownedCards .flex-card.owned::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 35%, rgba(0,0,0,.08) 45%, rgba(0,0,0,.55) 72%, rgba(0,0,0,.92) 100%);
+}
+
+#ownedCards .flex-card.owned .card-body {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0 12px 10px;
+    background: transparent;
+    color: #fff;
+}
+
+#ownedCards .flex-card.owned .card-body h3 {
+    order: 0;
+    max-width: 100%;
+    overflow: hidden;
+    margin: 0;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: 0 2px 5px rgba(0,0,0,.8);
+}
+
+#ownedCards .flex-card.owned .card-quote {
+    order: 1;
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 5px 0 0;
+    color: rgba(255,255,255,.72);
+    font-size: 10px;
+    line-height: 1.25;
+    text-shadow: 0 2px 5px rgba(0,0,0,.9);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+#ownedCards .flex-card.owned .mint-date {
+    order: 2;
+    overflow: hidden;
+    max-width: 100%;
+    margin: 7px 0 0;
+    color: rgba(255,255,255,.55);
+    font-size: 9px;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: 0 2px 5px rgba(0,0,0,.9);
+}
+
+#ownedCards .flex-card.owned .buy-btn {
+    order: 3;
+    align-self: stretch;
+    width: 100%;
+    min-width: 0;
+    min-height: 30px;
+    margin: 8px 0 0;
+    padding: 0 8px;
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: 8px;
+    background: rgba(255,255,255,.95);
+    color: #111;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: .02em;
+}
+
+#ownedCards .flex-card.owned .buy-btn.is-pinned {
+    background: #1d4ed8;
+    border-color: #93c5fd;
+    color: #fff;
+}
+
+@media (max-width: 500px) {
+    #ownedCards .flex-card.owned .card-body {
+        padding: 0 9px 8px;
+    }
+    #ownedCards .flex-card.owned .card-body h3 {
+        font-size: 13px;
+    }
+    #ownedCards .flex-card.owned .card-quote {
+        font-size: 9px;
+    }
+    #ownedCards .flex-card.owned .mint-date {
+        font-size: 8px;
+    }
+    #ownedCards .flex-card.owned .buy-btn {
+        min-height: 27px;
+        margin-top: 6px;
+        font-size: 9px;
+    }
+}
+
+/* MY CARDS — bottom-aligned content */
+#ownedCards .flex-card.owned .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: -5px;
+}
+
+/* Compact title and expiry */
+#ownedCards .flex-card.owned .card-body h3 {
+    margin: 0 0 3px;
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+#ownedCards .flex-card.owned .mint-date {
+    margin: 0 0 4px;
+    font-size: 9px;
+    line-height: 1.2;
+}
+
+#ownedCards .flex-card.owned .card-quote {
+    margin-top: 0;
+    font-size: 9px;
+    line-height: 1.3;
+}
+
+/* Hide SPECIAL label only in My Cards */
+#ownedCards .special-card-badge {
+    display: none !important;
+}
+
+/* Compact purple LIMITED badge */
+#ownedCards .limited-badge {
+    display: inline-flex;
+    width: fit-content;
+    max-width: max-content;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: #7c3aed;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.expire-text {
+    margin: 0.5px;
+}
+
+/* Remove SPECIAL badge and its reserved space in My Cards */
+#ownedCards .special-card-badge {
+    display: none !important;
+}
+
+#ownedCards .special-card-badge:empty {
+    display: none !important;
+}
+
+/* =========================================================
+   UNIVERSAL MARKETPLACE CARD LAYOUT
+   Applies to normal and special cards
+========================================================= */
+
+.flex-card {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 187 / 280;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #111;
+    border: 1px solid #1f2937;
+    box-shadow: 0 5px 18px rgba(0,0,0,.28);
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.flex-card > img,
+.flex-card > .market-card-image {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: saturate(1.04) contrast(1.04) brightness(.88);
+}
+
+.flex-card .card-body {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 42px 10px 9px;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0,0,0,.18) 18%,
+        rgba(0,0,0,.78) 66%,
+        rgba(0,0,0,.94) 100%
+    );
+    color: #fff;
+}
+
+.flex-card .card-body h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.flex-card .card-quote {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 1px 0 2px;
+    color: rgba(255,255,255,.78);
+    font-size: 9px;
+    line-height: 1.25;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.flex-card .buy-btn {
+    align-self: flex-start;
+    width: auto;
+    min-width: 76px;
+    max-width: 100%;
+    min-height: 24px;
+    margin: 2px 0 0;
+    padding: 4px 10px;
+    border: 1px solid rgba(255,255,255,.42);
+    border-radius: 6px;
+    background: rgba(255,255,255,.94);
+    color: #111827;
+    font-size: 9px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.flex-card .buy-btn:hover {
+    background: #fff;
+    color: #111827;
+}
+
+.flex-card .limited-badge {
+    display: inline-flex;
+    width: fit-content;
+    padding: 4px 7px;
+    border-radius: 6px;
+    background: #7c3aed;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+@media (max-width: 500px) {
+    .flex-card .card-body {
+        padding: 36px 8px 8px;
+        gap: 3px;
+    }
+
+    .flex-card .card-body h3 {
+        font-size: 12px;
+    }
+
+    .flex-card .card-quote {
+        font-size: 8px;
+    }
+
+    .flex-card .buy-btn {
+        min-width: 70px;
+        min-height: 23px;
+        padding: 4px 8px;
+        font-size: 8px;
+    }
+}
+
+/* MARKETPLACE — ORIGINAL BUY BUTTON */
+.card-grid .flex-card .buy-btn {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    min-height: unset;
+    align-self: stretch;
+
+    margin: 0;
+    padding: 6px;
+
+    background: #111827;
+    border: 1px solid #3B82F6;
+    border-radius: 8px;
+
+    color: #3B82F6;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: normal;
+
+    cursor: pointer;
+}
+
+.card-grid .flex-card .buy-btn:hover {
+    background: #3B82F6;
+    color: #000;
 }

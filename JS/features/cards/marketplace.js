@@ -472,12 +472,12 @@ function createCardElement(card, { owned = false, canBuy = false, mintDate = "" 
     gradeBadge.textContent = safeGrade;
     cardElement.appendChild(gradeBadge);
 
-    if (showSpecialFeatures) {
-        const specialBadge = document.createElement("span");
-        specialBadge.className = "special-card-badge";
-        specialBadge.textContent = "SPECIAL";
-        cardElement.appendChild(specialBadge);
-    }
+    // if (showSpecialFeatures) {
+    //     const specialBadge = document.createElement("span");
+    //     specialBadge.className = "special-card-badge";
+    //     specialBadge.textContent = "SPECIAL";
+    //     cardElement.appendChild(specialBadge);
+    // }
 
     if (limited) {
         const limitedBadge = document.createElement("span");
