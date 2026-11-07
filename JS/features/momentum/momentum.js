@@ -1035,6 +1035,17 @@ export const momentum = (() => {
             createMomentumNode("span", "", `Best: ${state.bestMomentum}`),
             createMomentumNode("span", "", `${state.totalProofDays} proof days`)
         );
+
+        const buyShieldButton = createMomentumNode("button", "buy-shield-points-btn", "BUY SHIELD POINTS · 10 IP");
+        buyShieldButton.type = "button";
+        buyShieldButton.addEventListener("click", () => {
+            if (typeof window.buyShieldPoints === "function") {
+                window.buyShieldPoints();
+            } else {
+                window.customAlert?.("Shield Shop is still loading. Please try again.");
+            }
+        });
+        stats.append(buyShieldButton);
         fragment.append(stats);
 
         panel.replaceChildren(fragment);

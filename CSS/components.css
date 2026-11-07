@@ -2109,3 +2109,31 @@ ul li.remove {
     background: #3B82F6;
     color: #000;
 }
+
+/* MY CARDS — hide expiry date */
+#ownedCards .expire-text {
+    display: none !important;
+}
+
+/* MOMENTUM SHIELD SHOP */
+.buy-shield-points-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    padding: 0 11px;
+    border: 1px solid rgba(59, 130, 246, .55);
+    border-radius: 8px;
+    background: rgba(59, 130, 246, .10);
+    color: #93c5fd;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .03em;
+    cursor: pointer;
+}
+
+.buy-shield-points-btn:hover {
+    background: #3b82f6;
+    color: #fff;
+}
+

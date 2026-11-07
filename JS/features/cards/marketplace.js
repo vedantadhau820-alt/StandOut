@@ -498,7 +498,7 @@ function createCardElement(card, { owned = false, canBuy = false, mintDate = "" 
     quote.textContent = String(card.quote || "");
     body.appendChild(quote);
 
-    if (limited && card.expiresAt) {
+    if (!owned && limited && card.expiresAt) {
         const expiry = document.createElement("h6");
         expiry.className = "expire-text";
         expiry.textContent = `Will expire on: ${String(card.expiresAt).slice(0, 10)}`;
@@ -1215,3 +1215,58 @@ export const cardsFeature = Object.freeze({
         return ownedCardsState;
     }
 });
+
+
+/**
+ * Purchase one Momentum Shield for 10 Improvement Points.
+ * Uses the existing Improvement Points and Momentum balance systems.
+ */
+window.buyShieldPoints = function buyShieldPoints() {
+    const cost = 10;
+    const currentBalance = Number(window.completedMissions) || 0;
+
+    if (currentBalance < cost) {
+        window.customAlert?.("You need 10 Improvement Points to buy 1 Shield Point.");
+        return;
+    }
+
+    if (typeof window.Momentum?.addShieldPoints !== "function") {
+        window.customAlert?.("Shield Points are currently unavailable. Please try again.");
+        return;
+    }
+
+    window.customConfirm?.(
+        "Buy 1 Shield Point for 10 Improvement Points?",
+        () => {
+            // Recheck after confirmation in case the balance changed.
+            if ((Number(window.completedMissions) || 0) < cost) {
+                window.customAlert?.("Not enough Improvement Points. Purchase cancelled.");
+                return;
+            }
+
+            const momentum = window.Momentum;
+            const before = Number(momentum.getState?.()?.shields) || 0;
+
+            try {
+                if (!points.spend(cost)) {
+                    window.customAlert?.("Not enough Improvement Points. Purchase cancelled.");
+                    return;
+                }
+
+                const after = momentum.addShieldPoints(1);
+                if (Number(after) !== before + 1) {
+                    throw new Error("Shield Point balance did not update.");
+                }
+
+                window.customAlert?.("Purchase successful! 1 Shield Point added.");
+            } catch (error) {
+                console.error("[Shield Shop] Purchase failed:", error);
+                // Refund the Improvement Points if Shield Point persistence fails.
+                try { points.add(cost); } catch (refundError) {
+                    console.error("[Shield Shop] Refund failed:", refundError);
+                }
+                window.customAlert?.("Purchase could not be completed. Your Improvement Points were refunded if possible.");
+            }
+        }
+    );
+};
