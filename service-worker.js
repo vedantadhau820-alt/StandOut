@@ -16,7 +16,7 @@ const BACKGROUND_CACHE =
   "standout-background-v3";
 
 const WELCOME_CACHE =
-  "standout-welcome-v3";
+  "standout-welcome-v4";
 
 
 const WELCOME_ASSETS = [
