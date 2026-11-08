@@ -1,4 +1,4 @@
-const CACHE_NAME = "standout-v2.61-FINAL-UPDATE";
+const CACHE_NAME = "standout-v2.7-FINAL-RELEASE";
 
 // Resolve app assets against the service worker's registration scope. This
 // supports both a domain-root deployment and a project subfolder deployment.
