@@ -100,14 +100,29 @@ function buildStoragePayload(backup) {
         soundSettings: "standout_sound_settings"
     };
 
-    for (const [stateKey, storageKey] of Object.entries(runtimeKeys)) {
-        if (runtime[stateKey] !== undefined) {
-            const value = runtime[stateKey];
-            values[storageKey] = typeof value === "string" && ["lastImprovementDate"].includes(stateKey)
+    
+for (const [stateKey, storageKey] of Object.entries(runtimeKeys)) {
+    if (runtime[stateKey] !== undefined) {
+
+        // LocalStorage is the canonical source for owned card data.
+        // Use runtimeState.ownedCards only when the LocalStorage
+        // backup does not contain ownedCards.
+        if (
+            stateKey === "ownedCards" &&
+            Object.prototype.hasOwnProperty.call(values, storageKey)
+        ) {
+            continue;
+        }
+
+        const value = runtime[stateKey];
+
+        values[storageKey] =
+            typeof value === "string" && ["lastImprovementDate"].includes(stateKey)
                 ? value
                 : JSON.stringify(value);
-        }
     }
+}
+
 
     // v4 stored these groups separately in addition to its complete storage map.
     for (const group of [monthly.storage, backgroundData.storage]) {

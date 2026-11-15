@@ -61,14 +61,21 @@ const SPECIAL_CARD_DEFINITIONS = Object.freeze({
 });
 
 function getISTTodayKey() {
-    // Explicit test-only override; clear it to return to the real IST date.
-    if (typeof window.__standoutSpecialCardTestDate === "string" &&
-        parseDateKey(window.__standoutSpecialCardTestDate)) {
+    // Explicit test-only override
+    if (
+        typeof window.__standoutSpecialCardTestDate === "string" &&
+        parseDateKey(window.__standoutSpecialCardTestDate)
+    ) {
         return window.__standoutSpecialCardTestDate;
     }
-    return typeof window.getTodayKey === "function"
-        ? window.getTodayKey()
-        : new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+
+    // Always calculate the actual Indian calendar date.
+    return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Kolkata",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    }).format(new Date());
 }
 
 function parseDateKey(value) {
@@ -708,7 +715,7 @@ function buyCard(cardId) {
                 ...latestOwnedCards,
                 [card.id]: {
                     ...(latestOwnedCards[card.id] || {}),
-                    mintedAt: window.getISTDate().toISOString().slice(0, 10)
+                    mintedAt: getISTTodayKey()
                 }
             };
 
@@ -752,8 +759,13 @@ function buyCard(cardId) {
 
 function formatDate(isoDate) {
     if (!isoDate) return "";
-    const d = new Date(isoDate);
-    return d.toLocaleDateString([], {
+
+    const parsed = parseDateKey(isoDate);
+
+    if (!parsed) return isoDate;
+
+    return parsed.toLocaleDateString("en-IN", {
+        timeZone: "UTC",
         day: "numeric",
         month: "short",
         year: "numeric"
